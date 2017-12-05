@@ -7,13 +7,7 @@ CXXFLAGS = -std=c++14
 
 TARGETS = src/os/main.cc
 
-ifeq (${arch}, msp430fr5969lp)
-include src/arch/msp430fr5969lp/Makefile.inc
-endif
-
-ifeq (${arch}, posix)
-include src/arch/posix/Makefile.inc
-endif
+include src/arch/${arch}/Makefile.inc
 
 clean: arch_clean
 	rm -f build/system.elf
