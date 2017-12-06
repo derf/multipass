@@ -14,6 +14,11 @@ extern "C" {
 
 extern int main(void);
 
+static void ICACHE_FLASH_ATTR jump_to_main(void)
+{
+	main();
+}
+
 void Arch::setup(void)
 {
 }
@@ -24,7 +29,7 @@ void Arch::idle_loop(void)
 
 extern "C" void user_init(void)
 {
-	main();
+	system_init_done_cb(jump_to_main);
 }
 
 Arch arch;
