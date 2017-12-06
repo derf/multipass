@@ -35,6 +35,12 @@ void ICACHE_FLASH_ATTR jump_to_main(void)
 	os_timer_setfn(&loop_timer, (os_timer_func_t *)jump_to_loop, (void *)0);
 	os_timer_arm(&loop_timer, 1000, 1);
 #endif
+	// Disable Wi-Fi
+	wifi_station_disconnect();
+	wifi_set_opmode_current(NULL_MODE);
+	wifi_fpm_set_sleep_type(MODEM_SLEEP_T);
+	wifi_fpm_open();
+	wifi_fpm_do_sleep(0xFFFFFFF);
 	main();
 }
 
