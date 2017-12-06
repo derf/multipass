@@ -84,11 +84,16 @@ void check_command(unsigned char argc, char** argv)
 }
 */
 
+void loop(void)
+{
+	gpio.led_toggle(1);
+}
+
 int main(void)
 {
 	arch.setup();
 	gpio.setup();
-	gpio.led_on(1);
+	gpio.led_on(0);
 	arch.idle_loop();
 
 	//uart_setup();

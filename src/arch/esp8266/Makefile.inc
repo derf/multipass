@@ -11,7 +11,7 @@ AR = ${TOOLCHAIN_BASE}/xtensa-lx106-elf-ar
 LD = ${TOOLCHAIN_BASE}/xtensa-lx106-elf-gcc
 
 INCLUDES += -Iinclude/esp8266 -I${SDK_BASE}/include
-COMMON_FLAGS += -nostdlib -mlongcalls
+COMMON_FLAGS += -nostdlib -mlongcalls -D__ets__ -DICACHE_FLASH
 CXXFLAGS = -std=c++11
 LDFLAGS += -nostdlib -Wl,--no-check-sections -u call_user_start -Wl,-static
 

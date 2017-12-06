@@ -30,7 +30,7 @@ void ICACHE_FLASH_ATTR GPIO::led_off(unsigned char id)
 
 void ICACHE_FLASH_ATTR GPIO::led_toggle(unsigned char id)
 {
-	if (GPIO_REG_READ(GPIO_OUT_ADDRESS) & BIT2) {
+	if (gpio_input_get() & BIT2) {
 		led_on(0);
 	} else {
 		led_off(0);

@@ -7,6 +7,10 @@ CXXFLAGS = -std=c++14
 
 TARGETS = src/os/main.cc
 
+ifeq (${arduino}, 1)
+	COMMON_FLAGS += -DWITH_LOOP
+endif
+
 include src/arch/${arch}/Makefile.inc
 
 clean: arch_clean
