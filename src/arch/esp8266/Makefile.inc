@@ -9,6 +9,7 @@ CC = ${TOOLCHAIN_BASE}/xtensa-lx106-elf-gcc
 CXX = ${TOOLCHAIN_BASE}/xtensa-lx106-elf-g++
 AR = ${TOOLCHAIN_BASE}/xtensa-lx106-elf-ar
 LD = ${TOOLCHAIN_BASE}/xtensa-lx106-elf-gcc
+OBJCOPY = ${TOOLCHAIN_BASE}/xtensa-lx106-elf-objcopy
 
 INCLUDES += -Iinclude/esp8266 -I${SDK_BASE}/include
 COMMON_FLAGS += -nostdlib -mlongcalls -D__ets__ -DICACHE_FLASH
@@ -16,17 +17,19 @@ CXXFLAGS = -std=c++11
 LDFLAGS += -nostdlib -Wl,--no-check-sections -u call_user_start -Wl,-static
 
 TARGETS += src/arch/esp8266/arch.cc src/arch/esp8266/driver/gpio.cc
+TARGETS += src/arch/esp8266/driver/stdout.cc
 
 OBJECTS = ${TARGETS:.cc=.o}
 
 .cc.o:
 	${CXX} ${INCLUDES} ${COMMON_FLAGS} ${CXXFLAGS} -c -o $@ ${@:.o=.cc}
+	${OBJCOPY} --rename-section .text=.irom0.text --rename-section .literal=.irom0.literal $@
 
 build/system.ar: ${OBJECTS}
 	${AR} cru $@ ${OBJECTS}
 
 build/system.elf: build/system.ar
-	${CC} -L${SDK_BASE}/lib -T${SDK_BASE}/lib/eagle.app.v6.ld ${LDFLAGS} \
+	${CC} -L${SDK_BASE}/lib -T${SDK_BASE}/lib/eagle.app.v6-derf.ld ${LDFLAGS} \
 		-Wl,--start-group -lc -lgcc -lhal -lpp -lphy -lnet80211 -llwip -lwpa \
 		-lmain $< -Wl,--end-group -o $@
 

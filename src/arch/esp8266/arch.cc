@@ -10,6 +10,8 @@ extern "C" {
 void ets_timer_arm_new(os_timer_t *ptimer, uint32_t milliseconds, bool repeat_flag, bool us_flag);
 void ets_timer_disarm(os_timer_t *ptimer);
 void ets_timer_setfn(os_timer_t *ptimer, os_timer_func_t *pfunction, void *parg);
+extern void (*__init_array_start)();
+extern void (*__init_array_end)();
 }
 
 #define user_procTaskPrio        0
@@ -30,6 +32,9 @@ extern int main(void);
 
 void ICACHE_FLASH_ATTR jump_to_main(void)
 {
+	for (void (**p)() = &__init_array_start; p != &__init_array_start; p++) {
+		(*p)();
+	}
 #ifdef WITH_LOOP
 	os_timer_disarm(&loop_timer);
 	os_timer_setfn(&loop_timer, (os_timer_func_t *)jump_to_loop, (void *)0);

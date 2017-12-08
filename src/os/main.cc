@@ -1,5 +1,6 @@
 #include "arch.h"
 #include "driver/gpio.h"
+#include "driver/stdout.h"
 
 /*
 void check_command(unsigned char argc, char** argv)
@@ -93,7 +94,11 @@ int main(void)
 {
 	arch.setup();
 	gpio.setup();
+	kout.setup();
+
 	gpio.led_on(0);
+	kout << "Hello, World!" << endl;
+
 	arch.idle_loop();
 
 	//uart_setup();

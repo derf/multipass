@@ -11,6 +11,7 @@ CXX = /opt/msp430/ti/gcc/bin/msp430-elf-g++
 OBJCOPY = /opt/msp430/ti/gcc/bin/msp430-elf-objcopy
 
 TARGETS += src/arch/msp430fr5969lp/arch.cc src/arch/msp430fr5969lp/driver/gpio.cc
+TARGETS += src/arch/msp430fr5969lp/driver/stdout.cc
 
 OBJECTS = ${TARGETS:.cc=.o}
 
