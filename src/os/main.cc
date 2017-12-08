@@ -98,6 +98,7 @@ int main(void)
 
 	gpio.led_on(0);
 	kout << "Hello, World!" << endl;
+	kout << "Test, World!" << endl;
 
 	arch.idle_loop();
 

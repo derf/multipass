@@ -1,19 +1,58 @@
 #ifndef STANDARDOUTPUT_H
 #define STANDANDOUTPUT_H
 
-#include "object/outputstream.h"
-
-class StandardOutput : public OutputStream {
+class StandardOutput {
 	private:
 		StandardOutput(const StandardOutput &copy);
+		char digit_buffer[sizeof(long long) * 8];
+		unsigned char base;
 
 	public:
-		StandardOutput () {}
+		StandardOutput ();
 		void setup();
 
-		virtual void put(char c) override;
-		virtual void write(const char *s) override;
+		void put(char c);
+		void write(const char *s);
+		void flush() {}
+
+		StandardOutput & operator<<(char c);
+		StandardOutput & operator<<(unsigned char c);
+		StandardOutput & operator<<(unsigned short number);
+		StandardOutput & operator<<(short number);
+		StandardOutput & operator<<(unsigned int number);
+		StandardOutput & operator<<(int number);
+		StandardOutput & operator<<(unsigned long number);
+		StandardOutput & operator<<(long number);
+		StandardOutput & operator<<(unsigned long long number);
+		StandardOutput & operator<<(long long number);
+		StandardOutput & operator<<(void *pointer);
+		StandardOutput & operator<<(const char *text);
+		StandardOutput & operator<<(StandardOutput & (*fun) (StandardOutput &));
+
+		void setBase(unsigned char b);
 };
+
+
+// ENDL: new line character (and flush)
+StandardOutput & endl(StandardOutput & os);
+
+// BIN: print numbers in binary form.
+StandardOutput & bin(StandardOutput & os);
+
+// OCT: print numbers in octal form.
+StandardOutput & oct(StandardOutput & os);
+
+// DEC: print numbers in decimal form.
+StandardOutput & dec(StandardOutput & os);
+
+// HEX: print numbers in hexadecimal form.
+StandardOutput & hex(StandardOutput & os);
+
+// FLUSH: flush StandardOutput buffer
+StandardOutput & flush(StandardOutput & os);
+
+// TERM: zero-termination
+StandardOutput & term(StandardOutput & os);
 
 extern StandardOutput kout;
 
