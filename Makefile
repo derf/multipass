@@ -7,7 +7,7 @@ CXXFLAGS = -std=c++14
 
 TARGETS = src/os/main.cc src/os/object/cpp_helpers.cc src/os/object/outputstream.cc
 
-ifeq (${arduino}, 1)
+ifeq (${loop}, 1)
 	COMMON_FLAGS += -DWITH_LOOP
 endif
 

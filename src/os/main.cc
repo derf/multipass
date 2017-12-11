@@ -1,6 +1,7 @@
 #include "arch.h"
 #include "driver/gpio.h"
 #include "driver/stdout.h"
+#include "driver/uptime.h"
 
 /*
 void check_command(unsigned char argc, char** argv)
@@ -88,6 +89,7 @@ void check_command(unsigned char argc, char** argv)
 void loop(void)
 {
 	gpio.led_toggle(1);
+	kout << dec << uptime.get() << endl;
 }
 
 int main(void)
@@ -99,6 +101,10 @@ int main(void)
 	gpio.led_on(0);
 	kout << "Hello, World!" << endl;
 	kout << "Test, World!" << endl;
+	kout << dec << uptime.get() << endl;
+	kout << dec << uptime.get() << endl;
+	kout << dec << uptime.get() << endl;
+	kout << dec << uptime.get() << endl;
 
 	arch.idle_loop();
 

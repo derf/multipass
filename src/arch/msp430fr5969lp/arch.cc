@@ -16,10 +16,16 @@ void Arch::setup(void)
 	// 16MHz DCO
 	CSCTL0_H = CSKEY >> 8;
 	CSCTL1 = DCORSEL | DCOFSEL_4;
+#ifdef WITH_LOOP
+	CSCTL2 = SELA__LFXTCLK | SELS__DCOCLK | SELM__DCOCLK;
+#else
 	CSCTL2 = SELA__VLOCLK | SELS__DCOCLK | SELM__DCOCLK;
+#endif
 	CSCTL3 = DIVA__1 | DIVS__1 | DIVM__1;
 	CSCTL0_H = 0;
 
+
+#ifdef WITH_LOOP
 	// enable LXFT for RTC
 	CSCTL0_H = CSKEY >> 8;
 	CSCTL4 &= ~LFXTOFF;
@@ -30,17 +36,46 @@ void Arch::setup(void)
 	CSCTL0_H = 0;
 
 	__delay_cycles(1000000);
+#endif
+
+	// 16MHz/16 -> ~1MHz timer
+	TA0CTL = TASSEL__SMCLK | ID__8 | MC__CONTINUOUS;
+	TA0EX0 = 1;
+	TA0CTL |= TACLR;
+
+#ifdef WITH_LOOP
+
+	// 1s per wakeup for loop
+	TA1CTL = TASSEL__ACLK | ID__8 | MC__UP;
+	TA1EX0 = 0;
+	TA1CCR0 = 4096;
+	TA1CTL |= TACLR | TAIE;
+#endif
+
 	//P1OUT = 0;
 	//P4OUT = 0;
 }
 
 void Arch::idle_loop(void)
 {
+	__eint();
 	while (1);
 }
 
 Arch arch;
 
+#ifdef WITH_LOOP
+
+extern void loop();
+
+__attribute__((interrupt(TIMER1_A1_VECTOR))) __attribute__((wakeup)) void handle_timer0_overflow()
+{
+	if (TA1IV == 0x0e) {
+		loop();
+	}
+}
+
+#endif
 /*
 void uart_setup(void)
 {

@@ -5,7 +5,7 @@ CXX = g++
 
 INCLUDES += -Iinclude/posix
 TARGETS += src/arch/posix/arch.cc src/arch/posix/driver/gpio.cc
-TARGETS += src/arch/posix/driver/stdout.cc
+TARGETS += src/arch/posix/driver/stdout.cc src/arch/posix/driver/uptime.cc
 
 OBJECTS = ${TARGETS:.cc=.o}
 

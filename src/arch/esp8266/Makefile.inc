@@ -17,7 +17,7 @@ CXXFLAGS = -std=c++11
 LDFLAGS += -nostdlib -Wl,--no-check-sections -u call_user_start -Wl,-static
 
 TARGETS += src/arch/esp8266/arch.cc src/arch/esp8266/driver/gpio.cc
-TARGETS += src/arch/esp8266/driver/stdout.cc
+TARGETS += src/arch/esp8266/driver/stdout.cc src/arch/esp8266/driver/uptime.cc
 
 OBJECTS = ${TARGETS:.cc=.o}
 
