@@ -9,7 +9,9 @@ class Uptime {
 
 	public:
 		Uptime () {}
-		uint64_t get();
+		uint64_t get_s();
+		uint64_t get_us();
+		uint64_t get_cycles();
 };
 
 extern Uptime uptime;

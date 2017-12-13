@@ -35,4 +35,7 @@ arch_clean:
 	rm -f ${OBJECTS}
 	rm -f build/system.hex
 
-.PHONY: arch_clean program
+monitor:
+	screen /dev/ttyACM1 115200
+
+.PHONY: arch_clean monitor program

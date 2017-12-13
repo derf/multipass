@@ -46,4 +46,7 @@ arch_clean:
 	rm -f ${OBJECTS}
 	rm -f build/system.ar
 
-.PHONY: arch_clean program
+monitor:
+	screen /dev/ttyUSB0 115200
+
+.PHONY: arch_clean monitor program

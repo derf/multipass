@@ -38,18 +38,25 @@ void Arch::setup(void)
 	__delay_cycles(1000000);
 #endif
 
+#ifdef TIMER_US
 	// 16MHz/16 -> ~1MHz timer
 	TA0CTL = TASSEL__SMCLK | ID__8 | MC__CONTINUOUS;
 	TA0EX0 = 1;
 	TA0CTL |= TACLR;
+#endif
 
-#ifdef WITH_LOOP
-
+#if defined(WITH_LOOP) || defined(TIMER_S)
 	// 1s per wakeup for loop
 	TA1CTL = TASSEL__ACLK | ID__8 | MC__UP;
 	TA1EX0 = 0;
 	TA1CCR0 = 4096;
 	TA1CTL |= TACLR | TAIE;
+#endif
+
+#ifdef TIMER_CYCLES
+	TA2CTL = TASSEL__SMCLK | ID__1 | MC__CONTINUOUS;
+	TA2EX0 = 0;
+	TA2CTL |= TACLR;
 #endif
 
 	//P1OUT = 0;
@@ -64,14 +71,20 @@ void Arch::idle_loop(void)
 
 Arch arch;
 
-#ifdef WITH_LOOP
+#if defined(WITH_LOOP) || defined(TIMER_S)
 
+#include "driver/uptime.h"
 extern void loop();
 
 __attribute__((interrupt(TIMER1_A1_VECTOR))) __attribute__((wakeup)) void handle_timer0_overflow()
 {
 	if (TA1IV == 0x0e) {
+#ifdef WITH_LOOP
 		loop();
+#endif
+#ifdef TIMER_S
+		uptime.tick_s();
+#endif
 	}
 }
 

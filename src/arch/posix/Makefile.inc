@@ -19,7 +19,11 @@ build/system.elf: ${OBJECTS}
 run: build/system.elf
 	build/system.elf
 
+monitor: run
+
+program: run
+
 arch_clean:
 	rm -f ${OBJECTS}
 
-.PHONY: arch_clean program
+.PHONY: arch_clean monitor program run

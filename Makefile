@@ -7,6 +7,18 @@ CXXFLAGS = -std=c++14
 
 TARGETS = src/app/${app}/main.cc src/os/object/cpp_helpers.cc src/os/object/outputstream.cc
 
+ifeq (${timer_cycles}, 1)
+	COMMON_FLAGS += -DTIMER_CYCLES
+endif
+
+ifeq (${timer_us}, 1)
+	COMMON_FLAGS += -DTIMER_US
+endif
+
+ifeq (${timer_s}, 1)
+	COMMON_FLAGS += -DTIMER_S
+endif
+
 ifeq (${loop}, 1)
 	COMMON_FLAGS += -DWITH_LOOP
 endif
