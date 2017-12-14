@@ -2,7 +2,7 @@
 
 OutputStream & OutputStream::operator<<(unsigned char c)
 {
-	put(c);
+	*this << (unsigned long long)c;
 	return *this;
 }
 
@@ -132,6 +132,41 @@ void OutputStream::setBase(uint8_t b)
 	if (b == 2 || b == 8 || b == 10 || b == 16) {
 		base = b;
 	}
+}
+
+static inline char format_hex_nibble(uint8_t num)
+{
+	if (num > 9) {
+		return 'a' + num - 10;
+	}
+	return '0' + num;
+}
+
+void OutputStream::printf_uint8(uint8_t num)
+{
+	put(format_hex_nibble(num / 16));
+	put(format_hex_nibble(num % 16));
+}
+
+void OutputStream::printf_float(float num)
+{
+	if (num < 0) {
+		put('-');
+		num *= -1;
+	}
+	if (num > 1000) {
+		put('0' + (((int)num % 10000) / 1000));
+	}
+	if (num > 100) {
+		put('0' + (((int)num % 1000) / 100));
+	}
+	if (num > 10) {
+		put('0' + (((int)num % 100) / 10));
+	}
+	put('0' + ((int)num % 10));
+	put('.');
+	put('0' + ((int)(num * 10) % 10));
+	put('0' + ((int)(num * 100) % 10));
 }
 
 // FLUSH

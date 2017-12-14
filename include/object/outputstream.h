@@ -38,6 +38,8 @@ class OutputStream {
 	OutputStream & operator<<(OutputStream & (*fun) (OutputStream &));
 
 	void setBase(uint8_t b);
+	void printf_uint8(uint8_t num);
+	void printf_float(float num);
 };
 
 
