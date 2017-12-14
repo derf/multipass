@@ -3,6 +3,13 @@
 #include "driver/stdout.h"
 #include "driver/uptime.h"
 
+#ifndef TIMER_CYCLES
+#error makeflag timer_cycles=1 required
+#endif
+#ifndef TIMER_S
+#error makeflag timer_s=1 required
+#endif
+
 /*
 void check_command(unsigned char argc, char** argv)
 {
@@ -89,7 +96,7 @@ void check_command(unsigned char argc, char** argv)
 void loop(void)
 {
 	gpio.led_toggle(1);
-	kout << dec << uptime.get() << endl;
+	kout << dec << uptime.get_s() << endl;
 }
 
 int main(void)
@@ -101,10 +108,10 @@ int main(void)
 	gpio.led_on(0);
 	kout << "Hello, World!" << endl;
 	kout << "Test, World!" << endl;
-	kout << dec << uptime.get() << endl;
-	kout << dec << uptime.get() << endl;
-	kout << dec << uptime.get() << endl;
-	kout << dec << uptime.get() << endl;
+	kout << dec << uptime.get_cycles() << endl;
+	kout << dec << uptime.get_cycles() << endl;
+	kout << dec << uptime.get_cycles() << endl;
+	kout << dec << uptime.get_cycles() << endl;
 
 	arch.idle_loop();
 
