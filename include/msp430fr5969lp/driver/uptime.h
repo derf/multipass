@@ -12,7 +12,11 @@ class Uptime {
 #endif
 
 	public:
+#ifdef TIMER_S
 		Uptime () : seconds(0) {}
+#else
+		Uptime () {}
+#endif
 		inline uint16_t get_us() { return TA0R; }
 		inline uint16_t get_cycles() { return TA2R; }
 #ifdef TIMER_S
