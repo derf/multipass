@@ -21,6 +21,10 @@ TARGETS += src/arch/esp8266/driver/stdout.cc src/arch/esp8266/driver/uptime.cc
 
 OBJECTS = ${TARGETS:.cc=.o}
 
+ifeq (${esp8266_led2}, 1)
+	COMMON_FLAGS += -DLED_ON_GPIO16
+endif
+
 .cc.o:
 	${CXX} ${INCLUDES} ${COMMON_FLAGS} ${CXXFLAGS} -c -o $@ ${@:.o=.cc}
 	${OBJCOPY} --rename-section .text=.irom0.text --rename-section .literal=.irom0.literal $@

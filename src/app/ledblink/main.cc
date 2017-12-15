@@ -6,9 +6,6 @@
 #ifndef TIMER_CYCLES
 #error makeflag timer_cycles=1 required
 #endif
-#ifndef TIMER_S
-#error makeflag timer_s=1 required
-#endif
 
 /*
 void check_command(unsigned char argc, char** argv)
@@ -96,7 +93,9 @@ void check_command(unsigned char argc, char** argv)
 void loop(void)
 {
 	gpio.led_toggle(1);
+#ifdef TIMER_S
 	kout << dec << uptime.get_s() << endl;
+#endif
 }
 
 int main(void)

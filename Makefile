@@ -6,7 +6,11 @@ CFLAGS = -std=c99
 CXXFLAGS = -std=c++14
 
 TARGETS = src/app/${app}/main.cc src/os/object/cpp_helpers.cc src/os/object/outputstream.cc
-TARGETS += src/driver/lm75.cc
+
+ifneq ($(findstring lm75,${drivers}), )
+	TARGETS += src/driver/lm75.cc
+	COMMON_FLAGS += -DDRIVER_LM75
+endif
 
 ifeq (${timer_cycles}, 1)
 	COMMON_FLAGS += -DTIMER_CYCLES
