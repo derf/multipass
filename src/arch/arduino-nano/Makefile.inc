@@ -39,4 +39,9 @@ arch_clean:
 monitor:
 	screen ${PORT} 115200
 
-.PHONY: arch_clean monitor program
+arch_help:
+	@echo "arduino-nano specific flags:"
+	@echo "    PORT = ${PORT}"
+	@echo "    BAUD = ${BAUD} (only used for programming)"
+
+.PHONY: arch_clean arch_help monitor program

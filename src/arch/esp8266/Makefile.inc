@@ -53,4 +53,8 @@ arch_clean:
 monitor:
 	screen /dev/ttyUSB0 115200
 
-.PHONY: arch_clean monitor program
+arch_help:
+	@echo "esp8266 specific flags:"
+	@echo "    - none -"
+
+.PHONY: arch_clean arch_help monitor program
