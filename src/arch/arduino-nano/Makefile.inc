@@ -2,6 +2,8 @@
 
 MCU = atmega328p
 PROGRAMMER ?= usbasp
+PORT = /dev/ttyUSB0
+BAUD = 57600
 
 INCLUDES += -Iinclude/arduino-nano
 COMMON_FLAGS += -mmcu=${MCU} -DF_CPU=16000000UL
@@ -29,12 +31,12 @@ build/system.hex: build/system.elf
 	${OBJCOPY} -O ihex ${@:.hex=.elf} $@
 
 program: build/system.hex
-	avrdude -p ${MCU} -c arduino -P /dev/ttyUSB0 -b 57600 -U flash:w:build/system.hex
+	avrdude -p ${MCU} -c arduino -P ${PORT} -b ${BAUD} -U flash:w:build/system.hex
 
 arch_clean:
 	rm -f ${OBJECTS} build/system.hex
 
 monitor:
-	screen /dev/ttyUSB0 115200
+	screen ${PORT} 115200
 
 .PHONY: arch_clean monitor program
