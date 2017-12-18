@@ -26,6 +26,7 @@ OBJECTS = ${TARGETS:.cc=.o}
 
 build/system.elf: ${OBJECTS}
 	${CXX} ${COMMON_FLAGS} ${CXXFLAGS} -Wl,--gc-sections -o $@ ${OBJECTS}
+	avr-size --format=avr --mcu=${MCU} $@
 
 build/system.hex: build/system.elf
 	${OBJCOPY} -O ihex ${@:.hex=.elf} $@
