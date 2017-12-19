@@ -11,11 +11,26 @@ CXX = /opt/msp430/ti/gcc/bin/msp430-elf-g++
 OBJCOPY = /opt/msp430/ti/gcc/bin/msp430-elf-objcopy
 
 TARGETS += src/arch/msp430fr5969lp/arch.cc
-TARGETS += src/arch/msp430fr5969lp/driver/adc.cc
+
+ifneq ($(findstring adc,${arch_drivers}), )
+	TARGETS += src/arch/msp430fr5969lp/driver/adc.cc
+endif
+
 TARGETS += src/arch/msp430fr5969lp/driver/gpio.cc
 TARGETS += src/arch/msp430fr5969lp/driver/stdout.cc
 TARGETS += src/arch/msp430fr5969lp/driver/uptime.cc
-TARGETS += src/arch/msp430fr5969lp/driver/i2c.cc
+
+ifneq ($(findstring i2c,${arch_drivers}), )
+	TARGETS += src/arch/msp430fr5969lp/driver/i2c.cc
+endif
+
+ifneq ($(findstring spi,${arch_drivers}), )
+	TARGETS += src/arch/msp430fr5969lp/driver/spi.cc
+endif
+
+ifneq ($(findstring spi_b,${arch_drivers}), )
+	TARGETS += src/arch/msp430fr5969lp/driver/spi_b.cc
+endif
 
 OBJECTS = ${TARGETS:.cc=.o}
 
