@@ -9,6 +9,16 @@ class GPIO {
 
 	public:
 		GPIO () {}
+
+		enum Pin : unsigned char {
+			p1_0 = 0, p1_1, p1_2, p1_3, p1_4, p1_5, p1_6, p1_7,
+			p2_0, p2_1, p2_2, p2_3, p2_4, p2_5, p2_6, p2_7,
+			p3_0, p3_1, p3_2, p3_3, p3_4, p3_5, p3_6, p3_7,
+			p4_0, p4_1, p4_2, p4_3, p4_4, p4_5, p4_6, p4_7,
+			pj_0, pj_1, pj_2, pj_3, pj_4, pj_5, pj_6, pj_7,
+			PIN_INVALID
+		};
+
 		inline void setup() {
 			P1OUT = 0;
 			P2OUT = 0;
@@ -38,6 +48,78 @@ class GPIO {
 				P1OUT ^= BIT0;
 			} else {
 				P4OUT ^= BIT6;
+			}
+		}
+		inline void input(unsigned char const pin) {
+			if (pin < p2_0) {
+				P1DIR &= ~(1 << pin);
+			} else if (pin < p3_0) {
+				P2DIR &= ~(1 << (pin - p2_0));
+			} else if (pin < p4_0) {
+				P3DIR &= ~(1 << (pin - p3_0));
+			} else if (pin < pj_0) {
+				P4DIR &= ~(1 << (pin - p4_0));
+			} else if (pin < PIN_INVALID) {
+				PJDIR &= ~(1 << (pin - pj_0));
+			}
+		}
+		inline void output(unsigned char const pin) {
+			if (pin < p2_0) {
+				P1DIR |= (1 << pin);
+			} else if (pin < p3_0) {
+				P2DIR |= (1 << (pin - p2_0));
+			} else if (pin < p4_0) {
+				P3DIR |= (1 << (pin - p3_0));
+			} else if (pin < pj_0) {
+				P4DIR |= (1 << (pin - p4_0));
+			} else if (pin < PIN_INVALID) {
+				PJDIR |= (1 << (pin - pj_0));
+			}
+		}
+		inline unsigned char read(unsigned char const pin) {
+			if (pin < p2_0) {
+				return P1IN & (1 << pin);
+			} else if (pin < p3_0) {
+				return P2IN & (1 << (pin - p2_0));
+			} else if (pin < p4_0) {
+				return P3IN & (1 << (pin - p3_0));
+			} else if (pin < pj_0) {
+				return P4IN & (1 << (pin - p4_0));
+			} else if (pin < PIN_INVALID) {
+				return PJIN & (1 << (pin - pj_0));
+			}
+		}
+		inline void write(unsigned char const pin, unsigned char value) {
+			if (pin < p2_0) {
+				if (value) {
+					P1OUT |= (1 << pin);
+				} else {
+					P1OUT &= ~(1 << pin);
+				}
+			} else if (pin < p3_0) {
+				if (value) {
+					P2OUT |= (1 << (pin - p2_0));
+				} else {
+					P2OUT &= ~(1 << (pin - p2_0));
+				}
+			} else if (pin < p4_0) {
+				if (value) {
+					P3OUT |= (1 << (pin - p3_0));
+				} else {
+					P3OUT &= ~(1 << (pin - p3_0));
+				}
+			} else if (pin < pj_0) {
+				if (value) {
+					P4OUT |= (1 << (pin - p4_0));
+				} else {
+					P4OUT &= ~(1 << (pin - p4_0));
+				}
+			} else if (pin < PIN_INVALID) {
+				if (value) {
+					PJOUT |= (1 << (pin - pj_0));
+				} else {
+					PJOUT &= ~(1 << (pin - pj_0));
+				}
 			}
 		}
 };
