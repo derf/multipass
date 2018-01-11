@@ -36,10 +36,18 @@ class GPIO {
 			pd7 = 31
 		};
 
-		void setup();
-		void led_on(unsigned char id);
-		void led_off(unsigned char id);
-		void led_toggle(unsigned char id);
+		inline void setup() {
+			DDRB = _BV(PB5);
+		}
+		inline void led_on(unsigned char id) {
+			PORTB |= _BV(PB5);
+		}
+		inline void led_off(unsigned char id) {
+			PORTB &= ~_BV(PB5);
+		}
+		inline void led_toggle(unsigned char id) {
+			PINB = _BV(PB5);
+		}
 		inline void input(unsigned char const pin) {
 			if (pin < 8) {
 			} else if (pin < 16) {
