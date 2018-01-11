@@ -7,7 +7,7 @@ class SPI {
 
 	public:
 		SPI () {}
-		signed char setup();
+		void setup();
 		signed char xmit(
 				unsigned char tx_len, unsigned char *tx_buf,
 				unsigned char rx_len, unsigned char *rx_buf);

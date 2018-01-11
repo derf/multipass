@@ -24,8 +24,8 @@ ifneq ($(findstring i2c,${arch_drivers}), )
 	TARGETS += src/arch/msp430fr5969lp/driver/i2c.cc
 endif
 
-ifneq ($(findstring spi,${arch_drivers}), )
-	TARGETS += src/arch/msp430fr5969lp/driver/spi.cc
+ifneq ($(findstring spi_a1,${arch_drivers}), )
+	TARGETS += src/arch/msp430fr5969lp/driver/spi_a1.cc
 endif
 
 ifneq ($(findstring spi_b,${arch_drivers}), )

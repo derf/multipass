@@ -1,8 +1,10 @@
-#include "driver/spi.h"
+#include "driver/spi_b.h"
 #include <msp430.h>
 
-signed char SPI::setup()
+void SPI::setup()
 {
+	UCB0CTLW0 |= UCSWRST;
+
 	/* UCB0CLK Pin 2.2 */
 	P2SEL0 &= ~BIT2;
 	P2SEL1 |= BIT2;
@@ -24,19 +26,25 @@ signed char SPI::setup()
 	UCB0CTLW0 &= ~UCSWRST;
 }
 
+static inline unsigned char clean_rxbuf()
+{
+	return UCB0RXBUF;
+}
+
 signed char SPI::xmit(unsigned char tx_len, unsigned char *tx_buf,
 		unsigned char rx_len, unsigned char *rx_buf)
 {
-	volatile char rxbuf_cache;
 	if (tx_len < 1) {
 		return -1;
 	}
 
-	UCB0IE &= ~(UCTXIE | UCRXIE);
-
 	while (UCB0STATW & UCBUSY) ;
 
-	rxbuf_cache = UCB0RXBUF;
+	if (!(UCB0IFG & UCTXIFG)) {
+		return -1;
+	}
+
+	UCB0IFG &= ~UCRXIFG;
 	UCB0TXBUF = tx_buf[0];
 
 	unsigned char tx_pos = 1;
@@ -50,9 +58,13 @@ signed char SPI::xmit(unsigned char tx_len, unsigned char *tx_buf,
 			if (rx_pos < rx_len) {
 				rx_buf[rx_pos] = UCB0RXBUF;
 			} else {
-				rxbuf_cache = UCB0RXBUF;
+				UCB0IFG &= ~UCRXIFG;
 			}
 			rx_pos++;
 		}
 	}
+	while (UCB0STATW & UCBUSY) ;
+	return 0;
 }
+
+SPI spi;

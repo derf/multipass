@@ -14,6 +14,14 @@ ifneq ($(findstring lm75,${drivers}), )
 	COMMON_FLAGS += -DDRIVER_LM75
 endif
 
+ifneq ($(findstring sharp96,${drivers}), )
+	TARGETS += src/driver/sharp96.cc
+	COMMON_FLAGS += -DDRIVER_SHARP6
+	COMMON_FLAGS += -DSHARP96_POWER_PIN=GPIO::${sharp96_power_pin}
+	COMMON_FLAGS += -DSHARP96_EN_PIN=GPIO::${sharp96_en_pin}
+	COMMON_FLAGS += -DSHARP96_CS_PIN=GPIO::${sharp96_cs_pin}
+endif
+
 ifeq (${timer_cycles}, 1)
 	COMMON_FLAGS += -DTIMER_CYCLES
 endif
