@@ -1,7 +1,7 @@
 default: build/system.elf
 
 INCLUDES = -Iinclude
-COMMON_FLAGS = -g -Os -Wall -Wextra -unused -fno-rtti
+COMMON_FLAGS = -g -Os -Wall -Wextra -fno-rtti
 CFLAGS = -std=c99
 CXXFLAGS = -std=c++14
 

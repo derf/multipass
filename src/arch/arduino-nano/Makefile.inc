@@ -14,6 +14,10 @@ NM = avr-nm
 OBJCOPY = avr-objcopy
 OBJDUMP = avr-objdump
 
+ifeq (${aspectc}, 1)
+	CXX = ag++ -r build/repo.acp -v 0 --c_compiler avr-g++ -p . --Xcompiler
+endif
+
 TARGETS += src/arch/arduino-nano/arch.cc
 TARGETS += src/arch/arduino-nano/driver/gpio.cc
 TARGETS += src/arch/arduino-nano/driver/stdout.cc

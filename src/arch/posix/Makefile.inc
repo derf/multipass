@@ -3,6 +3,10 @@
 CC = gcc
 CXX = g++
 
+ifeq (${aspectc}, 1)
+	CXX = ag++ -r build/repo.acp -v 0 -p . --Xcompiler
+endif
+
 INCLUDES += -Iinclude/posix
 TARGETS += src/arch/posix/arch.cc src/arch/posix/driver/gpio.cc
 TARGETS += src/arch/posix/driver/stdout.cc src/arch/posix/driver/uptime.cc

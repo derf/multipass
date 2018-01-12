@@ -12,6 +12,10 @@ OBJCOPY = /opt/msp430/ti/gcc/bin/msp430-elf-objcopy
 
 TARGETS += src/arch/msp430fr5969lp/arch.cc
 
+ifeq (${aspectc}, 1)
+	CXX = ag++ -r build/repo.acp -v 0 --c_compiler /opt/msp430/ti/gcc/bin/msp430-elf-g++ -p . --Xcompiler
+endif
+
 ifneq ($(findstring adc,${arch_drivers}), )
 	TARGETS += src/arch/msp430fr5969lp/driver/adc.cc
 endif

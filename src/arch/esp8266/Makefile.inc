@@ -11,6 +11,10 @@ AR = ${TOOLCHAIN_BASE}/xtensa-lx106-elf-ar
 LD = ${TOOLCHAIN_BASE}/xtensa-lx106-elf-gcc
 OBJCOPY = ${TOOLCHAIN_BASE}/xtensa-lx106-elf-objcopy
 
+ifeq (${aspectc}, 1)
+	CXX = ag++ -r build/repo.acp -v 0 --c_compiler ${TOOLCHAIN_BASE}/xtensa-lx106-elf-g++ -p . --Xcompiler
+endif
+
 INCLUDES += -Iinclude/esp8266 -I${SDK_BASE}/include
 COMMON_FLAGS += -nostdlib -mlongcalls -D__ets__ -DICACHE_FLASH
 CXXFLAGS = -std=c++11
