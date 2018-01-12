@@ -1,5 +1,5 @@
 #ifndef STANDARDOUTPUT_H
-#define STANDANDOUTPUT_H
+#define STANDARDOUTPUT_H
 
 class StandardOutput {
 	private:
