@@ -14,6 +14,11 @@ ifneq ($(findstring lm75,${drivers}), )
 	COMMON_FLAGS += -DDRIVER_LM75
 endif
 
+ifneq ($(findstring mmsimple,${drivers}), )
+	TARGETS += src/driver/mmsimple.cc
+	COMMON_FLAGS += -DDRIVER_MMSIMPLE
+endif
+
 ifneq ($(findstring sharp96,${drivers}), )
 	TARGETS += src/driver/sharp96.cc
 	COMMON_FLAGS += -DDRIVER_SHARP6
