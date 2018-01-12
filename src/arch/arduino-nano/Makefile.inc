@@ -23,6 +23,10 @@ TARGETS += src/arch/arduino-nano/driver/gpio.cc
 TARGETS += src/arch/arduino-nano/driver/stdout.cc
 TARGETS += src/arch/arduino-nano/driver/uptime.cc
 
+ifneq ($(findstring stdin,${arch_drivers}), )
+	TARGETS += src/arch/arduino-nano/driver/stdin.cc
+endif
+
 OBJECTS = ${TARGETS:.cc=.o}
 
 .cc.o:

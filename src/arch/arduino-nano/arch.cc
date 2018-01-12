@@ -24,10 +24,14 @@ void Arch::setup(void)
 	sei();
 }
 
+#ifdef WITH_WAKEUP
+void wakeup();
+#endif
+
 #if defined(WITH_LOOP) || defined(TIMER_S)
 
 #include "driver/uptime.h"
-extern void loop();
+void loop();
 
 #endif
 
@@ -40,6 +44,9 @@ void Arch::idle_loop(void)
 		asm("wdr");
 #ifdef WITH_LOOP
 		loop();
+#endif
+#ifdef WITH_WAKEUP
+		wakeup();
 #endif
 #ifdef TIMER_S
 		uptime.tick_s();
