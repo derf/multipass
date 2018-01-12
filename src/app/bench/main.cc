@@ -59,10 +59,5 @@ int main(void)
 
 	arch.idle_loop();
 
-	//uart_setup();
-	//uart_puts("\n" COL_YELLOW "dOS" COL_GREEN " > " COL_RESET);
-
-	//arch_idle_loop();
-
 	return 0;
 }

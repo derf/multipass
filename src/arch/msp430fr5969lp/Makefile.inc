@@ -24,6 +24,10 @@ TARGETS += src/arch/msp430fr5969lp/driver/gpio.cc
 TARGETS += src/arch/msp430fr5969lp/driver/stdout.cc
 TARGETS += src/arch/msp430fr5969lp/driver/uptime.cc
 
+ifneq ($(findstring stdin,${arch_drivers}), )
+	TARGETS += src/arch/msp430fr5969lp/driver/stdin.cc
+endif
+
 ifneq ($(findstring i2c,${arch_drivers}), )
 	TARGETS += src/arch/msp430fr5969lp/driver/i2c.cc
 endif

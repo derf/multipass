@@ -29,6 +29,10 @@ ifeq (${esp8266_led2}, 1)
 	COMMON_FLAGS += -DLED_ON_GPIO16
 endif
 
+ifneq ($(findstring stdin,${arch_drivers}), )
+	TARGETS += src/arch/esp8266/driver/stdin.cc
+endif
+
 .cc.o:
 	${CXX} ${INCLUDES} ${COMMON_FLAGS} ${CXXFLAGS} -c -o $@ ${@:.o=.cc}
 	${OBJCOPY} --rename-section .text=.irom0.text --rename-section .literal=.irom0.literal $@

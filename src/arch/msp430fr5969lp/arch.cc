@@ -63,10 +63,19 @@ void Arch::setup(void)
 	//P4OUT = 0;
 }
 
+#ifdef WITH_WAKEUP
+extern void wakeup();
+#endif
+
 void Arch::idle_loop(void)
 {
-	__eint();
-	while (1);
+	while (1) {
+		__eint();
+		__bis_SR_register(LPM0_bits);
+#ifdef WITH_WAKEUP
+		wakeup();
+#endif
+	}
 }
 
 Arch arch;

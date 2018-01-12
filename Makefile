@@ -43,6 +43,10 @@ ifeq (${loop}, 1)
 	COMMON_FLAGS += -DWITH_LOOP
 endif
 
+ifeq (${wakeup}, 1)
+	COMMON_FLAGS += -DWITH_WAKEUP
+endif
+
 include src/arch/${arch}/Makefile.inc
 
 clean: arch_clean
