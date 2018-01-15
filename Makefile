@@ -27,6 +27,11 @@ ifneq ($(findstring sharp96,${drivers}), )
 	COMMON_FLAGS += -DSHARP96_CS_PIN=GPIO::${sharp96_cs_pin}
 endif
 
+ifneq ($(findstring softi2c,${drivers}), )
+	TARGETS += src/driver/soft_i2c.cc
+	COMMON_FLAGS += -DDRIVER_SOFTI2C
+endif
+
 ifeq (${timer_cycles}, 1)
 	COMMON_FLAGS += -DTIMER_CYCLES
 endif
