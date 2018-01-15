@@ -57,6 +57,7 @@ signed char I2C::xmit(unsigned char address,
 			UCB0TXBUF = tx_buf[i];
 		}
 		while (!(UCB0IFG & (UCTXIFG0 | UCNACKIFG | UCCLTOIFG)));
+		UCB0IFG &= ~(UCTXIFG0 | UCNACKIFG);
 		//if (UCB0IFG & (UCNACKIFG | UCCLTOIFG)) {
 		//	UCB0IFG &= ~UCNACKIFG;
 		//	UCB0IFG &= ~UCCLTOIFG;
