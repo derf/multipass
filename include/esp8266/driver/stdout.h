@@ -14,6 +14,8 @@ class StandardOutput {
 		void put(char c);
 		void write(const char *s);
 		void flush() {}
+		void printf_uint8(unsigned char num);
+		void printf_float(float num);
 
 		StandardOutput & operator<<(char c);
 		StandardOutput & operator<<(unsigned char c);
