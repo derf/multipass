@@ -10,4 +10,8 @@ void Arch::idle_loop(void)
 	}
 }
 
+void Arch::idle(void)
+{
+}
+
 Arch arch;

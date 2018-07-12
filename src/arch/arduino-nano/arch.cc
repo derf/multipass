@@ -55,6 +55,14 @@ void Arch::idle_loop(void)
 	}
 }
 
+void Arch::idle(void)
+{
+	SMCR = _BV(SE);
+	asm("sleep");
+	SMCR = 0;
+	asm("wdr");
+}
+
 void Arch::delay_us(unsigned char const us)
 {
 	__builtin_avr_delay_cycles(1600);

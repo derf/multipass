@@ -57,6 +57,10 @@ void Arch::idle_loop(void)
 {
 }
 
+void ArcH::idle(void)
+{
+}
+
 extern "C" void user_init(void)
 {
 	system_init_done_cb(jump_to_main);

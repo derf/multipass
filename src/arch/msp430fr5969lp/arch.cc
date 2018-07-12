@@ -91,6 +91,17 @@ void Arch::idle_loop(void)
 	}
 }
 
+void Arch::idle(void)
+{
+	__eint();
+	asm volatile("nop");
+	__bis_SR_register(LPM2_bits);
+	asm volatile("nop");
+#ifdef WITH_WAKEUP
+		wakeup();
+#endif
+}
+
 Arch arch;
 
 #if defined(WITH_LOOP) || defined(TIMER_S)
