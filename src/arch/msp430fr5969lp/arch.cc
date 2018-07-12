@@ -67,11 +67,24 @@ void Arch::setup(void)
 extern void wakeup();
 #endif
 
+#if defined(WITH_LOOP)
+extern void loop();
+volatile char run_loop = 0;
+#endif
+
 void Arch::idle_loop(void)
 {
 	while (1) {
 		__eint();
-		__bis_SR_register(LPM0_bits);
+		asm volatile("nop");
+		__bis_SR_register(LPM2_bits);
+		asm volatile("nop");
+#if defined(WITH_LOOP)
+		if (run_loop) {
+			loop();
+			run_loop = 0;
+		}
+#endif
 #ifdef WITH_WAKEUP
 		wakeup();
 #endif
@@ -83,13 +96,12 @@ Arch arch;
 #if defined(WITH_LOOP) || defined(TIMER_S)
 
 #include "driver/uptime.h"
-extern void loop();
 
 __attribute__((interrupt(TIMER1_A1_VECTOR))) __attribute__((wakeup)) void handle_timer0_overflow()
 {
 	if (TA1IV == 0x0e) {
 #ifdef WITH_LOOP
-		loop();
+		run_loop = 1;
 #endif
 #ifdef TIMER_S
 		uptime.tick_s();
