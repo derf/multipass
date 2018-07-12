@@ -88,6 +88,7 @@ class GPIO {
 			} else if (pin < PIN_INVALID) {
 				return PJIN & (1 << (pin - pj_0));
 			}
+			return 0;
 		}
 		inline void write(unsigned char const pin, unsigned char value) {
 			if (pin < p2_0) {
