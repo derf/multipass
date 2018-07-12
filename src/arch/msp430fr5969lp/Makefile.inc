@@ -4,7 +4,8 @@ CPU = 430x
 MCU = msp430fr5969
 
 INCLUDES += -Iinclude/msp430fr5969lp -I/opt/msp430/ti/gcc/include
-COMMON_FLAGS += -mcpu=${CPU} -mmcu=${MCU}
+COMMON_FLAGS += -mcpu=${CPU} -mmcu=${MCU} -DMULTIPASS_ARCH_msp430fr5969lp
+COMMON_FLAGS += -DMULTIPASS_ARCH_HAS_I2C
 
 CC = /opt/msp430/ti/gcc/bin/msp430-elf-gcc
 CXX = /opt/msp430/ti/gcc/bin/msp430-elf-g++
@@ -28,7 +29,8 @@ ifneq ($(findstring stdin,${arch_drivers}), )
 	TARGETS += src/arch/msp430fr5969lp/driver/stdin.cc
 endif
 
-ifneq ($(findstring i2c,${arch_drivers}), )
+ifneq ($(findstring softi2c,${drivers}), )
+else ($(findstring i2c,${arch_drivers}), )
 	TARGETS += src/arch/msp430fr5969lp/driver/i2c.cc
 endif
 

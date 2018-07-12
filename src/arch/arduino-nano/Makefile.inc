@@ -6,7 +6,8 @@ PORT = /dev/ttyUSB0
 BAUD = 57600
 
 INCLUDES += -Iinclude/arduino-nano
-COMMON_FLAGS += -mmcu=${MCU} -DF_CPU=16000000UL
+COMMON_FLAGS += -mmcu=${MCU} -DF_CPU=16000000UL -DMULTIPASS_ARCH_arduino_nano
+COMMON_FLAGS += -DMULTIPASS_ARCH_HAS_I2C
 
 CC = avr-gcc
 CXX = avr-g++
@@ -22,6 +23,11 @@ TARGETS += src/arch/arduino-nano/arch.cc
 TARGETS += src/arch/arduino-nano/driver/gpio.cc
 TARGETS += src/arch/arduino-nano/driver/stdout.cc
 TARGETS += src/arch/arduino-nano/driver/uptime.cc
+
+ifneq ($(findstring softi2c,${drivers}), )
+else ($(findstring i2c,${arch_drivers}), )
+	TARGETS += src/arch/arduino-nano/driver/i2c.cc
+endif
 
 ifneq ($(findstring stdin,${arch_drivers}), )
 	TARGETS += src/arch/arduino-nano/driver/stdin.cc

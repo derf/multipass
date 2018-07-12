@@ -16,7 +16,7 @@ ifeq (${aspectc}, 1)
 endif
 
 INCLUDES += -Iinclude/esp8266 -I${SDK_BASE}/include
-COMMON_FLAGS += -nostdlib -mlongcalls -D__ets__ -DICACHE_FLASH
+COMMON_FLAGS += -nostdlib -mlongcalls -D__ets__ -DICACHE_FLASH -DMULTIPASS_ARCH_esp8266
 CXXFLAGS = -std=c++11
 LDFLAGS += -nostdlib -Wl,--no-check-sections -u call_user_start -Wl,-static
 
