@@ -1,6 +1,7 @@
 #include "arch.h"
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include <util/delay.h>
 
 void Arch::setup(void)
 {
@@ -52,6 +53,11 @@ void Arch::idle_loop(void)
 		uptime.tick_s();
 #endif
 	}
+}
+
+void Arch::delay_us(unsigned char const us)
+{
+	__builtin_avr_delay_cycles(1600);
 }
 
 Arch arch;
