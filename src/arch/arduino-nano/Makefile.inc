@@ -25,7 +25,7 @@ TARGETS += src/arch/arduino-nano/driver/stdout.cc
 TARGETS += src/arch/arduino-nano/driver/uptime.cc
 
 ifneq ($(findstring softi2c,${drivers}), )
-else ($(findstring i2c,${arch_drivers}), )
+else ifneq ($(findstring i2c,${arch_drivers}), )
 	TARGETS += src/arch/arduino-nano/driver/i2c.cc
 endif
 

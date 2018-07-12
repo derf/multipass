@@ -30,7 +30,7 @@ ifneq ($(findstring stdin,${arch_drivers}), )
 endif
 
 ifneq ($(findstring softi2c,${drivers}), )
-else ($(findstring i2c,${arch_drivers}), )
+else ifneq ($(findstring i2c,${arch_drivers}), )
 	TARGETS += src/arch/msp430fr5969lp/driver/i2c.cc
 endif
 
