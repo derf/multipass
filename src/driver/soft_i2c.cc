@@ -20,6 +20,8 @@ void SoftI2C::start()
 
 void SoftI2C::stop()
 {
+	gpio.output(scl);
+	//
 	gpio.output(sda);
 	//
 	gpio.input(scl);
@@ -79,12 +81,13 @@ void SoftI2C::scan(unsigned int *results)
 	unsigned char i2caddr;
 	for (unsigned char address = 0; address < 128; address++) {
 
-		i2caddr = (address << 1) | 1;
+		i2caddr = (address << 1) | 0;
 
 		start();
 
 		if (tx(i2caddr)) {
 			results[address / (8 * sizeof(unsigned int))] |= 1 << (address % (8 * sizeof(unsigned int)));
+			stop();
 		}
 	}
 	stop();
@@ -109,7 +112,7 @@ signed char SoftI2C::xmit(unsigned char address,
 		tx((address << 1) | 1);
 
 		for (i = 1; i <= rx_len; i++) {
-			rx_buf[i] = rx((i < rx_len) * 1);
+			rx_buf[i-1] = rx((i < rx_len) * 1);
 		}
 	}
 
@@ -118,4 +121,10 @@ signed char SoftI2C::xmit(unsigned char address,
 	return 0;
 }
 
+#ifdef MULTIPASS_ARCH_esp8266
+SoftI2C i2c(GPIO::d7, GPIO::d8);
+#elif MULTIPASS_ARCH_arduino_nano
+SoftI2C i2c(GPIO::pc5, GPIO::pc4);
+#elif MULTIPASS_ARCH_msp430fr5969lp
 SoftI2C i2c(GPIO::p1_6, GPIO::p1_7);
+#endif
