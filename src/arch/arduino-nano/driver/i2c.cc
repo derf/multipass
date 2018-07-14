@@ -1,5 +1,15 @@
 #include "driver/i2c.h"
+#include "arch.h"
 #include <avr/io.h>
+#include <avr/interrupt.h>
+
+inline void await_twint(unsigned char twcr_values)
+{
+	TWCR = twcr_values | _BV(TWINT) | _BV(TWIE);
+	while (!(TWCR & _BV(TWINT))) {
+		arch.idle();
+	}
+}
 
 /*
  * Send an I2C (re)start condition and the EEPROM address in read mode. Returns
@@ -7,16 +17,14 @@
  */
 static signed char i2c_start_read(unsigned char addr)
 {
-	TWCR = _BV(TWINT) | _BV(TWSTA) | _BV(TWEN);
-	while (!(TWCR & _BV(TWINT)));
+	await_twint(_BV(TWSTA) | _BV(TWEN));
 	if (!(TWSR & 0x18)) // 0x08 == START ok, 0x10 == RESTART ok
 		return -1;
 
 	// Note: The R byte ("... | 1") causes the TWI momodule to switch to
 	// Master Receive mode
 	TWDR = (addr << 1) | 1;
-	TWCR = _BV(TWINT) | _BV(TWEN);
-	while (!(TWCR & _BV(TWINT)));
+	await_twint(_BV(TWEN));
 	if (TWSR != 0x40) // 0x40 == SLA+R transmitted, ACK receveid
 		return -2;
 
@@ -29,14 +37,12 @@ static signed char i2c_start_read(unsigned char addr)
  */
 static signed char i2c_start_write(unsigned char addr)
 {
-	TWCR = _BV(TWINT) | _BV(TWSTA) | _BV(TWEN);
-	while (!(TWCR & _BV(TWINT)));
+	await_twint(_BV(TWSTA) | _BV(TWEN));
 	if (!(TWSR & 0x18)) // 0x08 == START ok, 0x10 == RESTART ok
 		return -1;
 
 	TWDR = (addr<< 1) | 0;
-	TWCR = _BV(TWINT) | _BV(TWEN);
-	while (!(TWCR & _BV(TWINT)));
+	await_twint(_BV(TWEN));
 	if (TWSR != 0x18) // 0x18 == SLA+W transmitted, ACK received
 		return -2;
 
@@ -61,8 +67,7 @@ static signed char i2c_send(uint8_t len, uint8_t *data)
 
 	for (pos = 0; pos < len; pos++) {
 		TWDR = data[pos];
-		TWCR = _BV(TWINT) | _BV(TWEN);
-		while (!(TWCR & _BV(TWINT)));
+		await_twint(_BV(TWEN));
 		if (TWSR != 0x28) // 0x28 == byte transmitted, ACK received
 			return pos;
 	}
@@ -79,14 +84,7 @@ static signed char i2c_receive(uint8_t len, uint8_t *data)
 	uint8_t pos = 0;
 
 	for (pos = 0; pos < len; pos++) {
-		if (pos == len-1) {
-			// Don't ACK the last byte
-			TWCR = _BV(TWINT) | _BV(TWEN);
-		} else {
-			// Automatically send ACK
-			TWCR = _BV(TWINT) | _BV(TWEN) | _BV(TWEA);
-		}
-		while (!(TWCR & _BV(TWINT)));
+		await_twint(_BV(TWEN) | ( _BV(TWEA) * (pos < len-1) ) );
 		data[pos] = TWDR;
 		/*
 		 * No error handling here -- We send the acks, the EEPROM only
@@ -111,6 +109,7 @@ void I2C::scan(unsigned int *results)
 	for (unsigned char address = 0; address < 128; address++) {
 		if (i2c_start_read(address) == 0) {
 			results[address / (8 * sizeof(unsigned int))] |= 1 << (address % (8 * sizeof(unsigned int)));
+			i2c_stop();
 		}
 	}
 	i2c_stop();
@@ -144,3 +143,7 @@ signed char I2C::xmit(unsigned char address,
 }
 
 I2C i2c;
+
+ISR(TWI_vect)
+{
+}
