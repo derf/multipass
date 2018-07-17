@@ -16,9 +16,10 @@ void loop(void)
 	//moody.toggleBlue();
 }
 
+unsigned int i2c_status[128 / (8 * sizeof(unsigned int)) + 1];
+
 int main(void)
 {
-	unsigned int i2c_status[128 / (8 * sizeof(unsigned int)) + 1];
 
 	arch.setup();
 	gpio.setup();
