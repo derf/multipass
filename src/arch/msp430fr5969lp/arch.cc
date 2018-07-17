@@ -79,6 +79,7 @@ void Arch::idle_loop(void)
 		asm volatile("nop");
 		__bis_SR_register(LPM2_bits);
 		asm volatile("nop");
+		__dint();
 #if defined(WITH_LOOP)
 		if (run_loop) {
 			loop();
@@ -97,6 +98,7 @@ void Arch::idle(void)
 	asm volatile("nop");
 	__bis_SR_register(LPM2_bits);
 	asm volatile("nop");
+	__dint();
 #ifdef WITH_WAKEUP
 		wakeup();
 #endif

@@ -1,5 +1,8 @@
 #include "driver/i2c.h"
+#include "arch.h"
 #include <msp430.h>
+
+volatile unsigned short old_ifg = 0;
 
 signed char I2C::setup()
 {
@@ -47,17 +50,25 @@ signed char I2C::xmit(unsigned char address,
 	if (tx_len) {
 		UCB0CTL1 |= UCTR | UCTXSTT;
 		for (i = 0; i < tx_len; i++) {
-			while (!(UCB0IFG & (UCTXIFG0 | UCNACKIFG | UCCLTOIFG)));
-			if (UCB0IFG & (UCNACKIFG | UCCLTOIFG)) {
-				UCB0IFG &= ~UCNACKIFG;
-				UCB0IFG &= ~UCCLTOIFG;
+			UCB0IFG = 0;
+			old_ifg = 0;
+			UCB0IE = UCTXIE0 | UCNACKIE | UCCLTOIE;
+			while (!(old_ifg & (UCTXIFG0 | UCNACKIFG | UCCLTOIFG))) {
+				arch.idle();
+			}
+			UCB0IE = 0;
+			if (old_ifg & (UCNACKIFG | UCCLTOIFG)) {
 				UCB0CTL1 |= UCTXSTP;
 				return -1;
 			}
+			old_ifg = 0;
 			UCB0TXBUF = tx_buf[i];
 		}
-		while (!(UCB0IFG & (UCTXIFG0 | UCNACKIFG | UCCLTOIFG)));
-		UCB0IFG &= ~(UCTXIFG0 | UCNACKIFG);
+		UCB0IE = UCTXIE0 | UCNACKIE | UCCLTOIE;
+		while (!(old_ifg & (UCTXIFG0 | UCNACKIFG | UCCLTOIFG))) {
+			arch.idle();
+		}
+		UCB0IE = 0;
 		//if (UCB0IFG & (UCNACKIFG | UCCLTOIFG)) {
 		//	UCB0IFG &= ~UCNACKIFG;
 		//	UCB0IFG &= ~UCCLTOIFG;
@@ -88,6 +99,12 @@ signed char I2C::xmit(unsigned char address,
 
 	while (UCB0CTL1 & UCTXSTP);
 	return 0;
+}
+
+__attribute__((interrupt(USCI_B0_VECTOR))) __attribute__((wakeup)) void handle_usci_b0()
+{
+	old_ifg = UCB0IFG;
+	UCB0IFG = 0;
 }
 
 I2C i2c;
