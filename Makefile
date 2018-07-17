@@ -1,6 +1,6 @@
 default: build/system.elf
 
-INCLUDES = -Iinclude
+INCLUDES = -Iinclude -Iinclude/arch/${arch}
 COMMON_FLAGS = -g -Os -Wall -Wextra -fno-rtti
 CFLAGS = -std=c99
 CXXFLAGS = -std=c++14

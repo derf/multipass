@@ -3,7 +3,7 @@
 CPU = 430x
 MCU = msp430fr5969
 
-INCLUDES += -Iinclude/msp430fr5969lp -I/opt/msp430/ti/gcc/include
+INCLUDES += -I/opt/msp430/ti/gcc/include
 COMMON_FLAGS += -mcpu=${CPU} -mmcu=${MCU} -DMULTIPASS_ARCH_msp430fr5969lp
 COMMON_FLAGS += -DMULTIPASS_ARCH_HAS_I2C
 

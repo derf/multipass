@@ -15,7 +15,7 @@ ifeq (${aspectc}, 1)
 	CXX = ag++ -r build/repo.acp -v 0 --c_compiler ${TOOLCHAIN_BASE}/xtensa-lx106-elf-g++ -p . --Xcompiler
 endif
 
-INCLUDES += -Iinclude/esp8266 -I${SDK_BASE}/include
+INCLUDES += -I${SDK_BASE}/include
 COMMON_FLAGS += -nostdlib -mlongcalls -D__ets__ -DICACHE_FLASH -DMULTIPASS_ARCH_esp8266
 CXXFLAGS = -std=c++11
 LDFLAGS += -nostdlib -Wl,--no-check-sections -u call_user_start -Wl,-static

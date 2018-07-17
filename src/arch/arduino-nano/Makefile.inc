@@ -5,7 +5,6 @@ PROGRAMMER ?= usbasp
 PORT = /dev/ttyUSB0
 BAUD = 57600
 
-INCLUDES += -Iinclude/arduino-nano
 COMMON_FLAGS += -mmcu=${MCU} -DF_CPU=16000000UL -DMULTIPASS_ARCH_arduino_nano
 COMMON_FLAGS += -DMULTIPASS_ARCH_HAS_I2C
 
