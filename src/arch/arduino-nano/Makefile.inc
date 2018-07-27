@@ -1,11 +1,11 @@
 # vim:ft=make
 
 MCU = atmega328p
-PROGRAMMER ?= usbasp
 PORT = /dev/ttyUSB0
 BAUD = 57600
 
 COMMON_FLAGS += -mmcu=${MCU} -DF_CPU=16000000UL -DMULTIPASS_ARCH_arduino_nano
+COMMON_FLAGS += -flto
 COMMON_FLAGS += -DMULTIPASS_ARCH_HAS_I2C
 
 CC = avr-gcc
