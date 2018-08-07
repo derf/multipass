@@ -65,7 +65,12 @@ void Arch::idle(void)
 
 void Arch::delay_us(unsigned char const us)
 {
-	__builtin_avr_delay_cycles(1600);
+	_delay_us(us);
+}
+
+void Arch::delay_ms(unsigned char const ms)
+{
+	_delay_ms(ms);
 }
 
 Arch arch;
