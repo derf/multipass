@@ -6,14 +6,29 @@
 #else
 #include "driver/soft_i2c.h"
 #endif
+#ifdef DRIVER_LM75
 #include "driver/lm75.h"
-//#include "driver/mmsimple.h"
+#endif
+#ifdef DRIVER_MAX44009
+#include "driver/max44009.h"
+#endif
+#ifdef DRIVER_MMSIMPLE
+#include "driver/mmsimple.h"
+#endif
 
 void loop(void)
 {
+#ifdef DRIVER_LM75
 	kout.printf_float(lm75.getTemp());
 	kout << endl;
-	//moody.toggleBlue();
+#endif
+#ifdef DRIVER_MAX44009
+	kout.printf_float(max44009.getLux());
+	kout << endl;
+#endif
+#ifdef DRIVER_MMSIMPLE
+	moody.toggleBlue();
+#endif
 }
 
 unsigned int i2c_status[128 / (8 * sizeof(unsigned int)) + 1];
