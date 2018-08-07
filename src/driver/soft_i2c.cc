@@ -54,6 +54,7 @@ bool SoftI2C::tx(unsigned char byte)
 		byte <<= 1;
 		//
 		SCL_HIGH;
+		while (!gpio.read(scl)) ;
 		//
 		if (i == 8) {
 			if (!gpio.read(sda)) {
@@ -73,6 +74,7 @@ unsigned char SoftI2C::rx(bool send_ack)
 	for (unsigned char i = 0; i <= 8; i++) {
 		//
 		SCL_HIGH;
+		while (!gpio.read(scl)) ;
 		//
 		if ((i < 8) && gpio.read(sda)) {
 			byte |= 1 << (7 - i);
@@ -137,7 +139,7 @@ signed char SoftI2C::xmit(unsigned char address,
 #ifdef MULTIPASS_ARCH_esp8266
 SoftI2C i2c(GPIO::d7, GPIO::d8);
 #elif MULTIPASS_ARCH_arduino_nano
-SoftI2C i2c(GPIO::pc5, GPIO::pc4);
+SoftI2C i2c(GPIO::pc4, GPIO::pc5);
 #elif MULTIPASS_ARCH_msp430fr5969lp
 SoftI2C i2c(GPIO::p1_6, GPIO::p1_7);
 #endif
