@@ -58,6 +58,19 @@ class GPIO {
 				DDRD &= ~_BV(pin - 24);
 			}
 		}
+		inline void input(unsigned char const pin, unsigned char const pull) {
+			if (pin < 8) {
+			} else if (pin < 16) {
+				DDRB &= ~_BV(pin - 8);
+				PORTB |= _BV(pin - 8);
+			} else if (pin < 24) {
+				DDRC &= ~_BV(pin - 16);
+				PORTC |= _BV(pin - 16);
+			} else if (pin < 32) {
+				DDRD &= ~_BV(pin - 24);
+				PORTD |= _BV(pin - 24);
+			}
+		}
 		inline void output(unsigned char const pin) {
 			if (pin < 8) {
 			} else if (pin < 16) {
@@ -65,6 +78,19 @@ class GPIO {
 			} else if (pin < 24) {
 				DDRC |= _BV(pin - 16);
 			} else if (pin < 32) {
+				DDRD |= _BV(pin - 24);
+			}
+		}
+		inline void output(unsigned char const pin, unsigned char const value) {
+			if (pin < 8) {
+			} else if (pin < 16) {
+				PORTB = value ? (PORTB | _BV(pin - 8)) : (PORTB & ~_BV(pin - 8));
+				DDRB |= _BV(pin - 8);
+			} else if (pin < 24) {
+				PORTC = value ? (PORTC | _BV(pin - 16)) : (PORTC & ~_BV(pin - 16));
+				DDRC |= _BV(pin - 16);
+			} else if (pin < 32) {
+				PORTD = value ? (PORTD | _BV(pin - 24)) : (PORTD & ~_BV(pin - 24));
 				DDRD |= _BV(pin - 24);
 			}
 		}
@@ -102,6 +128,26 @@ class GPIO {
 				} else {
 					PORTB &= ~_BV(pin - 24);
 				}
+			}
+		}
+		inline void enable_int(unsigned char const pin) {
+			if (pin < 8) {
+			} else if (pin < 16) {
+				PCMSK0 |= _BV(pin - 8);
+			} else if (pin < 24) {
+				PCMSK1 |= _BV(pin - 16);
+			} else if (pin < 32) {
+				PCMSK2 |= _BV(pin - 24);
+			}
+		}
+		inline void disable_int(unsigned char const pin) {
+			if (pin < 8) {
+			} else if (pin < 16) {
+				PCMSK0 &= ~_BV(pin - 8);
+			} else if (pin < 24) {
+				PCMSK1 &= ~_BV(pin - 16);
+			} else if (pin < 32) {
+				PCMSK2 &= ~_BV(pin - 24);
 			}
 		}
 };
