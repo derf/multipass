@@ -16,7 +16,7 @@ signed char I2C::setup()
 	UCB0CTL1 &= ~UCSWRST;
 	UCB0I2CSA = 0;
 
-	__delay_cycles(1600);
+	arch.delay_us(100);
 
 	if (UCB0STAT & UCBBUSY)
 		return -1;

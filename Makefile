@@ -32,6 +32,10 @@ ifneq ($(findstring softi2c,${drivers}), )
 	COMMON_FLAGS += -DDRIVER_SOFTI2C
 endif
 
+ifeq (${softi2c_pullup}, 1)
+	COMMON_FLAGS += -DSOFTI2C_PULLUP
+endif
+
 ifeq (${timer_cycles}, 1)
 	COMMON_FLAGS += -DTIMER_CYCLES
 endif

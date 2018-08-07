@@ -72,6 +72,13 @@ extern void loop();
 volatile char run_loop = 0;
 #endif
 
+void Arch::delay_us(unsigned char const us)
+{
+	for (int i = 0; i < us/10; i++) {
+		__delay_cycles(160);
+	}
+}
+
 void Arch::idle_loop(void)
 {
 	while (1) {

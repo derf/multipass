@@ -1,32 +1,45 @@
 #include "driver/soft_i2c.h"
 #include "driver/gpio.h"
+#include "arch.h"
+
+#ifdef SOFTI2C_PULLUP
+#define SDA_HIGH gpio.input(sda, 1)
+#define SDA_LOW gpio.output(sda, 0)
+#define SCL_HIGH gpio.input(scl, 1)
+#define SCL_LOW gpio.output(scl, 0)
+#else
+#define SDA_HIGH gpio.input(sda)
+#define SDA_LOW gpio.output(sda)
+#define SCL_HIGH gpio.input(scl)
+#define SCL_LOW gpio.output(scl)
+#endif
 
 signed char SoftI2C::setup()
 {
-	gpio.write(sda, 0);
-	gpio.write(scl, 0);
+	SDA_HIGH;
+	SCL_HIGH;
 	return 0;
 }
 
 void SoftI2C::start()
 {
-	gpio.input(sda);
-	gpio.input(scl);
+	SDA_HIGH;
+	SCL_HIGH;
 	//
-	gpio.output(sda);
+	SDA_LOW;
 	//
-	gpio.output(scl);
+	SCL_LOW;
 }
 
 void SoftI2C::stop()
 {
-	gpio.output(scl);
+	SCL_LOW;
 	//
-	gpio.output(sda);
+	SDA_LOW;
 	//
-	gpio.input(scl);
+	SCL_HIGH;
 	//
-	gpio.input(sda);
+	SDA_HIGH;
 }
 
 bool SoftI2C::tx(unsigned char byte)
@@ -34,20 +47,20 @@ bool SoftI2C::tx(unsigned char byte)
 	unsigned char got_ack = 0;
 	for (unsigned char i = 0; i <= 8; i++) {
 		if ((byte & 0x80) || (i == 8)) {
-			gpio.input(sda);
+			SDA_HIGH;
 		} else {
-			gpio.output(sda);
+			SDA_LOW;
 		}
 		byte <<= 1;
 		//
-		gpio.input(scl);
+		SCL_HIGH;
 		//
 		if (i == 8) {
 			if (!gpio.read(sda)) {
 				got_ack = 1;
 			}
 		}
-		gpio.output(scl);
+		SCL_LOW;
 		//
 	}
 	return got_ack;
@@ -56,21 +69,21 @@ bool SoftI2C::tx(unsigned char byte)
 unsigned char SoftI2C::rx(bool send_ack)
 {
 	unsigned char byte = 0;
-	gpio.input(sda);
+	SDA_HIGH;
 	for (unsigned char i = 0; i <= 8; i++) {
 		//
-		gpio.input(scl);
+		SCL_HIGH;
 		//
 		if ((i < 8) && gpio.read(sda)) {
 			byte |= 1 << (7 - i);
 		}
 		//
-		gpio.output(scl);
+		SCL_LOW;
 		//
 		if ((i == 7) && send_ack) {
-			gpio.output(sda);
+			SDA_LOW;
 		} else if ((i == 8) && send_ack) {
-			gpio.input(sda);
+			SDA_HIGH;
 		}
 	}
 	return byte;

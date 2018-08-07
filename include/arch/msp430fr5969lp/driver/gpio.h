@@ -63,6 +63,29 @@ class GPIO {
 				PJDIR &= ~(1 << (pin - pj_0));
 			}
 		}
+		inline void input(unsigned char const pin, unsigned char const pull) {
+			if (pin < p2_0) {
+				P1DIR &= ~(1 << pin);
+				P1OUT = pull ? (P1OUT | (1 << pin)) : (P1OUT & ~(1 << pin));
+				P1REN |= (1 << pin);
+			} else if (pin < p3_0) {
+				P2DIR &= ~(1 << (pin - p2_0));
+				P2OUT = pull ? (P2OUT | (1 << (pin - p2_0))) : (P2OUT & ~(1 << (pin - p2_0)));
+				P2REN |= (1 << (pin - p2_0));
+			} else if (pin < p4_0) {
+				P3DIR &= ~(1 << (pin - p3_0));
+				P3OUT = pull ? (P3OUT | (1 << (pin - p3_0))) : (P3OUT & ~(1 << (pin - p3_0)));
+				P3REN |= (1 << (pin - p3_0));
+			} else if (pin < pj_0) {
+				P4DIR &= ~(1 << (pin - p4_0));
+				P4OUT = pull ? (P4OUT | (1 << (pin - p4_0))) : (P4OUT & ~(1 << (pin - p4_0)));
+				P4REN |= (1 << (pin - p4_0));
+			} else if (pin < PIN_INVALID) {
+				PJDIR &= ~(1 << (pin - pj_0));
+				PJOUT = pull ? (PJOUT | (1 << (pin - pj_0))) : (PJOUT & ~(1 << (pin - pj_0)));
+				PJREN |= (1 << (pin - pj_0));
+			}
+		}
 		inline void output(unsigned char const pin) {
 			if (pin < p2_0) {
 				P1DIR |= (1 << pin);
@@ -73,6 +96,24 @@ class GPIO {
 			} else if (pin < pj_0) {
 				P4DIR |= (1 << (pin - p4_0));
 			} else if (pin < PIN_INVALID) {
+				PJDIR |= (1 << (pin - pj_0));
+			}
+		}
+		inline void output(unsigned char const pin, unsigned char const value) {
+			if (pin < p2_0) {
+				P1OUT = value ? (P1OUT | (1 << pin)) : (P1OUT & ~(1 << pin));
+				P1DIR |= (1 << pin);
+			} else if (pin < p3_0) {
+				P2OUT = value ? (P2OUT | (1 << (pin - p2_0))) : (P2OUT & ~(1 << (pin - p2_0)));
+				P2DIR |= (1 << (pin - p2_0));
+			} else if (pin < p4_0) {
+				P3OUT = value ? (P3OUT | (1 << (pin - p3_0))) : (P3OUT & ~(1 << (pin - p3_0)));
+				P3DIR |= (1 << (pin - p3_0));
+			} else if (pin < pj_0) {
+				P4OUT = value ? (P4OUT | (1 << (pin - p4_0))) : (P4OUT & ~(1 << (pin - p4_0)));
+				P4DIR |= (1 << (pin - p4_0));
+			} else if (pin < PIN_INVALID) {
+				PJOUT = value ? (PJOUT | (1 << (pin - pj_0))) : (PJOUT & ~(1 << (pin - pj_0)));
 				PJDIR |= (1 << (pin - pj_0));
 			}
 		}
