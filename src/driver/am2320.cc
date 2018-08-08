@@ -39,7 +39,7 @@ unsigned char AM2320::getStatus()
 			}
 		}
 	}
-	if ((rxbuf[6] != (checksum & 0x00ff)) || (rxbuf[7] != (checksum >> 8) & 0x00ff)) {
+	if ((rxbuf[6] != (checksum & 0x00ff)) || (rxbuf[7] != (checksum >> 8))) {
 		return 3;
 	}
 	return 0;
@@ -47,7 +47,7 @@ unsigned char AM2320::getStatus()
 
 float AM2320::getTemp()
 {
-	if (txbuf[5] & 0x80) {
+	if (rxbuf[5] & 0x80) {
 		return (-256 * (rxbuf[4] & 0x7f) + rxbuf[5]) / 10.;
 	}
 	return (256 * rxbuf[4] + rxbuf[5]) / 10.;
