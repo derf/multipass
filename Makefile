@@ -19,6 +19,11 @@ ifneq ($(findstring am2320,${drivers}), )
 	COMMON_FLAGS += -DDRIVER_AM2320
 endif
 
+ifneq ($(findstring eeprom24lc64,${drivers}), )
+	TARGETS += src/driver/eeprom24lc64.cc
+	COMMON_FLAGS += -DDRIVER_EEPROM24LC64
+endif
+
 ifneq ($(findstring max44006,${drivers}), )
 	TARGETS += src/driver/max44006.cc
 	COMMON_FLAGS += -DDRIVER_MAX44006

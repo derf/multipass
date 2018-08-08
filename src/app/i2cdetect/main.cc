@@ -12,6 +12,9 @@
 #ifdef DRIVER_AM2320
 #include "driver/am2320.h"
 #endif
+#ifdef DRIVER_EEPROM24LC64
+#include "driver/eeprom24lc64.h"
+#endif
 #ifdef DRIVER_MAX44009
 #include "driver/max44009.h"
 #endif
@@ -39,6 +42,16 @@ void loop(void)
 #ifdef DRIVER_MAX44009
 	kout.printf_float(max44009.getLux());
 	kout << endl;
+#endif
+#ifdef DRIVER_EEPROM24LC64
+	char buf[33];
+	static unsigned char page = 0;
+	eeprom24lc64.writePage(page, "Hello, World! Und so weiter, lol");
+	arch.delay_ms(10);
+	eeprom24lc64.readPage(page, buf);
+	buf[32] = '\0';
+	kout << "Address " << page << ": " << buf << endl;
+	page++;
 #endif
 #ifdef DRIVER_MMSIMPLE
 	moody.toggleBlue();

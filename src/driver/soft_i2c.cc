@@ -140,6 +140,8 @@ signed char SoftI2C::xmit(unsigned char address,
 SoftI2C i2c(GPIO::d7, GPIO::d8);
 #elif MULTIPASS_ARCH_arduino_nano
 SoftI2C i2c(GPIO::pc4, GPIO::pc5);
+#elif MULTIPASS_ARCH_blinkenrocket
+SoftI2C i2c(GPIO::pc4, GPIO::pc5);
 #elif MULTIPASS_ARCH_msp430fr5969lp
 SoftI2C i2c(GPIO::p1_6, GPIO::p1_7);
 #endif
