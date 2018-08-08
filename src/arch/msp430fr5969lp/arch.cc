@@ -78,6 +78,12 @@ void Arch::delay_us(unsigned char const us)
 		__delay_cycles(160);
 	}
 }
+void Arch::delay_ms(unsigned char const ms)
+{
+	for (int i = 0; i < ms; i++) {
+		__delay_cycles(16000);
+	}
+}
 
 void Arch::idle_loop(void)
 {
