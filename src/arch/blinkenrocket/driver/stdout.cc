@@ -1,0 +1,35 @@
+#include "driver/stdout.h"
+#include <avr/io.h>
+#include <avr/interrupt.h>
+
+void StandardOutput::setup()
+{
+	PORTC |= _BV(PC1);
+	DDRC |= _BV(DDC1);
+}
+
+void StandardOutput::put(char c)
+{
+	unsigned char i = 1;
+	PORTC &= ~_BV(PC1);
+	__builtin_avr_delay_cycles(59);
+	while (i < 0x80) {
+		if (c & i) {
+			PORTC |= _BV(PC1);
+		} else {
+			PORTC &= ~_BV(PC1);
+		}
+		i <<= 1;
+		__builtin_avr_delay_cycles(54);
+	}
+	__builtin_avr_delay_cycles(6);
+	PORTC &= ~_BV(PC1);
+	__builtin_avr_delay_cycles(67);
+	PORTC |= _BV(PC1);
+	__builtin_avr_delay_cycles(150);
+	if (c == '\n') {
+		put('\r');
+	}
+}
+
+StandardOutput kout;
