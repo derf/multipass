@@ -56,6 +56,10 @@ ifeq (${softi2c_pullup}, 1)
 	COMMON_FLAGS += -DSOFTI2C_PULLUP
 endif
 
+ifeq (${kout_nop}, 1)
+	COMMON_FLAGS += -DKOUT_NOP
+endif
+
 ifeq (${timer_cycles}, 1)
 	COMMON_FLAGS += -DTIMER_CYCLES
 endif

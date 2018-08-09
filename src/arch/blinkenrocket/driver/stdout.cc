@@ -4,12 +4,15 @@
 
 void StandardOutput::setup()
 {
+#ifndef KOUT_NOP
 	PORTC |= _BV(PC1);
 	DDRC |= _BV(DDC1);
+#endif
 }
 
 void StandardOutput::put(char c)
 {
+#ifndef KOUT_NOP
 	unsigned char i = 1;
 	PORTC &= ~_BV(PC1);
 	__builtin_avr_delay_cycles(59);
@@ -30,6 +33,7 @@ void StandardOutput::put(char c)
 	if (c == '\n') {
 		put('\r');
 	}
+#endif
 }
 
 StandardOutput kout;
