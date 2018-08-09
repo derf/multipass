@@ -5,10 +5,16 @@
 
 inline void await_twint(unsigned char twcr_values)
 {
+#if 1
 	TWCR = twcr_values | _BV(TWINT) | _BV(TWIE);
 	while (!(TWCR & _BV(TWINT))) {
 		arch.idle();
 	}
+#endif
+#if 0
+	TWCR = twcr_values | _BV(TWINT);
+	while (!(TWCR & _BV(TWINT))) ;
+#endif
 }
 
 /*
@@ -21,8 +27,8 @@ static signed char i2c_start_read(unsigned char addr)
 	if (!(TWSR & 0x18)) // 0x08 == START ok, 0x10 == RESTART ok
 		return -1;
 
-	// Note: The R byte ("... | 1") causes the TWI momodule to switch to
-	// Master Receive mode
+	// Note: An adress with read bit set ("... | 1") causes the TWI momodule
+	// to switch to Master Receive mode
 	TWDR = (addr << 1) | 1;
 	await_twint(_BV(TWEN));
 	if (TWSR != 0x40) // 0x40 == SLA+R transmitted, ACK receveid
@@ -55,6 +61,7 @@ static signed char i2c_start_write(unsigned char addr)
 static signed char i2c_stop()
 {
 	TWCR = _BV(TWINT) | _BV(TWSTO) | _BV(TWEN);
+	return 0;
 }
 
 /*
