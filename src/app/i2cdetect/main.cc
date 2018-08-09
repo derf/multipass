@@ -73,6 +73,7 @@ int main(void)
 
 	kout << "I2C setup OK" << endl;
 
+	/*
 	for (unsigned char i = 0; i < sizeof(i2c_status)/sizeof(unsigned int); i++) {
 		i2c_status[i] = 0;
 	}
@@ -95,6 +96,7 @@ int main(void)
 		}
 	}
 	kout << endl;
+	*/
 
 	arch.idle_loop();
 
