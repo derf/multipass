@@ -44,11 +44,9 @@ void loop(void)
 	kout << endl;
 #endif
 #ifdef DRIVER_EEPROM24LC64
-	char buf[33];
 	static unsigned short page = 0;
-	eeprom24lc64.readPage(page, buf);
-	buf[32] = '\0';
-	kout << "Address " << page << ": " << buf << endl;
+	eeprom24lc64.writePage(page, "Hello, World! Und so weiter, lol");
+	kout << "Address " << page << endl;
 	page = (page + 32) % (256*32);
 #endif
 #ifdef DRIVER_MMSIMPLE
