@@ -3,6 +3,10 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
+#ifndef F_I2C
+#define F_I2C 100000UL
+#endif
+
 inline void await_twint(unsigned char twcr_values)
 {
 #if 1
@@ -27,7 +31,7 @@ static signed char i2c_start_read(unsigned char addr)
 	if (!(TWSR & 0x18)) // 0x08 == START ok, 0x10 == RESTART ok
 		return -1;
 
-	// Note: An adress with read bit set ("... | 1") causes the TWI momodule
+	// Note: An adress with read bit set ("... | 1") causes the TWI module
 	// to switch to Master Receive mode
 	TWDR = (addr << 1) | 1;
 	await_twint(_BV(TWEN));
@@ -106,7 +110,7 @@ static signed char i2c_receive(uint8_t len, uint8_t *data)
 signed char I2C::setup()
 {
 	TWSR = 0;
-	TWBR = ((F_CPU / 100000UL) - 16) / 2;
+	TWBR = ((F_CPU / F_I2C) - 16) / 2;
 
 	return 0;
 }

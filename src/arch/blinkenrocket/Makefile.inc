@@ -27,6 +27,10 @@ else ifneq ($(findstring i2c,${arch_drivers}), )
 	TARGETS += src/arch/blinkenrocket/driver/i2c.cc
 endif
 
+ifneq (${i2c_freq}, )
+	COMMON_FLAGS += -DF_I2C=${i2c_freq}
+endif
+
 OBJECTS = ${TARGETS:.cc=.o}
 
 .cc.o:
