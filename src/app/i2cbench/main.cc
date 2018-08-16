@@ -25,8 +25,9 @@
 void loop(void)
 {
 #ifdef DRIVER_LM75
-	kout.printf_float(lm75.getTemp());
-	kout << endl;
+	//kout.printf_float(lm75.getTemp());
+	//kout << endl;
+	lm75.setOS(64);
 #endif
 #ifdef DRIVER_AM2320
 	am2320.read();

@@ -3,6 +3,10 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
+#ifndef F_I2C
+#define F_I2C 100000UL
+#endif
+
 inline void await_twint(unsigned char twcr_values)
 {
 	TWCR = twcr_values | _BV(TWINT) | _BV(TWIE);
@@ -99,7 +103,7 @@ static signed char i2c_receive(uint8_t len, uint8_t *data)
 signed char I2C::setup()
 {
 	TWSR = 0;
-	TWBR = ((F_CPU / 100000UL) - 16) / 2;
+	TWBR = ((F_CPU / F_I2C) - 16) / 2;
 
 	return 0;
 }

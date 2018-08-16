@@ -32,6 +32,10 @@ ifneq ($(findstring stdin,${arch_drivers}), )
 	TARGETS += src/arch/arduino-nano/driver/stdin.cc
 endif
 
+ifneq (${i2c_freq}, )
+	COMMON_FLAGS += -DF_I2C=${i2c_freq}
+endif
+
 OBJECTS = ${TARGETS:.cc=.o}
 
 .cc.o:
