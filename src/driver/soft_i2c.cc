@@ -2,6 +2,13 @@
 #include "driver/gpio.h"
 #include "arch.h"
 
+#ifdef SOFTI2C_TIMER
+#ifdef TIMER_CYCLES
+#error "SOFTI2C_TIMER and TIMER_CYCLES are mutually exclusive"
+#endif
+#include "driver/timer.h"
+#endif
+
 #ifdef SOFTI2C_PULLUP
 #define SDA_HIGH gpio.input(sda, 1)
 #define SDA_LOW gpio.output(sda, 0)
@@ -13,6 +20,8 @@
 #define SCL_HIGH gpio.input(scl)
 #define SCL_LOW gpio.output(scl)
 #endif
+
+#ifndef SOFTI2C_TIMER
 
 signed char SoftI2C::setup()
 {
@@ -135,6 +144,159 @@ signed char SoftI2C::xmit(unsigned char address,
 
 	return 0;
 }
+
+#else
+
+#ifndef F_I2C
+#define F_I2C 100000
+#endif
+
+volatile unsigned char timer_done = 0;
+
+inline void await_timer()
+{
+	timer_done = 0;
+	timer.start(1);
+	while (!timer_done) {
+		arch.idle();
+	}
+	timer.stop();
+}
+
+signed char SoftI2C::setup()
+{
+	SDA_HIGH;
+	SCL_HIGH;
+	/*
+	 * I2C frequency is the time between two SCL low->high transitions
+	 * (or high->low, whatever you prefer). For the timer, we need to set the
+	 * time between SCL low->high and the following high->low transition
+	 * (and vice versa), which is twice the desired I2C frequency. Also,
+	 * timer.setup wants kHz and not Hz, so we have
+	 * Timer Freq [kHz] = I2C Freq [Hz] * 2 / 1000
+	 */
+	timer.setup(F_I2C / 500);
+	return 0;
+}
+
+void SoftI2C::start()
+{
+	SDA_HIGH;
+	SCL_HIGH;
+	await_timer();
+	SDA_LOW;
+	await_timer();
+	SCL_LOW;
+	await_timer();
+}
+
+void SoftI2C::stop()
+{
+	SCL_LOW;
+	SDA_LOW;
+	await_timer();
+	SCL_HIGH;
+	await_timer();
+	SDA_HIGH;
+}
+
+bool SoftI2C::tx(unsigned char byte)
+{
+	unsigned char got_ack = 0;
+	for (unsigned char i = 0; i <= 8; i++) {
+		if ((byte & 0x80) || (i == 8)) {
+			SDA_HIGH;
+		} else {
+			SDA_LOW;
+		}
+		byte <<= 1;
+		SCL_HIGH;
+		await_timer();
+		while (!gpio.read(scl)) ;
+		if (i == 8) {
+			if (!gpio.read(sda)) {
+				got_ack = 1;
+			}
+		}
+		SCL_LOW;
+		await_timer();
+	}
+	return got_ack;
+}
+
+unsigned char SoftI2C::rx(bool send_ack)
+{
+	unsigned char byte = 0;
+	SDA_HIGH;
+	for (unsigned char i = 0; i <= 8; i++) {
+		SCL_HIGH;
+		await_timer();
+		while (!gpio.read(scl)) ;
+		if ((i < 8) && gpio.read(sda)) {
+			byte |= 1 << (7 - i);
+		}
+		SCL_LOW;
+		await_timer();
+		if ((i == 7) && send_ack) {
+			SDA_LOW;
+		} else if ((i == 8) && send_ack) {
+			SDA_HIGH;
+		}
+	}
+	return byte;
+}
+
+void SoftI2C::scan(unsigned int *results)
+{
+	unsigned char i2caddr;
+	for (unsigned char address = 0; address < 128; address++) {
+
+		i2caddr = (address << 1) | 0;
+
+		start();
+
+		if (tx(i2caddr)) {
+			results[address / (8 * sizeof(unsigned int))] |= 1 << (address % (8 * sizeof(unsigned int)));
+			stop();
+		}
+	}
+	stop();
+}
+
+signed char SoftI2C::xmit(unsigned char address,
+		unsigned char tx_len, unsigned char *tx_buf,
+		unsigned char rx_len, unsigned char *rx_buf)
+{
+	unsigned char i;
+
+	if (tx_len) {
+		start();
+		tx((address << 1) | 0);
+
+		for (i = 0; i < tx_len; i++) {
+			tx(tx_buf[i]);
+		}
+	}
+	if (rx_len) {
+		start();
+		tx((address << 1) | 1);
+
+		for (i = 1; i <= rx_len; i++) {
+			rx_buf[i-1] = rx((i < rx_len) * 1);
+		}
+	}
+
+	stop();
+
+	return 0;
+}
+
+ON_TIMER_INTERRUPT
+{
+	timer_done = 1;
+}
+
+#endif
 
 #ifdef MULTIPASS_ARCH_esp8266
 SoftI2C i2c(GPIO::d7, GPIO::d8);

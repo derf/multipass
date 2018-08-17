@@ -1,8 +1,8 @@
 # vim:ft=make
 
-MCU = atmega328p
+MCU = atmega168
 PORT = /dev/ttyUSB0
-BAUD = 57600
+BAUD = 19200
 
 COMMON_FLAGS += -Werror=overflow
 COMMON_FLAGS += -mmcu=${MCU} -DF_CPU=16000000UL -DMULTIPASS_ARCH_arduino_nano

@@ -56,6 +56,11 @@ ifeq (${softi2c_pullup}, 1)
 	COMMON_FLAGS += -DSOFTI2C_PULLUP
 endif
 
+ifeq (${softi2c_timer}, 1)
+	arch_drivers += ,timer
+	COMMON_FLAGS += -DSOFTI2C_TIMER
+endif
+
 ifeq (${kout_nop}, 1)
 	COMMON_FLAGS += -DKOUT_NOP
 endif
