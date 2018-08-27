@@ -1,6 +1,10 @@
 #include "driver/spi_b.h"
 #include <msp430.h>
 
+#ifndef F_I2C
+#define F_I2C 1000000UL
+#endif
+
 void SPI::setup()
 {
 	UCB0CTLW0 |= UCSWRST;
@@ -22,7 +26,8 @@ void SPI::setup()
 	//P1REN |= BIT6;
 
 	UCB0CTLW0 = UCCKPH | UCMSB | UCMST | UCSYNC | UCMODE_0 | UCSSEL__SMCLK | UCSWRST;
-	UCB0BRW = 15; // /16 -> 1MHz
+	UCB0BRW = (F_CPU/F_I2C)-1; // /16 -> 1MHz
+	// UCB0BRW = (F_CPU / F_I2C) - 1
 	UCB0CTLW0 &= ~UCSWRST;
 }
 

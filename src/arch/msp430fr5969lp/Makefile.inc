@@ -5,6 +5,7 @@ MCU = msp430fr5969
 
 INCLUDES += -I/opt/msp430/ti/gcc/include
 COMMON_FLAGS += -mcpu=${CPU} -mmcu=${MCU} -DMULTIPASS_ARCH_msp430fr5969lp
+COMMON_FLAGS += -DF_CPU=16000000UL
 COMMON_FLAGS += -DMULTIPASS_ARCH_HAS_I2C
 
 CC = /opt/msp430/ti/gcc/bin/msp430-elf-gcc
