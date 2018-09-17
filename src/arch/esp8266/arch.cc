@@ -57,7 +57,7 @@ void Arch::idle_loop(void)
 {
 }
 
-void ArcH::idle(void)
+void Arch::idle(void)
 {
 }
 
