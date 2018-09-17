@@ -1,5 +1,7 @@
 # vim:ft=make
 
+COMMON_FLAGS += -DMULTIPASS_ARCH_posix
+
 CC = gcc
 CXX = g++
 
