@@ -98,6 +98,18 @@ OutputStream & OutputStream::operator<<(long long number)
 	return *this;
 }
 
+OutputStream & OutputStream::operator<<(double number)
+{
+	*this << (float)number;
+	return *this;
+}
+
+OutputStream & OutputStream::operator<<(float number)
+{
+	this->printf_float(number);
+	return *this;
+}
+
 OutputStream & OutputStream::operator<<(void *pointer)
 {
 	unsigned short temp_base = base;

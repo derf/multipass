@@ -35,6 +35,8 @@ class OutputStream {
 	OutputStream & operator<<(long long number);
 	OutputStream & operator<<(void *pointer);
 	OutputStream & operator<<(const char *text);
+	OutputStream & operator<<(float number);
+	OutputStream & operator<<(double number);
 	OutputStream & operator<<(OutputStream & (*fun) (OutputStream &));
 
 	void setBase(uint8_t b);
