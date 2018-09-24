@@ -59,8 +59,9 @@ OutputStream & OutputStream::operator<<(unsigned long long number)
 		put('0');
 		break;
 	case 16:
-		put('0');
-		put('x');
+		if (number < 16) {
+			put('0');
+		}
 		break;
 	}
 
