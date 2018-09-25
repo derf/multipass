@@ -6,7 +6,7 @@
 #include "object/stdbuf.h"
 #include "object/xdrstream.h"
 
-char buf[128];
+char buf[256];
 
 void loop(void)
 {
@@ -30,10 +30,16 @@ void loop(void)
 
 	BufferOutput<XDRStream> foostream(buf);
 
+	char test[] = "Obai World!";
+
 	foostream << 123 << 0 << 12345678;
+	foostream.setNextArrayLen(3);
+	foostream << fixed << "Hai";
+	foostream.setNextArrayLen(sizeof(test));
+	foostream << variable << (char const *)test;
 
 	kout << "foostream is " << hex;
-	for (unsigned int i = 0; i < 32; i += 4) {
+	for (unsigned int i = 0; i < 64; i += 4) {
 		kout << (unsigned char)buf[i] << (unsigned char)buf[i+1];
 		kout << (unsigned char)buf[i+2] << (unsigned char)buf[i+3] << " ";
 	}

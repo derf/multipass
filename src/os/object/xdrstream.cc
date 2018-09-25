@@ -69,8 +69,26 @@ XDRStream & XDRStream::operator<<(int64_t number)
 }
 
 XDRStream & XDRStream::operator<<(char const *data){
+	if (!is_fixed_length) {
+		*this << next_array_len;
+	}
 	uint32_t i;
 	for (i = 0; i < next_array_len; i++) {
+		put(data[i]);
+	}
+	while ((i++) % 4 != 0){
+		put('\0');
+	}
+	return *this;
+}
+
+template<int N>
+XDRStream & XDRStream::operator<<(char const (&data)[N]){
+	if (!is_fixed_length) {
+		*this << N;
+	}
+	uint32_t i;
+	for (i = 0; i < N; i++) {
 		put(data[i]);
 	}
 	while ((i++) % 4 != 0){
@@ -99,8 +117,21 @@ XDRStream & term(XDRStream & os)
 	return os;
 }
 
+template<int N>
 XDRStream & opaque(XDRStream & os)
 {
-	os.setNextArrayLen(3);
+	os.setNextArrayLen(N);
+	return os;
+}
+
+XDRStream & fixed(XDRStream & os)
+{
+	os.setFixedLength();
+	return os;
+}
+
+XDRStream & variable(XDRStream & os)
+{
+	os.setVariableLength();
 	return os;
 }
