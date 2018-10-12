@@ -32,8 +32,12 @@ void wakeup();
 #if defined(WITH_LOOP) || defined(TIMER_S)
 
 #include "driver/uptime.h"
-void loop();
 
+#endif
+
+#if defined(WITH_LOOP)
+extern void loop();
+volatile char run_loop = 0;
 #endif
 
 void Arch::idle_loop(void)
@@ -44,13 +48,13 @@ void Arch::idle_loop(void)
 		SMCR = 0;
 		asm("wdr");
 #ifdef WITH_LOOP
-		loop();
+		if (run_loop) {
+			loop();
+			run_loop = 0;
+		}
 #endif
 #ifdef WITH_WAKEUP
 		wakeup();
-#endif
-#ifdef TIMER_S
-		uptime.tick_s();
 #endif
 	}
 }
@@ -79,6 +83,12 @@ Arch arch;
 
 ISR(TIMER1_COMPA_vect)
 {
+#ifdef WITH_LOOP
+	run_loop = 1;
+#endif
+#ifdef TIMER_S
+	uptime.tick_s();
+#endif
 }
 
 #endif
