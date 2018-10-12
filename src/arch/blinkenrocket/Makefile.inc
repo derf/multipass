@@ -52,4 +52,9 @@ arch_help:
 	@echo "blinkenrocket specific flags:"
 	@echo "    PORT = ${PORT}"
 
-.PHONY: arch_clean arch_help monitor program
+arch_info:
+	@echo "CPU   Freq: ${cpu_freq} Hz"
+	@echo "Timer Freq: ${timer_freq} Hz"
+	@echo "I2C   Freq: ${i2c_freq} Hz"
+
+.PHONY: arch_clean arch_help arch_info monitor program

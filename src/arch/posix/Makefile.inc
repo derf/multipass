@@ -35,4 +35,6 @@ arch_help:
 	@echo "posix specific flags:"
 	@echo "    - none -"
 
-.PHONY: arch_clean arch_help monitor program run
+arch_info:
+
+.PHONY: arch_clean arch_help arch_info monitor program run

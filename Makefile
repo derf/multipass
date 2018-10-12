@@ -7,6 +7,12 @@ CXXFLAGS = -std=c++14
 
 TARGETS = src/app/${app}/main.cc src/os/object/cpp_helpers.cc src/os/object/outputstream.cc
 
+QUIET = @
+
+ifneq (${verbose}, )
+	QUIET =
+endif
+
 include src/app/${app}/Makefile.inc
 
 ifneq ($(findstring lm75,${drivers}), )
@@ -118,4 +124,6 @@ help: arch_help
 	@echo "Global architectures:"
 	@echo "    $(shell ls src/arch)"
 
-.PHONY: clean help
+info: arch_info
+
+.PHONY: clean help info

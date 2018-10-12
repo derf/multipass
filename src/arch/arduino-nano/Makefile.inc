@@ -4,6 +4,8 @@ MCU = atmega328p
 PORT = /dev/ttyUSB0
 BAUD = 57600
 
+cpu_freq ?= 16000000
+
 COMMON_FLAGS += -Werror=overflow
 COMMON_FLAGS += -mmcu=${MCU} -DF_CPU=16000000UL -DMULTIPASS_ARCH_arduino_nano
 COMMON_FLAGS += -flto
@@ -40,27 +42,32 @@ endif
 OBJECTS = ${TARGETS:.cc=.o}
 
 .cc.o:
-	${CXX} ${INCLUDES} ${COMMON_FLAGS} ${CXXFLAGS} -c -o $@ ${@:.o=.cc}
+	${QUIET}${CXX} ${INCLUDES} ${COMMON_FLAGS} ${CXXFLAGS} -c -o $@ ${@:.o=.cc}
 
 build/system.elf: ${OBJECTS}
-	${CXX} ${COMMON_FLAGS} ${CXXFLAGS} -Wl,--gc-sections -o $@ ${OBJECTS}
-	avr-size --format=avr --mcu=${MCU} $@
+	${QUIET}${CXX} ${COMMON_FLAGS} ${CXXFLAGS} -Wl,--gc-sections -o $@ ${OBJECTS}
+	${QUIET}avr-size --format=avr --mcu=${MCU} $@
 
 build/system.hex: build/system.elf
-	${OBJCOPY} -O ihex ${@:.hex=.elf} $@
+	${QUIET}${OBJCOPY} -O ihex ${@:.hex=.elf} $@
 
 program: build/system.hex
-	avrdude -p ${MCU} -c arduino -P ${PORT} -b ${BAUD} -U flash:w:build/system.hex
+	${QUIET}avrdude -p ${MCU} -c arduino -P ${PORT} -b ${BAUD} -U flash:w:build/system.hex
 
 arch_clean:
-	rm -f ${OBJECTS} build/system.hex
+	${QUIET}rm -f ${OBJECTS} build/system.hex
 
 monitor:
-	screen ${PORT} 115200
+	${QUIET}screen ${PORT} 115200
 
 arch_help:
 	@echo "arduino-nano specific flags:"
 	@echo "    PORT = ${PORT}"
 	@echo "    BAUD = ${BAUD} (only used for programming)"
 
-.PHONY: arch_clean arch_help monitor program
+arch_info:
+	@echo "CPU   Freq: ${cpu_freq} Hz"
+	@echo "Timer Freq: ${timer_freq} Hz"
+	@echo "I2C   Freq: ${i2c_freq} Hz"
+
+.PHONY: arch_clean arch_help arch_info monitor program

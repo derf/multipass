@@ -3,9 +3,10 @@
 CPU = 430x
 MCU = msp430fr5969
 
+cpu_freq ?= 16000000
+
 INCLUDES += -I/opt/msp430/ti/gcc/include
 COMMON_FLAGS += -mcpu=${CPU} -mmcu=${MCU} -DMULTIPASS_ARCH_msp430fr5969lp
-COMMON_FLAGS += -DF_CPU=16000000UL
 COMMON_FLAGS += -DMULTIPASS_ARCH_HAS_I2C
 
 CC = /opt/msp430/ti/gcc/bin/msp430-elf-gcc
@@ -47,33 +48,45 @@ ifneq ($(findstring timer,${arch_drivers}), )
 	TARGETS += src/arch/msp430fr5969lp/driver/timer.cc
 endif
 
+ifneq (${cpu_freq}, )
+	COMMON_FLAGS += -DF_CPU=${cpu_freq}UL
+else
+	COMMON_FLAGS += -DF_CPU=16000000UL
+endif
+
+
 OBJECTS = ${TARGETS:.cc=.o}
 
 .cc.o:
-	${CXX} ${INCLUDES} ${COMMON_FLAGS} ${CXXFLAGS} -c -o $@ ${@:.o=.cc}
+	${QUIET}${CXX} ${INCLUDES} ${COMMON_FLAGS} ${CXXFLAGS} -c -o $@ ${@:.o=.cc}
 
 build/system.elf: ${OBJECTS}
-	${CXX} ${INCLUDES} ${COMMON_FLAGS} ${CXXFLAGS} \
+	${QUIET}${CXX} ${INCLUDES} ${COMMON_FLAGS} ${CXXFLAGS} \
 		-Wl,--library-path=/opt/msp430/ti/gcc/include/ \
 		-flto -o $@ ${OBJECTS}
 
 build/system.hex: build/system.elf
-	${OBJCOPY} -O ihex ${@:.hex=.elf} $@
+	${QUIET}${OBJCOPY} -O ihex ${@:.hex=.elf} $@
 
 program: build/system.hex
-	LD_LIBRARY_PATH=/home/derf/var/projects/msp430/MSP430Flasher_1.3.7 \
+	${QUIET}LD_LIBRARY_PATH=/home/derf/var/projects/msp430/MSP430Flasher_1.3.7 \
 	/home/derf/var/projects/msp430/MSP430Flasher_1.3.7/MSP430Flasher \
 	-w build/system.hex -v -g -z '[VCC]'
 
 arch_clean:
-	rm -f ${OBJECTS}
-	rm -f build/system.hex
+	${QUIET}rm -f ${OBJECTS}
+	${QUIET}rm -f build/system.hex
 
 monitor:
-	screen /dev/ttyACM1 115200
+	${QUIET}screen /dev/ttyACM1 115200
 
 arch_help:
 	@echo "msp430fR5969lp specific flags:"
 	@echo "    - none -"
 
-.PHONY: arch_clean arch_help monitor program
+arch_info:
+	@echo "CPU   Freq: ${cpu_freq} Hz"
+	@echo "Timer Freq: ${timer_freq} Hz"
+	@echo "I2C   Freq: ${i2c_freq} Hz"
+
+.PHONY: arch_clean arch_help arch_info monitor program
