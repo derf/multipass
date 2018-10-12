@@ -19,6 +19,11 @@ ifneq ($(findstring am2320,${drivers}), )
 	COMMON_FLAGS += -DDRIVER_AM2320
 endif
 
+ifneq ($(findstring ccs811,${drivers}), )
+	TARGETS += src/driver/ccs811.cc
+	COMMON_FLAGS += -DDRIVER_CCS811
+endif
+
 ifneq ($(findstring eeprom24lc64,${drivers}), )
 	TARGETS += src/driver/eeprom24lc64.cc
 	COMMON_FLAGS += -DDRIVER_EEPROM24LC64
@@ -50,6 +55,14 @@ endif
 ifneq ($(findstring softi2c,${drivers}), )
 	TARGETS += src/driver/soft_i2c.cc
 	COMMON_FLAGS += -DDRIVER_SOFTI2C
+endif
+
+ifneq (${i2c_freq}, )
+	COMMON_FLAGS += -DF_I2C=${i2c_freq}
+endif
+
+ifneq (${timer_freq}, )
+	COMMON_FLAGS += -DF_TIMER=${timer_freq}
 endif
 
 ifeq (${softi2c_pullup}, 1)

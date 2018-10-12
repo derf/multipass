@@ -43,6 +43,10 @@ ifneq ($(findstring spi_b,${arch_drivers}), )
 	TARGETS += src/arch/msp430fr5969lp/driver/spi_b.cc
 endif
 
+ifneq ($(findstring timer,${arch_drivers}), )
+	TARGETS += src/arch/msp430fr5969lp/driver/timer.cc
+endif
+
 OBJECTS = ${TARGETS:.cc=.o}
 
 .cc.o:

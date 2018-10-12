@@ -1,23 +1,30 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
-#define ON_TIMER_INTERRUPT ISR(TIMER0_COMPA_vect)
+#define ON_TIMER_INTERRUPT_head ISR(TIMER0_COMPA_vect) {
+#define ON_TIMER_INTERRUPT_tail }
 
 class Timer {
 	private:
 		Timer(const Timer &copy);
-
+		unsigned char prescaler;
 
 	public:
 		Timer() {}
 
-		inline void setup(unsigned char const frequency) {
+		inline void setup_khz(unsigned char const frequency) {
 			OCR0A = frequency ? 255 / frequency : 1;
 			TCCR0A = _BV(WGM01);
+			prescaler = _BV(CS01) | _BV(CS00);
+		}
+		inline void setup_hz(unsigned char const frequency) {
+			OCR0A = frequency ? 255 / frequency : 1;
+			TCCR0A = _BV(WGM01);
+			prescaler = _BV(CS02) | _BV(CS00);
 		}
 		inline void start(unsigned char const interrupt) {
 			TCNT0 = 0;
-			TCCR0B = _BV(CS01) | _BV(CS00);
+			TCCR0B = prescaler;
 			if (interrupt) {
 				TIMSK0 = _BV(OCIE0A);
 			}
