@@ -2,6 +2,10 @@
 #include "arch.h"
 #include <msp430.h>
 
+#ifndef F_I2C
+#define F_I2C 100000
+#endif
+
 volatile unsigned short old_ifg = 0;
 
 signed char I2C::setup()
