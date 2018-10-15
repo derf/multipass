@@ -5,6 +5,7 @@
 #include "lib/modernjson/json.h"
 #include "object/stdbuf.h"
 #include "object/xdrstream.h"
+#include "object/xdrinput.h"
 
 char buf[256];
 
@@ -29,10 +30,11 @@ void loop(void)
 	kout << ",\"data\":[" << 48.756080 << "," << 2.302038 << "]}" << endl;
 
 	BufferOutput<XDRStream> foostream(buf);
+	XDRInput input(buf);
 
 	char test[] = "Obai World!";
 
-	foostream << 123 << 0 << 12345678;
+	foostream << 123 << -2 << 123456 << 0 << 4294967296 << 0;
 	foostream.setNextArrayLen(3);
 	foostream << fixed << "Hai";
 	foostream.setNextArrayLen(sizeof(test));
@@ -43,6 +45,18 @@ void loop(void)
 		kout << (unsigned char)buf[i] << (unsigned char)buf[i+1];
 		kout << (unsigned char)buf[i+2] << (unsigned char)buf[i+3] << " ";
 	}
+	kout << endl;
+
+	kout << dec;
+	kout << "foostream = " << input.get_uint32() << " = " << 123;
+	kout << ", " << input.get_int32() << " = " << -2;
+	kout << ", " << input.get_uint32() << " = " << 123456;
+	kout << ", " << input.get_uint32();
+	kout << ", " << input.get_uint64();
+	kout << ", " << input.get_uint32();
+	kout << ", " << input.get_opaque(3);
+	uint32_t len = input.get_opaque_length();
+	kout << ", " << input.get_opaque(len);
 	kout << endl;
 
 	gpio.led_toggle(1);
