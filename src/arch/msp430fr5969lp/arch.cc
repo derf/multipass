@@ -109,9 +109,8 @@ void Arch::delay_ms(unsigned char const ms)
 void Arch::idle_loop(void)
 {
 	while (1) {
-		__eint();
 		asm volatile("nop");
-		__bis_SR_register(LPM2_bits);
+		__bis_SR_register(GIE | LPM2_bits);
 		asm volatile("nop");
 		__dint();
 #if defined(WITH_LOOP)
@@ -128,13 +127,12 @@ void Arch::idle_loop(void)
 
 void Arch::idle(void)
 {
-	__eint();
 	asm volatile("nop");
-	__bis_SR_register(LPM2_bits);
+	__bis_SR_register(GIE | LPM2_bits);
 	asm volatile("nop");
 	__dint();
 #ifdef WITH_WAKEUP
-		wakeup();
+	wakeup();
 #endif
 }
 
@@ -144,7 +142,7 @@ Arch arch;
 
 #include "driver/uptime.h"
 
-__attribute__((interrupt(TIMER1_A1_VECTOR))) __attribute__((wakeup)) void handle_timer0_overflow()
+__attribute__((interrupt(TIMER1_A1_VECTOR))) __attribute__((wakeup)) void handle_timer1_overflow()
 {
 	if (TA1IV == 0x0e) {
 #ifdef WITH_LOOP
