@@ -125,5 +125,6 @@ help: arch_help
 	@echo "    $(shell ls src/arch)"
 
 info: arch_info
+	@echo "Selected Drivers: ${drivers} / ${arch_drivers}"
 
 .PHONY: clean help info
