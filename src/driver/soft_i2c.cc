@@ -2,6 +2,10 @@
 #include "driver/gpio.h"
 #include "arch.h"
 
+#ifndef F_I2C
+#define F_I2C 100000
+#endif
+
 #ifdef SOFTI2C_TIMER
 #ifdef TIMER_CYCLES
 #error "SOFTI2C_TIMER and TIMER_CYCLES are mutually exclusive"
@@ -147,10 +151,6 @@ signed char SoftI2C::xmit(unsigned char address,
 
 #else
 
-#ifndef F_I2C
-#define F_I2C 100000
-#endif
-
 volatile unsigned char timer_done = 0;
 
 inline void await_timer()
@@ -175,7 +175,7 @@ signed char SoftI2C::setup()
 	 * timer.setup wants kHz and not Hz, so we have
 	 * Timer Freq [kHz] = I2C Freq [Hz] * 2 / 1000
 	 */
-	timer.setup(F_I2C / 500);
+	timer.setup_khz(F_I2C / 500);
 	return 0;
 }
 
@@ -291,15 +291,14 @@ signed char SoftI2C::xmit(unsigned char address,
 	return 0;
 }
 
-ON_TIMER_INTERRUPT
-{
+ON_TIMER_INTERRUPT_head
 	timer_done = 1;
-}
+ON_TIMER_INTERRUPT_tail
 
 #endif
 
 #ifdef MULTIPASS_ARCH_esp8266
-SoftI2C i2c(GPIO::d7, GPIO::d8);
+SoftI2C i2c(GPIO::d6, GPIO::d7);
 #elif MULTIPASS_ARCH_arduino_nano
 SoftI2C i2c(GPIO::pc4, GPIO::pc5);
 #elif MULTIPASS_ARCH_blinkenrocket
