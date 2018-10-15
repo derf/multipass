@@ -67,12 +67,12 @@ void Arch::idle(void)
 	asm("wdr");
 }
 
-void Arch::delay_us(unsigned char const us)
+void Arch::delay_us(unsigned int const us)
 {
 	_delay_us(us);
 }
 
-void Arch::delay_ms(unsigned char const ms)
+void Arch::delay_ms(unsigned int const ms)
 {
 	_delay_ms(ms);
 }

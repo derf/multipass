@@ -10,8 +10,8 @@ class Arch {
 		void setup();
 		void idle_loop();
 		void idle();
-		void delay_us(unsigned char const us);
-		void delay_ms(unsigned char const ms);
+		void delay_us(unsigned int const us);
+		void delay_ms(unsigned int const ms);
 };
 
 extern Arch arch;

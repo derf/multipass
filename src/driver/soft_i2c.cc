@@ -27,6 +27,12 @@
 
 #ifndef SOFTI2C_TIMER
 
+#if F_I2C < 50000
+#define I2C_WAIT arch.delay_us((500000UL / F_I2C) - 10)
+#else
+#define I2C_WAIT
+#endif
+
 signed char SoftI2C::setup()
 {
 	SDA_HIGH;
@@ -38,20 +44,20 @@ void SoftI2C::start()
 {
 	SDA_HIGH;
 	SCL_HIGH;
-	//
+	I2C_WAIT;
 	SDA_LOW;
-	//
+	I2C_WAIT;
 	SCL_LOW;
 }
 
 void SoftI2C::stop()
 {
 	SCL_LOW;
-	//
+	I2C_WAIT;
 	SDA_LOW;
-	//
+	I2C_WAIT;
 	SCL_HIGH;
-	//
+	I2C_WAIT;
 	SDA_HIGH;
 }
 
@@ -65,17 +71,17 @@ bool SoftI2C::tx(unsigned char byte)
 			SDA_LOW;
 		}
 		byte <<= 1;
-		//
+		I2C_WAIT;
 		SCL_HIGH;
 		while (!gpio.read(scl)) ;
-		//
+		I2C_WAIT;
 		if (i == 8) {
 			if (!gpio.read(sda)) {
 				got_ack = 1;
 			}
 		}
 		SCL_LOW;
-		//
+		I2C_WAIT;
 	}
 	return got_ack;
 }
@@ -85,16 +91,16 @@ unsigned char SoftI2C::rx(bool send_ack)
 	unsigned char byte = 0;
 	SDA_HIGH;
 	for (unsigned char i = 0; i <= 8; i++) {
-		//
+		I2C_WAIT;
 		SCL_HIGH;
 		while (!gpio.read(scl)) ;
-		//
+		I2C_WAIT;
 		if ((i < 8) && gpio.read(sda)) {
 			byte |= 1 << (7 - i);
 		}
-		//
+		I2C_WAIT;
 		SCL_LOW;
-		//
+		I2C_WAIT;
 		if ((i == 7) && send_ack) {
 			SDA_LOW;
 		} else if ((i == 8) && send_ack) {
