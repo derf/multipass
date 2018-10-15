@@ -12,6 +12,9 @@
 #ifdef DRIVER_AM2320
 #include "driver/am2320.h"
 #endif
+#ifdef DRIVER_CCS811
+#include "driver/ccs811.h"
+#endif
 #ifdef DRIVER_EEPROM24LC64
 #include "driver/eeprom24lc64.h"
 #endif
@@ -38,6 +41,9 @@ void loop(void)
 	} else {
 		kout << "AM2320 error " << dec << am2320.getStatus() << endl;
 	}
+#endif
+#ifdef DRIVER_CCS811
+	kout << "CCS811 status is " << ccs811.check() << endl;
 #endif
 #ifdef DRIVER_MAX44009
 	kout.printf_float(max44009.getLux());
@@ -72,6 +78,10 @@ int main(void)
 	}
 
 	kout << "I2C setup OK" << endl;
+
+#ifdef DRIVER_CCS811
+	ccs811.init();
+#endif
 
 	for (unsigned char i = 0; i < sizeof(i2c_status)/sizeof(unsigned int); i++) {
 		i2c_status[i] = 0;
