@@ -9,13 +9,34 @@ void Arch::setup(void)
 
 	PM5CTL0 &= ~LOCKLPM5;
 
-	FRCTL0 = FWPW;
-	FRCTL0_L = 0x10;
-	FRCTL0_H = 0xff;
+	/*
+	 * Note: arch drivers assume SMCLK freq == F_CPU
+	 */
+
+#if F_CPU == 16000000UL
+	FRCTL0 = FWPW; // unlock FRAM Control
+	FRCTL0_L = 0x10; // one wait state before FRAM access (required for 8MHz < F_CPU <= 16 MHz)
+	FRCTL0_H = 0xff; // lock FRAM control by writing an invalid password
 
 	// 16MHz DCO
 	CSCTL0_H = CSKEY >> 8;
 	CSCTL1 = DCORSEL | DCOFSEL_4;
+#elif F_CPU == 8000000UL
+	// 8MHz DCO
+	CSCTL0_H = CSKEY >> 8;
+	CSCTL1 = DCOFSEL_6;
+#elif F_CPU == 4000000UL
+	// 8MHz DCO
+	CSCTL0_H = CSKEY >> 8;
+	CSCTL1 = DCOFSEL_3;
+#elif F_CPU == 1000000UL
+	// 8MHz DCO
+	CSCTL0_H = CSKEY >> 8;
+	CSCTL1 = DCOFSEL_0;
+#else
+#error Unsupported F_CPU
+#endif
+
 #ifdef WITH_LOOP
 	CSCTL2 = SELA__LFXTCLK | SELS__DCOCLK | SELM__DCOCLK;
 #else
