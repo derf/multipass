@@ -25,7 +25,7 @@ class Timer {
 
 #if F_CPU == 1000000UL
 		inline void setup_khz(uint16_t const frequency) {
-			TA0CTL = TASSEL__SMCLK | ID__1 | MC__UP; // -> 1 MHz base
+			TA0CTL = TASSEL__SMCLK | ID__1; // -> 1 MHz base
 			TA0EX0 = 0;
 			TA0CCR0 = 1000UL / frequency;
 			TA0CTL |= TACLR;
@@ -33,11 +33,11 @@ class Timer {
 
 		inline void setup_hz(uint16_t const frequency) { // 1 MHz base
 			if (frequency < 20) {
-				TA0CTL = TASSEL__SMCLK | ID__8 | MC__UP; // /8
+				TA0CTL = TASSEL__SMCLK | ID__8; // /8
 				TA0EX0 = 1; // /2 -> /16 -> 62500 Hz
 				TA0CCR0 = 62500UL / frequency;
 			} else {
-				TA0CTL = TASSEL__SMCLK | ID__1 | MC__UP;
+				TA0CTL = TASSEL__SMCLK | ID__1;
 				TA0EX0 = 0;
 				TA0CCR0 = 1000000UL / frequency;
 			}
@@ -45,14 +45,14 @@ class Timer {
 		}
 #else
 		inline void setup_khz(uint16_t const frequency) {
-			TA0CTL = TASSEL__SMCLK | _TA0_MAIN_DIV | MC__UP; // -> 2 MHz base
+			TA0CTL = TASSEL__SMCLK | _TA0_MAIN_DIV; // -> 2 MHz base
 			TA0EX0 = 0;
 			TA0CCR0 = 2000UL / frequency;
 			TA0CTL |= TACLR;
 		}
 
 		inline void setup_hz(uint16_t const frequency) { // 2 MHz base
-			TA0CTL = TASSEL__SMCLK | _TA0_MAIN_DIV | MC__UP;
+			TA0CTL = TASSEL__SMCLK | _TA0_MAIN_DIV;
 			TA0EX0 = 0;
 			TA0CCR0 = 2000000UL / frequency;
 			TA0CTL |= TACLR;
@@ -61,14 +61,14 @@ class Timer {
 
 		inline void start(unsigned char const interrupt) {
 			if (interrupt) {
-				TA0CTL |= TACLR | TAIE;
+				TA0CTL |= MC__UP | TACLR | TAIE;
 			} else {
-				TA0CTL |= TACLR;
+				TA0CTL |= MC__UP | TACLR;
 			}
 		}
 
 		inline void stop() {
-			TA0CTL &= ~TAIE;
+			TA0CTL &= ~MC__UP;
 		}
 };
 
