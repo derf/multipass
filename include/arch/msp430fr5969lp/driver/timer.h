@@ -68,7 +68,7 @@ class Timer {
 		}
 
 		inline void stop() {
-			TA0CTL = 0;
+			TA0CTL &= ~TAIE;
 		}
 };
 
