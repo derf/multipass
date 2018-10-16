@@ -60,14 +60,26 @@ void Arch::setup(void)
 #endif
 
 #ifdef TIMER_US
-	// 16MHz/16 -> ~1MHz timer
-	TA0CTL = TASSEL__SMCLK | ID__8 | MC__CONTINUOUS;
-	TA0EX0 = 1;
+#if F_CPU == 16000000UL
+	TA0CTL = TASSEL__SMCLK | ID__8 | MC__CONTINUOUS; // /8
+	TA0EX0 = 1; // /2 -> /16
+#elif F_CPU == 8000000UL
+	TA0CTL = TASSEL__SMCLK | ID__8 | MC__CONTINUOUS; // /8
+	TA0EX0 = 0; // /1 -> /8
+#elif F_CPU == 4000000UL
+	TA0CTL = TASSEL__SMCLK | ID__4 | MC__CONTINUOUS; // /4
+	TA0EX0 = 0; // /1 -> /8
+#elif F_CPU == 1000000UL
+	TA0CTL = TASSEL__SMCLK | ID__1 | MC__CONTINUOUS; // /1
+	TA0EX0 = 0; // /1 -> /8
+#else
+#error Unsupported F_CPU
+#endif /* F_CPU */
 	TA0CTL |= TACLR;
-#endif
+#endif /* TIMER_US */
 
 #if defined(WITH_LOOP) || defined(TIMER_S)
-	// 1s per wakeup for loop
+	// 1s per wakeup for loop. Independent of SMCLK/F_CPU
 	TA1CTL = TASSEL__ACLK | ID__8 | MC__UP;
 	TA1EX0 = 0;
 	TA1CCR0 = 4096;
