@@ -39,6 +39,7 @@ class GPIO {
 		inline void setup() {
 			DDRB = _BV(PB5);
 		}
+#pragma GCC diagnostic ignored "-Wunused-parameter"
 		inline void led_on(unsigned char id) {
 			PORTB |= _BV(PB5);
 		}
@@ -58,6 +59,7 @@ class GPIO {
 				DDRD &= ~_BV(pin - 24);
 			}
 		}
+#pragma GCC diagnostic pop
 		inline void input(unsigned char const pin, unsigned char const pull) {
 			if (pin < 8) {
 			} else if (pin < 16) {
