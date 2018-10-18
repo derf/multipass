@@ -24,10 +24,12 @@ class GPIO {
 			P2OUT = 0;
 			P3OUT = 0;
 			P4OUT = 0;
-			P1DIR = BIT0;
-			P2DIR = 0;
-			P3DIR = 0;
-			P4DIR = BIT6;
+			PJOUT = 0;
+			P1DIR = BIT0 | 0xff; // green LED
+			P2DIR = 0xff ^ (BIT0 | BIT1); // UART
+			P3DIR = 0xff;
+			P4DIR = BIT6 | 0xff; // red LED
+			PJDIR = BIT6 | BIT7; // HFXT (not populated)
 		}
 		inline void led_on(unsigned char id) {
 			if (id == 0) {
