@@ -12,6 +12,8 @@ class LM75 {
 		LM75(unsigned char const addr) : address(addr) {}
 
 		float getTemp();
+		unsigned int getOS();
+		unsigned int getHyst();
 		void setOS(unsigned char os);
 		void setHyst(unsigned char hyst);
 };

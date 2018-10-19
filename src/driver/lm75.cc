@@ -15,6 +15,24 @@ float LM75::getTemp()
 	return rxbuf[0] + (rxbuf[1] / 256.0);
 }
 
+unsigned int LM75::getOS()
+{
+	txbuf[0] = 0x03;
+	rxbuf[0] = 0;
+	rxbuf[1] = 0;
+	i2c.xmit(address, 1, txbuf, 2, rxbuf);
+	return rxbuf[0];
+}
+
+unsigned int LM75::getHyst()
+{
+	txbuf[0] = 0x02;
+	rxbuf[0] = 0;
+	rxbuf[1] = 0;
+	i2c.xmit(address, 1, txbuf, 2, rxbuf);
+	return rxbuf[0];
+}
+
 void LM75::setOS(unsigned char os)
 {
 	txbuf[0] = 0x03;
