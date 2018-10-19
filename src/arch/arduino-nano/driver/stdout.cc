@@ -2,7 +2,10 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
-#define BAUD 119200L
+#ifndef BAUD
+#define BAUD 9600UL
+#endif
+
 #include <util/setbaud.h>
 
 void StandardOutput::setup()

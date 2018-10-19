@@ -5,6 +5,37 @@
 
 void Arch::setup(void)
 {
+
+#if F_CPU == 16000000UL
+	/* default */
+#elif F_CPU == 8000000UL
+	CLKPR = _BV(CLKPCE);
+	CLKPR = _BV(CLKPS0);
+#elif F_CPU == 4000000UL
+	CLKPR = _BV(CLKPCE);
+	CLKPR = _BV(CLKPS1);
+#elif F_CPU == 2000000UL
+	CLKPR = _BV(CLKPCE);
+	CLKPR = _BV(CLKPS1) | _BV(CLKPS0);
+#elif F_CPU == 1000000UL
+	CLKPR = _BV(CLKPCE);
+	CLKPR = _BV(CLKPS2);
+#elif F_CPU == 500000UL
+	CLKPR = _BV(CLKPCE);
+	CLKPR = _BV(CLKPS2) | _BV(CLKPS0);
+#elif F_CPU == 250000UL
+	CLKPR = _BV(CLKPCE);
+	CLKPR = _BV(CLKPS2) | _BV(CLKPS1);
+#elif F_CPU == 125000UL
+	CLKPR = _BV(CLKPCE);
+	CLKPR = _BV(CLKPS2) | _BV(CLKPS1) | _BV(CLKPS0);
+#elif F_CPU == 62500UL
+	CLKPR = _BV(CLKPCE);
+	CLKPR = _BV(CLKPS3);
+#else
+#error Unsupported F_CPU
+#endif
+
 #ifdef TIMER_CYCLES
 	TCCR0A = 0;
 	TCCR0B = _BV(CS00);
@@ -13,11 +44,14 @@ void Arch::setup(void)
 #if defined(WITH_LOOP) || defined(TIMER_S)
 	TCCR1A = 0;
 	TCCR1B = _BV(WGM12) | _BV(CS12) | _BV(CS10); // /1024
-	OCR1A = 15625;
+	OCR1A = F_CPU / 1024;
 	TIMSK1 = _BV(OCIE1A);
 #endif
 
 #ifdef TIMER_US
+#if F_CPU != 16000000UL
+#error TIMER_US is only supported with F_CPU = 16MHz
+#endif
 	// 16MHz/8 -> 2MHz timer
 	TCCR2A = 0;
 	TCCR2B = _BV(CS21);
