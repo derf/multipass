@@ -92,7 +92,13 @@ signed char I2C::xmit(unsigned char address,
 		for (i = 0; i < rx_len; i++) {
 			if (i == rx_len - 1)
 				UCB0CTL1 |= UCTXSTP;
-			while (!(UCB0IFG & (UCRXIFG0 | UCNACKIFG | UCCLTOIFG)));
+			UCB0IFG = 0;
+			old_ifg = 0;
+			UCB0IE = UCRXIE | UCNACKIE | UCCLTOIE;
+			while (!(old_ifg & (UCRXIFG0 | UCNACKIFG | UCCLTOIFG))) {
+				arch.idle();
+			}
+			UCB0IE = 0;
 			rx_buf[i] = UCB0RXBUF;
 			UCB0IFG &= ~UCRXIFG0;
 		}
