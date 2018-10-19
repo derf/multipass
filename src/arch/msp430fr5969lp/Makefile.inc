@@ -34,6 +34,7 @@ endif
 ifneq ($(findstring softi2c,${drivers}), )
 else ifneq ($(findstring i2c,${arch_drivers}), )
 	TARGETS += src/arch/msp430fr5969lp/driver/i2c.cc
+	COMMON_FLAGS += -DDRIVER_I2C
 endif
 
 ifneq ($(findstring spi_a1,${arch_drivers}), )
