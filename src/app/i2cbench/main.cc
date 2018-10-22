@@ -70,6 +70,15 @@ int main(void)
 
 	kout << "I2C setup OK" << endl;
 
+#ifdef MULTIPASS_ARCH_msp430fr5969lp
+	kout << "Device ID " << hex;
+	kout << *(uint8_t*)0x1a0a << *(uint8_t*)0x1a0b;
+	kout << *(uint8_t*)0x1a0c << *(uint8_t*)0x1a0d;
+	kout << *(uint8_t*)0x1a0e << *(uint8_t*)0x1a0f;
+	kout << *(uint8_t*)0x1a10 << *(uint8_t*)0x1a11;
+	kout << endl;
+#endif
+
 	arch.idle_loop();
 
 	return 0;
