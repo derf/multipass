@@ -14,6 +14,10 @@ TARGETS += src/arch/posix/driver/stdout.cc src/arch/posix/driver/uptime.cc
 
 OBJECTS = ${TARGETS:.cc=.o}
 
+ifneq (${gpio_trace}, )
+	COMMON_FLAGS += -DGPIO_TRACE
+endif
+
 .cc.o:
 	${CXX} ${INCLUDES} ${COMMON_FLAGS} ${CXXFLAGS} -c -o $@ ${@:.o=.cc}
 
