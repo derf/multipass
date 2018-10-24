@@ -71,8 +71,20 @@ ifneq (${timer_freq}, )
 	COMMON_FLAGS += -DF_TIMER=${timer_freq}
 endif
 
-ifeq (${softi2c_pullup}, 1)
-	COMMON_FLAGS += -DSOFTI2C_PULLUP
+ifeq (${softi2c_pullup}, internal)
+	COMMON_FLAGS += -DSOFTI2C_PULLUP_INTERNAL
+endif
+
+ifeq (${softi2c_pullup}, external)
+	COMMON_FLAGS += -DSOFTI2C_PULLUP_EXTERNAL
+endif
+
+ifeq (${softi2c_pullup}, gpio)
+	COMMON_FLAGS += -DSOFTI2C_PULLUP_FIXED_GPIO
+endif
+
+ifeq (${i2c_pullup}, gpio)
+	COMMON_FLAGS += -DI2C_PULLUP_FIXED_GPIO
 endif
 
 ifeq (${softi2c_timer}, 1)

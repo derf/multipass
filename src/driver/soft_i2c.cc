@@ -13,17 +13,22 @@
 #include "driver/timer.h"
 #endif
 
-#ifdef SOFTI2C_PULLUP
+#ifdef SOFTI2C_PULLUP_INTERNAL
 #define SDA_HIGH gpio.input(sda, 1)
 #define SDA_LOW gpio.output(sda, 0)
 #define SCL_HIGH gpio.input(scl, 1)
 #define SCL_LOW gpio.output(scl, 0)
-#else
+#elif SOFTI2C_PULLUP_EXTERNAL
+#define SDA_HIGH do { gpio.input(sda); gpio.write(sda_pull, 1); } while (0)
+#define SDA_LOW do { gpio.write(sda_pull, 0); gpio.output(sda); } while (0)
+#define SCL_HIGH do { gpio.input(scl); gpio.write(scl_pull, 1); } while (0)
+#define SCL_LOW do { gpio.write(scl_pull, 0); gpio.output(scl); } while (0)
+#else /* !SOFTI2C_PULLUP_{INTERNAL,EXTERNAL} */
 #define SDA_HIGH gpio.input(sda)
 #define SDA_LOW gpio.output(sda)
 #define SCL_HIGH gpio.input(scl)
 #define SCL_LOW gpio.output(scl)
-#endif
+#endif /* SOFTI2C_PULLUP */
 
 #ifndef SOFTI2C_TIMER
 
@@ -31,10 +36,24 @@
 #define I2C_WAIT arch.delay_us((500000UL / F_I2C) - 10)
 #else
 #define I2C_WAIT
-#endif
+#endif /* !SOFTI2C_TIMER */
 
 signed char SoftI2C::setup()
 {
+#ifdef SOFTI2C_PULLUP_EXTERNAL
+	gpio.output(sda_pull);
+	gpio.output(scl_pull);
+#endif
+#ifdef SOFTI2C_PULLUP_FIXED_GPIO
+#if MULTIPASS_ARCH_msp430fr5969lp
+	gpio.output(GPIO::p1_4);
+	gpio.output(GPIO::p1_5);
+	gpio.write(GPIO::p1_4, 1);
+	gpio.write(GPIO::p1_5, 1);
+#else
+#error "softi2c_pullup=gpio not supported on this architecture"
+#endif /* MULTIPASS_ARCH_* */
+#endif /* SOFTI2C_PULLUP_FIXED_GPIO */
 	SDA_HIGH;
 	SCL_HIGH;
 	return 0;
@@ -303,6 +322,13 @@ ON_TIMER_INTERRUPT_tail
 
 #endif
 
+#if SOFTI2C_PULLUP_EXTERNAL
+#ifdef MULTIPASS_ARCH_msp430fr5969lp
+SoftI2C i2c(GPIO::p1_6, GPIO::p1_7, GPIO::p1_4, GPIO::p1_5);
+#else
+#error "softi2c_pullup = external not supported on this architecture"
+#endif /* MULTIPASS_ARCH_* */
+#else
 #ifdef MULTIPASS_ARCH_esp8266
 SoftI2C i2c(GPIO::d6, GPIO::d7);
 #elif MULTIPASS_ARCH_arduino_nano
@@ -311,4 +337,7 @@ SoftI2C i2c(GPIO::pc4, GPIO::pc5);
 SoftI2C i2c(GPIO::pc4, GPIO::pc5);
 #elif MULTIPASS_ARCH_msp430fr5969lp
 SoftI2C i2c(GPIO::p1_6, GPIO::p1_7);
-#endif
+#elif MULTIPASS_ARCH_posix
+SoftI2C i2c(GPIO::px00, GPIO::px01);
+#endif /* MULTIPASS_ARCH_* */
+#endif /* !SOFTI2C_PULLUP_EXTERNAL */

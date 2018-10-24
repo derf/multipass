@@ -10,6 +10,10 @@ volatile unsigned short old_ifg = 0;
 
 signed char I2C::setup()
 {
+#ifdef I2C_PULLUP_FIXED_GPIO
+	P1DIR |= BIT4 | BIT5;
+	P1OUT |= BIT4 | BIT5;
+#endif
 	UCB0CTL1 = UCSWRST;
 	UCB0CTLW0 = UCMODE_3 | UCMST | UCSYNC | UCSSEL_2 | UCSWRST | UCCLTO_1;
 	UCB0BRW = (F_CPU / F_I2C) - 1;

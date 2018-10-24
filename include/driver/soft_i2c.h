@@ -6,6 +6,9 @@ class SoftI2C {
 		SoftI2C(const SoftI2C &copy);
 
 		unsigned char sda, scl;
+#if SOFTI2C_PULLUP_EXTERNAL || SOFTI2C_PULLUP_FIXED_GPIO
+		unsigned char sda_pull, scl_pull;
+#endif
 
 		void start();
 		void stop();
@@ -13,7 +16,13 @@ class SoftI2C {
 		unsigned char rx(bool send_ack);
 
 	public:
+#if SOFTI2C_PULLUP_EXTERNAL || SOFTI2C_PULLUP_FIXED_GPIO
+		SoftI2C(unsigned char sda, unsigned char scl,
+				unsigned char sda_pull, unsigned char scl_pull) :
+			sda(sda), scl(scl), sda_pull(sda_pull), scl_pull(scl_pull) {}
+#else
 		SoftI2C(unsigned char sda, unsigned char scl) : sda(sda), scl(scl) {}
+#endif
 		signed char setup();
 		void scan(unsigned int *results);
 		signed char xmit(unsigned char address,
