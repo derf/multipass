@@ -166,6 +166,23 @@ class GPIO {
 				}
 			}
 		}
+		inline void write_mask(unsigned char const pin_base, unsigned char set_mask, unsigned char clear_mask) {
+			if (pin_base < p2_0) {
+				P1OUT = (P1OUT | set_mask) & ~clear_mask;
+			}
+			if (pin_base < p3_0) {
+				P2OUT = (P2OUT | set_mask) & ~clear_mask;
+			}
+			if (pin_base < p4_0) {
+				P3OUT = (P3OUT | set_mask) & ~clear_mask;
+			}
+			if (pin_base < pj_0) {
+				P4OUT = (P4OUT | set_mask) & ~clear_mask;
+			}
+			if (pin_base < PIN_INVALID) {
+				PJOUT = (PJOUT | set_mask) & ~clear_mask;
+			}
+		}
 };
 
 extern GPIO gpio;
