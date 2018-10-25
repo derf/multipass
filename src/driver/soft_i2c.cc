@@ -46,10 +46,8 @@ signed char SoftI2C::setup()
 #endif
 #ifdef SOFTI2C_PULLUP_FIXED_GPIO
 #if MULTIPASS_ARCH_msp430fr5969lp
-	gpio.output(GPIO::p1_4);
-	gpio.output(GPIO::p1_5);
-	gpio.write(GPIO::p1_4, 1);
-	gpio.write(GPIO::p1_5, 1);
+	gpio.output(GPIO::p1_4, 1);
+	gpio.output(GPIO::p1_5, 1);
 #else
 #error "softi2c_pullup=gpio not supported on this architecture"
 #endif /* MULTIPASS_ARCH_* */
