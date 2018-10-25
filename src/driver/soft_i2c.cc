@@ -198,6 +198,18 @@ inline void await_timer()
 
 signed char SoftI2C::setup()
 {
+#ifdef SOFTI2C_PULLUP_EXTERNAL
+	gpio.output(sda_pull);
+	gpio.output(scl_pull);
+#endif
+#ifdef SOFTI2C_PULLUP_FIXED_GPIO
+#if MULTIPASS_ARCH_msp430fr5969lp
+	gpio.output(GPIO::p1_4, 1);
+	gpio.output(GPIO::p1_5, 1);
+#else
+#error "softi2c_pullup=gpio not supported on this architecture"
+#endif /* MULTIPASS_ARCH_* */
+#endif /* SOFTI2C_PULLUP_FIXED_GPIO */
 	SDA_HIGH;
 	SCL_HIGH;
 	/*
