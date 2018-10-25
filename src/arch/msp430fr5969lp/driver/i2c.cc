@@ -8,6 +8,17 @@
 
 volatile unsigned short old_ifg = 0;
 
+inline void await_i2c_int(unsigned int ie_flags, unsigned int ifg_flags)
+{
+	UCB0IFG = 0;
+	old_ifg = 0;
+	UCB0IE = ie_flags;
+	while (!(old_ifg & ifg_flags)) {
+		arch.idle();
+	}
+	UCB0IE = 0;
+}
+
 signed char I2C::setup()
 {
 #ifdef I2C_PULLUP_FIXED_GPIO
@@ -58,13 +69,7 @@ signed char I2C::xmit(unsigned char address,
 	if (tx_len) {
 		UCB0CTL1 |= UCTR | UCTXSTT;
 		for (i = 0; i < tx_len; i++) {
-			UCB0IFG = 0;
-			old_ifg = 0;
-			UCB0IE = UCTXIE0 | UCNACKIE | UCCLTOIE;
-			while (!(old_ifg & (UCTXIFG0 | UCNACKIFG | UCCLTOIFG))) {
-				arch.idle();
-			}
-			UCB0IE = 0;
+			await_i2c_int(UCTXIE0 | UCNACKIE | UCCLTOIE, UCTXIFG0 | UCNACKIFG | UCCLTOIFG);
 			if (old_ifg & (UCNACKIFG | UCCLTOIFG)) {
 				UCB0CTL1 |= UCTXSTP;
 				return -1;
@@ -72,11 +77,7 @@ signed char I2C::xmit(unsigned char address,
 			old_ifg = 0;
 			UCB0TXBUF = tx_buf[i];
 		}
-		UCB0IE = UCTXIE0 | UCNACKIE | UCCLTOIE;
-		while (!(old_ifg & (UCTXIFG0 | UCNACKIFG | UCCLTOIFG))) {
-			arch.idle();
-		}
-		UCB0IE = 0;
+		await_i2c_int(UCTXIE0 | UCNACKIE | UCCLTOIE, UCTXIFG0 | UCNACKIFG | UCCLTOIFG);
 		//if (UCB0IFG & (UCNACKIFG | UCCLTOIFG)) {
 		//	UCB0IFG &= ~UCNACKIFG;
 		//	UCB0IFG &= ~UCCLTOIFG;
@@ -96,13 +97,7 @@ signed char I2C::xmit(unsigned char address,
 		for (i = 0; i < rx_len; i++) {
 			if (i == rx_len - 1)
 				UCB0CTL1 |= UCTXSTP;
-			UCB0IFG = 0;
-			old_ifg = 0;
-			UCB0IE = UCRXIE | UCNACKIE | UCCLTOIE;
-			while (!(old_ifg & (UCRXIFG0 | UCNACKIFG | UCCLTOIFG))) {
-				arch.idle();
-			}
-			UCB0IE = 0;
+			await_i2c_int(UCRXIE | UCNACKIE | UCCLTOIE, UCRXIFG0 | UCNACKIFG | UCCLTOIFG);
 			rx_buf[i] = UCB0RXBUF;
 			UCB0IFG &= ~UCRXIFG0;
 		}
