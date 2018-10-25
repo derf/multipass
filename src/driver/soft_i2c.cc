@@ -176,6 +176,15 @@ signed char SoftI2C::xmit(unsigned char address,
 
 volatile unsigned char timer_done = 0;
 
+/*
+ * Note: On MSP430, if F_CPU / F_I2C < 60 (approx.), await_timer() does not
+ * work.  Probably related to missed interrupts / not enough cycles between
+ * start and idle?  We work around this for now by simulating an immediate
+ * return in these cases.
+ */
+#if MULTIPASS_ARCH_msp430fr5969lp && ((F_CPU / F_I2C) < 60)
+inline void await_timer() {}
+#else
 inline void await_timer()
 {
 	timer_done = 0;
@@ -185,6 +194,7 @@ inline void await_timer()
 	}
 	timer.stop();
 }
+#endif
 
 signed char SoftI2C::setup()
 {
