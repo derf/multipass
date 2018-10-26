@@ -104,8 +104,14 @@ volatile char run_loop = 0;
 
 void Arch::delay_us(unsigned int const us)
 {
-	for (unsigned int i = 0; i < us/10; i++) {
-		__delay_cycles(F_CPU / 100000UL);
+	if (us < 10) {
+		for (unsigned int i = 0; i < us; i++) {
+			__delay_cycles(F_CPU / 1000000UL);
+		}
+	} else {
+		for (unsigned int i = 0; i < us/10; i++) {
+			__delay_cycles(F_CPU / 100000UL);
+		}
 	}
 }
 void Arch::delay_ms(unsigned int const ms)

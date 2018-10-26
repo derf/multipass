@@ -11,6 +11,7 @@
 #error "SOFTI2C_TIMER and TIMER_CYCLES are mutually exclusive"
 #endif
 #include "driver/timer.h"
+volatile unsigned char timer_done = 0;
 #endif
 
 #ifdef SOFTI2C_PULLUP_INTERNAL
@@ -30,171 +31,33 @@
 #define SCL_LOW gpio.output(scl)
 #endif /* SOFTI2C_PULLUP */
 
-#ifndef SOFTI2C_TIMER
 
-#if F_I2C < 50000
-#define I2C_WAIT arch.delay_us((500000UL / F_I2C) - 10)
-#else
-#define I2C_WAIT
-#endif /* !SOFTI2C_TIMER */
-
-signed char SoftI2C::setup()
+inline void i2c_wait()
 {
-#ifdef SOFTI2C_PULLUP_EXTERNAL
-	gpio.output(sda_pull);
-	gpio.output(scl_pull);
-#endif
-#ifdef SOFTI2C_PULLUP_FIXED_GPIO
-#if MULTIPASS_ARCH_msp430fr5969lp
-	gpio.output(GPIO::p1_4, 1);
-	gpio.output(GPIO::p1_5, 1);
-#else
-#error "softi2c_pullup=gpio not supported on this architecture"
-#endif /* MULTIPASS_ARCH_* */
-#endif /* SOFTI2C_PULLUP_FIXED_GPIO */
-	SDA_HIGH;
-	SCL_HIGH;
-	return 0;
-}
-
-void SoftI2C::start()
-{
-	SDA_HIGH;
-	SCL_HIGH;
-	I2C_WAIT;
-	SDA_LOW;
-	I2C_WAIT;
-	SCL_LOW;
-}
-
-void SoftI2C::stop()
-{
-	SCL_LOW;
-	I2C_WAIT;
-	SDA_LOW;
-	I2C_WAIT;
-	SCL_HIGH;
-	I2C_WAIT;
-	SDA_HIGH;
-}
-
-bool SoftI2C::tx(unsigned char byte)
-{
-	unsigned char got_ack = 0;
-	for (unsigned char i = 0; i <= 8; i++) {
-		if ((byte & 0x80) || (i == 8)) {
-			SDA_HIGH;
-		} else {
-			SDA_LOW;
-		}
-		byte <<= 1;
-		I2C_WAIT;
-		SCL_HIGH;
-		while (!gpio.read(scl)) ;
-		I2C_WAIT;
-		if (i == 8) {
-			if (!gpio.read(sda)) {
-				got_ack = 1;
-			}
-		}
-		SCL_LOW;
-		I2C_WAIT;
-	}
-	return got_ack;
-}
-
-unsigned char SoftI2C::rx(bool send_ack)
-{
-	unsigned char byte = 0;
-	SDA_HIGH;
-	for (unsigned char i = 0; i <= 8; i++) {
-		I2C_WAIT;
-		SCL_HIGH;
-		while (!gpio.read(scl)) ;
-		I2C_WAIT;
-		if ((i < 8) && gpio.read(sda)) {
-			byte |= 1 << (7 - i);
-		}
-		I2C_WAIT;
-		SCL_LOW;
-		I2C_WAIT;
-		if ((i == 7) && send_ack) {
-			SDA_LOW;
-		} else if ((i == 8) && send_ack) {
-			SDA_HIGH;
-		}
-	}
-	return byte;
-}
-
-void SoftI2C::scan(unsigned int *results)
-{
-	unsigned char i2caddr;
-	for (unsigned char address = 0; address < 128; address++) {
-
-		i2caddr = (address << 1) | 0;
-
-		start();
-
-		if (tx(i2caddr)) {
-			results[address / (8 * sizeof(unsigned int))] |= 1 << (address % (8 * sizeof(unsigned int)));
-			stop();
-		}
-	}
-	stop();
-}
-
-signed char SoftI2C::xmit(unsigned char address,
-		unsigned char tx_len, unsigned char *tx_buf,
-		unsigned char rx_len, unsigned char *rx_buf)
-{
-	unsigned char i;
-
-	if (tx_len) {
-		start();
-		tx((address << 1) | 0);
-
-		for (i = 0; i < tx_len; i++) {
-			tx(tx_buf[i]);
-		}
-	}
-	if (rx_len) {
-		start();
-		tx((address << 1) | 1);
-
-		for (i = 1; i <= rx_len; i++) {
-			rx_buf[i-1] = rx((i < rx_len) * 1);
-		}
-	}
-
-	stop();
-
-	return 0;
-}
-
-#else
-
-volatile unsigned char timer_done = 0;
-
+#ifdef SOFTI2C_TIMER
 /*
- * Note: On MSP430, if F_CPU / F_I2C < 60 (approx.), await_timer() does not
+ * Note: On MSP430, if F_CPU / F_I2C < 60 (approx.), i2c_wait() does not
  * work.  Probably related to missed interrupts / not enough cycles between
  * start and idle?  We work around this for now by simulating an immediate
  * return in these cases.
  */
 #if MULTIPASS_ARCH_msp430fr5969lp && ((F_CPU / F_I2C) < 60)
-inline void await_timer() {}
 #else
-inline void await_timer()
-{
 	timer_done = 0;
 	timer.start(1);
 	while (!timer_done) {
 		arch.idle();
 	}
 	timer.stop();
-}
 #endif
+#else /* !SOFTI2C_TIMER */
+#if (500000UL / F_I2C) > 11
+	arch.delay_us((500000UL / F_I2C) - 10);
+#else
+	arch.delay_us(500000UL / F_I2C);
+#endif
+#endif /* SOFTI2C_TIMER */
+}
 
 signed char SoftI2C::setup()
 {
@@ -212,6 +75,7 @@ signed char SoftI2C::setup()
 #endif /* SOFTI2C_PULLUP_FIXED_GPIO */
 	SDA_HIGH;
 	SCL_HIGH;
+#ifdef SOFTI2C_TIMER
 	/*
 	 * I2C frequency is the time between two SCL low->high transitions
 	 * (or high->low, whatever you prefer). For the timer, we need to set the
@@ -221,6 +85,7 @@ signed char SoftI2C::setup()
 	 * Timer Freq [kHz] = I2C Freq [Hz] * 2 / 1000
 	 */
 	timer.setup_khz(F_I2C / 500);
+#endif
 	return 0;
 }
 
@@ -228,21 +93,22 @@ void SoftI2C::start()
 {
 	SDA_HIGH;
 	SCL_HIGH;
-	await_timer();
+	i2c_wait(); // t_{SU,STA} >= 4.7 µs (für Sr)
 	SDA_LOW;
-	await_timer();
+	i2c_wait(); // t_{HD,STA} >= 4 µs
 	SCL_LOW;
-	await_timer();
+	i2c_wait();
 }
 
 void SoftI2C::stop()
 {
 	SCL_LOW;
 	SDA_LOW;
-	await_timer();
+	i2c_wait();
 	SCL_HIGH;
-	await_timer();
+	i2c_wait(); // t_{SU,STO} >= 4 µs
 	SDA_HIGH;
+	i2c_wait(); // t_{BUF} >= 4.7 µs
 }
 
 bool SoftI2C::tx(unsigned char byte)
@@ -255,8 +121,9 @@ bool SoftI2C::tx(unsigned char byte)
 			SDA_LOW;
 		}
 		byte <<= 1;
+		i2c_wait();
 		SCL_HIGH;
-		await_timer();
+		i2c_wait();
 		while (!gpio.read(scl)) ;
 		if (i == 8) {
 			if (!gpio.read(sda)) {
@@ -264,7 +131,6 @@ bool SoftI2C::tx(unsigned char byte)
 			}
 		}
 		SCL_LOW;
-		await_timer();
 	}
 	return got_ack;
 }
@@ -274,14 +140,14 @@ unsigned char SoftI2C::rx(bool send_ack)
 	unsigned char byte = 0;
 	SDA_HIGH;
 	for (unsigned char i = 0; i <= 8; i++) {
+		i2c_wait();
 		SCL_HIGH;
-		await_timer();
+		i2c_wait();
 		while (!gpio.read(scl)) ;
 		if ((i < 8) && gpio.read(sda)) {
 			byte |= 1 << (7 - i);
 		}
 		SCL_LOW;
-		await_timer();
 		if ((i == 7) && send_ack) {
 			SDA_LOW;
 		} else if ((i == 8) && send_ack) {
@@ -336,10 +202,10 @@ signed char SoftI2C::xmit(unsigned char address,
 	return 0;
 }
 
+#ifdef SOFTI2C_TIMER
 ON_TIMER_INTERRUPT_head
 	timer_done = 1;
 ON_TIMER_INTERRUPT_tail
-
 #endif
 
 #if SOFTI2C_PULLUP_EXTERNAL
