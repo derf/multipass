@@ -30,7 +30,7 @@ class XDRStream {
 	XDRStream & operator<<(unsigned long long number);
 	XDRStream & operator<<(long long number);
 	XDRStream & operator<<(char const *text);
-	template<int N> XDRStream & operator<<(char const (&text)[N]);
+	template<int TSize> XDRStream & operator<<(char const (&text)[TSize]);
 	XDRStream & operator<<(XDRStream & (*fun) (XDRStream &));
 };
 
@@ -41,7 +41,7 @@ XDRStream & flush(XDRStream & os);
 // TERM: zero-termination
 XDRStream & term(XDRStream & os);
 
-template<int N>
+template<int TSize>
 XDRStream & opaque(XDRStream & os);
 
 XDRStream & fixed(XDRStream & os);

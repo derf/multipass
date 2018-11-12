@@ -82,13 +82,13 @@ XDRStream & XDRStream::operator<<(char const *data){
 	return *this;
 }
 
-template<int N>
-XDRStream & XDRStream::operator<<(char const (&data)[N]){
+template<int TSize>
+XDRStream & XDRStream::operator<<(char const (&data)[TSize]){
 	if (!is_fixed_length) {
-		*this << N;
+		*this << TSize;
 	}
 	uint32_t i;
-	for (i = 0; i < N; i++) {
+	for (i = 0; i < TSize; i++) {
 		put(data[i]);
 	}
 	while ((i++) % 4 != 0){
