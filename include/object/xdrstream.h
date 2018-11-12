@@ -21,16 +21,14 @@ class XDRStream {
 
 	XDRStream & operator<<(char c);
 	XDRStream & operator<<(unsigned char c);
-	XDRStream & operator<<(unsigned short number);
-	XDRStream & operator<<(short number);
-	XDRStream & operator<<(unsigned int number);
-	XDRStream & operator<<(int number);
-	XDRStream & operator<<(unsigned long number);
-	XDRStream & operator<<(long number);
-	XDRStream & operator<<(unsigned long long number);
-	XDRStream & operator<<(long long number);
+	XDRStream & operator<<(uint16_t number);
+	XDRStream & operator<<(int16_t number);
+	XDRStream & operator<<(uint32_t number);
+	XDRStream & operator<<(int32_t number);
+	XDRStream & operator<<(uint64_t number);
+	XDRStream & operator<<(int64_t number);
 	XDRStream & operator<<(char const *text);
-	template<int TSize> XDRStream & operator<<(char const (&text)[TSize]);
+	template<uint32_t TSize> XDRStream & operator<<(char const (&text)[TSize]);
 	XDRStream & operator<<(XDRStream & (*fun) (XDRStream &));
 };
 

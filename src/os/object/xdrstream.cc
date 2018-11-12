@@ -82,7 +82,7 @@ XDRStream & XDRStream::operator<<(char const *data){
 	return *this;
 }
 
-template<int TSize>
+template<uint32_t TSize>
 XDRStream & XDRStream::operator<<(char const (&data)[TSize]){
 	if (!is_fixed_length) {
 		*this << TSize;
