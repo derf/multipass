@@ -12,12 +12,12 @@ class Timer {
 	public:
 		Timer() {}
 
-		inline void setup_khz(unsigned char const frequency) {
+		inline void setup_khz(uint16_t const frequency) {
 			OCR0A = frequency ? 255 / frequency : 1;
 			TCCR0A = _BV(WGM01);
 			prescaler = _BV(CS01) | _BV(CS00);
 		}
-		inline void setup_hz(unsigned char const frequency) {
+		inline void setup_hz(uint16_t const frequency) {
 			OCR0A = frequency ? 255 / frequency : 1;
 			TCCR0A = _BV(WGM01);
 			prescaler = _BV(CS02) | _BV(CS00);
