@@ -7,7 +7,9 @@
 // Small or big machine?
 #ifndef ARDUINOJSON_EMBEDDED_MODE
 #if defined(ARDUINO) || defined(__IAR_SYSTEMS_ICC__) || defined(__XC) || \
-    defined(__ARMCC_VERSION)
+    defined(__ARMCC_VERSION) || defined(MULTIPASS_ARCH_msp430fr5969lp) || \
+    defined(MULTIPASS_ARCH_arduino_nano) || defined(MULTIPASS_ARCH_blinkenrocket) || \
+    defined(MULTIPASS_ARCH_esp8266)
 #define ARDUINOJSON_EMBEDDED_MODE 1
 #else
 #define ARDUINOJSON_EMBEDDED_MODE 0
