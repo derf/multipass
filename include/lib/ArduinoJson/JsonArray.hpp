@@ -141,9 +141,9 @@ class JsonArray : public Internals::JsonPrintable<JsonArray>,
   }
 
   // Imports a 1D array
-  template <typename T, size_t N>
-  bool copyFrom(T (&array)[N]) {
-    return copyFrom(array, N);
+  template <typename T, size_t TN>
+  bool copyFrom(T (&array)[TN]) {
+    return copyFrom(array, TN);
   }
 
   // Imports a 1D array
@@ -170,9 +170,9 @@ class JsonArray : public Internals::JsonPrintable<JsonArray>,
   }
 
   // Exports a 1D array
-  template <typename T, size_t N>
-  size_t copyTo(T (&array)[N]) const {
-    return copyTo(array, N);
+  template <typename T, size_t TN>
+  size_t copyTo(T (&array)[TN]) const {
+    return copyTo(array, TN);
   }
 
   // Exports a 1D array

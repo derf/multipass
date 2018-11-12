@@ -49,9 +49,9 @@ class JsonPrintable {
     return printTo(sb);
   }
 
-  template <size_t N>
-  size_t printTo(char (&buffer)[N]) const {
-    return printTo(buffer, N);
+  template <size_t TN>
+  size_t printTo(char (&buffer)[TN]) const {
+    return printTo(buffer, TN);
   }
 
   template <typename TString>
@@ -72,9 +72,9 @@ class JsonPrintable {
     return prettyPrintTo(sb);
   }
 
-  template <size_t N>
-  size_t prettyPrintTo(char (&buffer)[N]) const {
-    return prettyPrintTo(buffer, N);
+  template <size_t TN>
+  size_t prettyPrintTo(char (&buffer)[TN]) const {
+    return prettyPrintTo(buffer, TN);
   }
 
   template <typename Print>

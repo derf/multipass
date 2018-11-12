@@ -16,8 +16,8 @@ template <typename T>
 struct IsArray<T[]> {
   static const bool value = true;
 };
-template <typename T, size_t N>
-struct IsArray<T[N]> {
+template <typename T, size_t TN>
+struct IsArray<T[TN]> {
   static const bool value = true;
 };
 }
