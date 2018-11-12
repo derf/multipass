@@ -8,16 +8,25 @@
 
 volatile unsigned short old_ifg = 0;
 
+#if (F_CPU / F_I2C) < 45
+inline void await_i2c_int(unsigned int ie_flags, unsigned int ifg_flags) {
+	while (!(UCB0IFG & ifg_flags)) ;
+	if (UCB0IFG & (UCNACKIFG | UCCLTOIFG)) {
+		UCB0IFG &= ~(UCNACKIFG | UCCLTOIFG);
+	}
+}
+#else
 inline void await_i2c_int(unsigned int ie_flags, unsigned int ifg_flags)
 {
 	UCB0IFG = 0;
 	old_ifg = 0;
 	UCB0IE = ie_flags;
-	while (!(old_ifg & ifg_flags)) {
+	do {
 		arch.idle();
-	}
+	} while (!(old_ifg & ifg_flags));
 	UCB0IE = 0;
 }
+#endif
 
 signed char I2C::setup()
 {

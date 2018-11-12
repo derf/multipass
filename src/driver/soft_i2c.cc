@@ -20,10 +20,10 @@ volatile unsigned char timer_done = 0;
 #define SCL_HIGH gpio.input(scl, 1)
 #define SCL_LOW gpio.output(scl, 0)
 #elif SOFTI2C_PULLUP_EXTERNAL
-#define SDA_HIGH do { gpio.input(sda); gpio.write(sda_pull, 1); } while (0)
-#define SDA_LOW do { gpio.write(sda_pull, 0); gpio.output(sda); } while (0)
-#define SCL_HIGH do { gpio.input(scl); gpio.write(scl_pull, 1); } while (0)
-#define SCL_LOW do { gpio.write(scl_pull, 0); gpio.output(scl); } while (0)
+#define SDA_HIGH { gpio.input(sda); gpio.write(sda_pull, 1); }
+#define SDA_LOW { gpio.write(sda_pull, 0); gpio.output(sda); }
+#define SCL_HIGH { gpio.input(scl); gpio.write(scl_pull, 1); }
+#define SCL_LOW { gpio.write(scl_pull, 0); gpio.output(scl); }
 #else /* !SOFTI2C_PULLUP_{INTERNAL,EXTERNAL} */
 #define SDA_HIGH gpio.input(sda)
 #define SDA_LOW gpio.output(sda)
