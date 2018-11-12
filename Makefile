@@ -116,6 +116,10 @@ ifeq (${wakeup}, 1)
 	COMMON_FLAGS += -DWITH_WAKEUP
 endif
 
+ifeq (${ostream}, 1)
+	COMMON_FLAGS += -DWITH_OSTREAM
+endif
+
 include src/arch/${arch}/Makefile.inc
 
 clean: arch_clean

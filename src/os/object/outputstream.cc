@@ -140,6 +140,16 @@ OutputStream & OutputStream::operator<<(OutputStream & (*fkt) (OutputStream &))
 	return fkt(*this);
 }
 
+#ifdef WITH_OSTREAM
+OutputStream & OutputStream::operator<<(std::string s)
+{
+	for (auto c : s) {
+		put(c);
+	}
+	return *this;
+}
+#endif
+
 void OutputStream::setBase(uint8_t b)
 {
 	if (b == 2 || b == 8 || b == 10 || b == 16) {

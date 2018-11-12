@@ -2,6 +2,9 @@
 #define OUTPUTSTREAM_H
 
 #include <stdint.h>
+#ifdef WITH_OSTREAM
+#include <ostream>
+#endif
 
 class OutputStream {
  private:
@@ -38,6 +41,10 @@ class OutputStream {
 	OutputStream & operator<<(float number);
 	OutputStream & operator<<(double number);
 	OutputStream & operator<<(OutputStream & (*fun) (OutputStream &));
+
+#ifdef WITH_OSTREAM
+	OutputStream & operator<<(std::string s);
+#endif
 
 	void setBase(uint8_t b);
 	void printf_uint8(uint8_t num);
