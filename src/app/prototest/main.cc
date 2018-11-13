@@ -1,13 +1,30 @@
 #include "arch.h"
 #include "driver/gpio.h"
 #include "driver/stdout.h"
+
+#ifdef PROTOTEST_ARDUINOJSON
 #include "lib/ArduinoJson.h"
+#endif
+#ifdef PROTOTEST_MODERNJSON
 #include "lib/modernjson/json.h"
+#endif
+#ifdef PROTOTEST_NANOPB
+#include <pb.h>
+#include "nanopb.pb.h"
+#include <pb_encode.h>
+#include <pb_decode.h>
+#endif
+#ifdef PROTOTEST_XDR
 #include "object/stdbuf.h"
 #include "object/xdrstream.h"
 #include "object/xdrinput.h"
+#endif
 
+#include <stdint.h>
+
+#ifdef PROTOTEST_XDR
 char buf[256];
+#endif
 
 // TODOs
 //
@@ -25,55 +42,19 @@ char buf[256];
 
 void loop(void)
 {
-	static unsigned int ts = 0;
-	char json[] = "{\"sensor\":\"gps\",\"time\":1351824120,\"data\":[48.756080,2.302038]}";
-	ArduinoJson::StaticJsonBuffer<200> jsonBuffer;
-	ArduinoJson::JsonObject& root = jsonBuffer.parseObject(json);
-	const char *sensor = root["sensor"];
-	kout << "sensor: " << sensor << endl;
+	static uint16_t ts = 0;
 
 	/*
-	 * nlohmann modernjson serialization
+	 * XDR
 	 */
 
-	nlohmann::json js1;
-	js1["sensor"] = "gps";
-	js1["time"] = ts;
-	js1["data"] = {48.756080, 2.302038};
-	kout << js1.dump() << endl;
-
-	nlohmann::json js2 = {
-		{"sensor", "gps"},
-		{"time", ts},
-		{"data", {48.756080, 2.302038} }
-	};
-	kout << js2.dump() << endl;
-
-	nlohmann::json j = R"({"compact": true, "schema": 0})"_json;
-	j["ts"] = ts;
-	std::vector<std::uint8_t> v_cbor = nlohmann::json::to_cbor(j);
-
-	kout << "CBOR vector is " << hex;
-	for (unsigned int i = 0; i < v_cbor.size(); i++) {
-		kout << v_cbor[i] << " ";
-	}
-	kout << endl;
-
-	kout << "manual JSON: {\"sensor\":\"gps\",\"time\":" << dec << ts;
-	kout << ",\"data\":[" << 48.756080 << "," << 2.302038 << "]}" << endl;
-
-	/*
-	 * nlohmann modernjson deserialization
-	 */
-
-	auto jd1 = R"({"compact": true, "schema": 0})"_json; 
-
+#ifdef PROTOTEST_XDR
 	BufferOutput<XDRStream> foostream(buf);
 	XDRInput input(buf);
 
 	char test[] = "Obai World!";
 
-	foostream << 123 << -2 << ts << 0 << 4294967296 << 0;
+	foostream << (uint32_t)123 << (int16_t)-2 << ts << (uint16_t)0 << (uint64_t)4294967296 << (uint16_t)0;
 	foostream.setNextArrayLen(3);
 	foostream << fixed << "Hai";
 	foostream.setNextArrayLen(sizeof(test));
@@ -97,6 +78,44 @@ void loop(void)
 	uint32_t len = input.get_opaque_length();
 	kout << ", " << input.get_opaque(len);
 	kout << endl;
+#endif
+
+	/*
+	 * ArduinoJSON
+	 */
+
+#ifdef PROTOTEST_ARDUINOJSON
+	char json[] = "{\"sensor\":\"gps\",\"time\":1351824120,\"data\":[48.756080,2.302038]}";
+	ArduinoJson::StaticJsonBuffer<200> jsonBuffer;
+	ArduinoJson::JsonObject& root = jsonBuffer.parseObject(json);
+	const char *sensor = root["sensor"];
+	kout << "sensor: " << sensor << endl;
+#endif
+
+	/*
+	 * NanoPB
+	 */
+
+#ifdef PROTOTEST_NANOPB
+
+	uint8_t buf[128];
+	size_t len;
+	bool status;
+
+	{
+		TestMessage msg = TestMessage_init_zero;
+		pb_ostream_t stream = pb_ostream_from_buffer(buf, sizeof(buf));
+		msg.number = 423;
+		status = pb_encode(&stream, TestMessage_fields, &msg);
+		len = stream.bytes_written;
+		kout << len << " bytes written" << endl;
+	}
+
+#endif
+
+	/*
+	 * Common
+	 */
 
 	gpio.led_toggle(1);
 #ifdef TIMER_S
