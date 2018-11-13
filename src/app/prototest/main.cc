@@ -17,6 +17,9 @@
 #include <pb_encode.h>
 #include <pb_decode.h>
 #endif
+#ifdef PROTOTEST_UBJSON
+#include "ubj.h"
+#endif
 #ifdef PROTOTEST_XDR
 #include "object/stdbuf.h"
 #include "object/xdrstream.h"
@@ -141,6 +144,33 @@ void loop(void)
 		kout << "Encoding failed" << endl;
 	}
 	kout << "mpack is " << hex;
+	for (unsigned int i = 0; i < 128; i++) {
+		kout << (uint8_t)buf[i];
+	}
+	kout << endl;
+
+#endif
+
+	/*
+	 * UBJSON
+	 */
+
+#ifdef PROTOTEST_UBJSON
+
+	uint8_t buf[128];
+	for (unsigned int i = 0; i < 128; i++) {
+		buf[i] = 0;
+	}
+
+	ubjw_context_t* ctx = ubjw_open_memory(buf, buf + sizeof(buf));
+	ubjw_begin_array(ctx, UBJ_MIXED, 0);
+	ubjw_write_int16(ctx, ts);
+	ubjw_write_string(ctx, "Noot Noot");
+	ubjw_end(ctx);
+
+	kout << "ubjr_close_context: " << ubjw_close_context(ctx) << endl;
+
+	kout << "ubjr is " << hex;
 	for (unsigned int i = 0; i < 128; i++) {
 		kout << (uint8_t)buf[i];
 	}

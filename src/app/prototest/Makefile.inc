@@ -23,7 +23,7 @@ endif
 
 ifeq (${prototest_ubjson}, 1)
 	COMMON_FLAGS += -DPROTOTEST_UBJSON
-	CXX_TARGETS += src/lib/ubjson/ubjr.cc src/lib/ubjson/ubjw.cc
+	C_TARGETS += src/lib/ubjson/ubjr.c src/lib/ubjson/ubjw.c
 	INCLUDES += -Iinclude/lib/ubjson
 endif
 
