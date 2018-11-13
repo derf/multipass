@@ -22,22 +22,22 @@ ifeq (${aspectc}, 1)
 	CXX = ag++ -r build/repo.acp -v 0 --c_compiler avr-g++ -p . --Xcompiler
 endif
 
-TARGETS += src/arch/arduino-nano/arch.cc
-TARGETS += src/arch/arduino-nano/driver/gpio.cc
-TARGETS += src/arch/arduino-nano/driver/stdout.cc
-TARGETS += src/arch/arduino-nano/driver/uptime.cc
+CXX_TARGETS += src/arch/arduino-nano/arch.cc
+CXX_TARGETS += src/arch/arduino-nano/driver/gpio.cc
+CXX_TARGETS += src/arch/arduino-nano/driver/stdout.cc
+CXX_TARGETS += src/arch/arduino-nano/driver/uptime.cc
 
 ifneq ($(findstring softi2c,${drivers}), )
 else ifneq ($(findstring i2c,${arch_drivers}), )
-	TARGETS += src/arch/arduino-nano/driver/i2c.cc
+	CXX_TARGETS += src/arch/arduino-nano/driver/i2c.cc
 endif
 
 ifneq ($(findstring stdin,${arch_drivers}), )
-	TARGETS += src/arch/arduino-nano/driver/stdin.cc
+	CXX_TARGETS += src/arch/arduino-nano/driver/stdin.cc
 endif
 
 ifneq ($(findstring timer,${arch_drivers}), )
-	TARGETS += src/arch/arduino-nano/driver/timer.cc
+	CXX_TARGETS += src/arch/arduino-nano/driver/timer.cc
 endif
 
 ifeq (${cpu_freq}, 16000000)
@@ -64,7 +64,7 @@ endif
 
 COMMON_FLAGS += -DBAUD=${uart_baud}UL
 
-OBJECTS = ${TARGETS:.cc=.o}
+OBJECTS = ${CXX_TARGETS:.cc=.o}
 
 .cc.o:
 	${QUIET}${CXX} ${INCLUDES} ${COMMON_FLAGS} ${CXXFLAGS} -c -o $@ ${@:.o=.cc}

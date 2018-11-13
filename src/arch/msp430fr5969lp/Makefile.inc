@@ -13,40 +13,40 @@ CC = /opt/msp430/ti/gcc/bin/msp430-elf-gcc
 CXX = /opt/msp430/ti/gcc/bin/msp430-elf-g++
 OBJCOPY = /opt/msp430/ti/gcc/bin/msp430-elf-objcopy
 
-TARGETS += src/arch/msp430fr5969lp/arch.cc
+CXX_TARGETS += src/arch/msp430fr5969lp/arch.cc
 
 ifeq (${aspectc}, 1)
 	CXX = ag++ -r build/repo.acp -v 0 --c_compiler /opt/msp430/ti/gcc/bin/msp430-elf-g++ -p . --Xcompiler
 endif
 
 ifneq ($(findstring adc,${arch_drivers}), )
-	TARGETS += src/arch/msp430fr5969lp/driver/adc.cc
+	CXX_TARGETS += src/arch/msp430fr5969lp/driver/adc.cc
 endif
 
-TARGETS += src/arch/msp430fr5969lp/driver/gpio.cc
-TARGETS += src/arch/msp430fr5969lp/driver/stdout.cc
-TARGETS += src/arch/msp430fr5969lp/driver/uptime.cc
+CXX_TARGETS += src/arch/msp430fr5969lp/driver/gpio.cc
+CXX_TARGETS += src/arch/msp430fr5969lp/driver/stdout.cc
+CXX_TARGETS += src/arch/msp430fr5969lp/driver/uptime.cc
 
 ifneq ($(findstring stdin,${arch_drivers}), )
-	TARGETS += src/arch/msp430fr5969lp/driver/stdin.cc
+	CXX_TARGETS += src/arch/msp430fr5969lp/driver/stdin.cc
 endif
 
 ifneq ($(findstring softi2c,${drivers}), )
 else ifneq ($(findstring i2c,${arch_drivers}), )
-	TARGETS += src/arch/msp430fr5969lp/driver/i2c.cc
+	CXX_TARGETS += src/arch/msp430fr5969lp/driver/i2c.cc
 	COMMON_FLAGS += -DDRIVER_I2C
 endif
 
 ifneq ($(findstring spi_a1,${arch_drivers}), )
-	TARGETS += src/arch/msp430fr5969lp/driver/spi_a1.cc
+	CXX_TARGETS += src/arch/msp430fr5969lp/driver/spi_a1.cc
 endif
 
 ifneq ($(findstring spi_b,${arch_drivers}), )
-	TARGETS += src/arch/msp430fr5969lp/driver/spi_b.cc
+	CXX_TARGETS += src/arch/msp430fr5969lp/driver/spi_b.cc
 endif
 
 ifneq ($(findstring timer,${arch_drivers}), )
-	TARGETS += src/arch/msp430fr5969lp/driver/timer.cc
+	CXX_TARGETS += src/arch/msp430fr5969lp/driver/timer.cc
 endif
 
 ifneq (${cpu_freq}, )
@@ -56,7 +56,7 @@ else
 endif
 
 
-OBJECTS = ${TARGETS:.cc=.o}
+OBJECTS = ${CXX_TARGETS:.cc=.o}
 
 .cc.o:
 	${QUIET}${CXX} ${INCLUDES} ${COMMON_FLAGS} ${CXXFLAGS} -c -o $@ ${@:.o=.cc}

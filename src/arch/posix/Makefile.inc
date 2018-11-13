@@ -9,10 +9,10 @@ ifeq (${aspectc}, 1)
 	CXX = ag++ -r build/repo.acp -v 0 -p . --Xcompiler
 endif
 
-TARGETS += src/arch/posix/arch.cc src/arch/posix/driver/gpio.cc
-TARGETS += src/arch/posix/driver/stdout.cc src/arch/posix/driver/uptime.cc
+CXX_TARGETS += src/arch/posix/arch.cc src/arch/posix/driver/gpio.cc
+CXX_TARGETS += src/arch/posix/driver/stdout.cc src/arch/posix/driver/uptime.cc
 
-OBJECTS = ${TARGETS:.cc=.o}
+OBJECTS = ${CXX_TARGETS:.cc=.o}
 
 ifneq (${gpio_trace}, )
 	COMMON_FLAGS += -DGPIO_TRACE

@@ -17,17 +17,17 @@ ifeq (${aspectc}, 1)
 	CXX = ag++ -r build/repo.acp -v 0 --c_compiler avr-g++ -p . --Xcompiler
 endif
 
-TARGETS += src/arch/blinkenrocket/arch.cc
-TARGETS += src/arch/blinkenrocket/driver/gpio.cc
-TARGETS += src/arch/blinkenrocket/driver/stdout.cc
-TARGETS += src/arch/blinkenrocket/driver/uptime.cc
+CXX_TARGETS += src/arch/blinkenrocket/arch.cc
+CXX_TARGETS += src/arch/blinkenrocket/driver/gpio.cc
+CXX_TARGETS += src/arch/blinkenrocket/driver/stdout.cc
+CXX_TARGETS += src/arch/blinkenrocket/driver/uptime.cc
 
 ifneq ($(findstring softi2c,${drivers}), )
 else ifneq ($(findstring i2c,${arch_drivers}), )
-	TARGETS += src/arch/blinkenrocket/driver/i2c.cc
+	CXX_TARGETS += src/arch/blinkenrocket/driver/i2c.cc
 endif
 
-OBJECTS = ${TARGETS:.cc=.o}
+OBJECTS = ${CXX_TARGETS:.cc=.o}
 
 .cc.o:
 	${CXX} ${INCLUDES} ${COMMON_FLAGS} ${CXXFLAGS} -c -o $@ ${@:.o=.cc}

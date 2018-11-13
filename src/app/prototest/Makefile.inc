@@ -10,20 +10,26 @@ endif
 
 ifeq (${prototest_mpack}, 1)
 	COMMON_FLAGS += -DPROTOTEST_MPACK
-	TARGETS += src/lib/mpack/mpack.cc
+	CXX_TARGETS += src/lib/mpack/mpack.cc
 	INCLUDES += -Iinclude/lib/mpack
 endif
 
 ifeq (${prototest_nanopb}, 1)
 	COMMON_FLAGS += -DPROTOTEST_NANOPB
-	TARGETS += src/app/prototest/nanopb.pb.cc src/lib/nanopb/pb_common.cc
-	TARGETS += src/lib/nanopb/pb_decode.cc src/lib/nanopb/pb_encode.cc
+	CXX_TARGETS += src/app/prototest/nanopb.pb.cc src/lib/nanopb/pb_common.cc
+	CXX_TARGETS += src/lib/nanopb/pb_decode.cc src/lib/nanopb/pb_encode.cc
 	INCLUDES += -Iinclude/lib/nanopb
+endif
+
+ifeq (${prototest_ubjson}, 1)
+	COMMON_FLAGS += -DPROTOTEST_UBJSON
+	CXX_TARGETS += src/lib/ubjson/ubjr.cc src/lib/ubjson/ubjw.cc
+	INCLUDES += -Iinclude/lib/ubjson
 endif
 
 ifeq (${prototest_xdr}, 1)
 	COMMON_FLAGS += -DPROTOTEST_XDR
-	TARGETS += src/os/object/xdrstream.cc src/os/object/xdrinput.cc
+	CXX_TARGETS += src/os/object/xdrstream.cc src/os/object/xdrinput.cc
 endif
 
 %.pb.cc: %.proto

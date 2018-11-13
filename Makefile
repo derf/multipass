@@ -5,7 +5,7 @@ COMMON_FLAGS = -g -Os -Wall -Wextra -fno-rtti -fno-threadsafe-statics
 CFLAGS = -std=c99
 CXXFLAGS = -std=c++14
 
-TARGETS = src/app/${app}/main.cc src/os/object/cpp_helpers.cc src/os/object/outputstream.cc
+CXX_TARGETS = src/app/${app}/main.cc src/os/object/cpp_helpers.cc src/os/object/outputstream.cc
 
 QUIET = @
 
@@ -16,42 +16,42 @@ endif
 include src/app/${app}/Makefile.inc
 
 ifneq ($(findstring lm75,${drivers}), )
-	TARGETS += src/driver/lm75.cc
+	CXX_TARGETS += src/driver/lm75.cc
 	COMMON_FLAGS += -DDRIVER_LM75
 endif
 
 ifneq ($(findstring am2320,${drivers}), )
-	TARGETS += src/driver/am2320.cc
+	CXX_TARGETS += src/driver/am2320.cc
 	COMMON_FLAGS += -DDRIVER_AM2320
 endif
 
 ifneq ($(findstring ccs811,${drivers}), )
-	TARGETS += src/driver/ccs811.cc
+	CXX_TARGETS += src/driver/ccs811.cc
 	COMMON_FLAGS += -DDRIVER_CCS811
 endif
 
 ifneq ($(findstring eeprom24lc64,${drivers}), )
-	TARGETS += src/driver/eeprom24lc64.cc
+	CXX_TARGETS += src/driver/eeprom24lc64.cc
 	COMMON_FLAGS += -DDRIVER_EEPROM24LC64
 endif
 
 ifneq ($(findstring max44006,${drivers}), )
-	TARGETS += src/driver/max44006.cc
+	CXX_TARGETS += src/driver/max44006.cc
 	COMMON_FLAGS += -DDRIVER_MAX44006
 endif
 
 ifneq ($(findstring max44009,${drivers}), )
-	TARGETS += src/driver/max44009.cc
+	CXX_TARGETS += src/driver/max44009.cc
 	COMMON_FLAGS += -DDRIVER_MAX44009
 endif
 
 ifneq ($(findstring mmsimple,${drivers}), )
-	TARGETS += src/driver/mmsimple.cc
+	CXX_TARGETS += src/driver/mmsimple.cc
 	COMMON_FLAGS += -DDRIVER_MMSIMPLE
 endif
 
 ifneq ($(findstring sharp96,${drivers}), )
-	TARGETS += src/driver/sharp96.cc
+	CXX_TARGETS += src/driver/sharp96.cc
 	COMMON_FLAGS += -DDRIVER_SHARP6
 	COMMON_FLAGS += -DSHARP96_POWER_PIN=GPIO::${sharp96_power_pin}
 	COMMON_FLAGS += -DSHARP96_EN_PIN=GPIO::${sharp96_en_pin}
@@ -59,7 +59,7 @@ ifneq ($(findstring sharp96,${drivers}), )
 endif
 
 ifneq ($(findstring softi2c,${drivers}), )
-	TARGETS += src/driver/soft_i2c.cc
+	CXX_TARGETS += src/driver/soft_i2c.cc
 	COMMON_FLAGS += -DDRIVER_SOFTI2C
 endif
 

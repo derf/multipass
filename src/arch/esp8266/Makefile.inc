@@ -20,17 +20,17 @@ COMMON_FLAGS += -nostdlib -mlongcalls -D__ets__ -DICACHE_FLASH -DMULTIPASS_ARCH_
 CXXFLAGS = -std=c++11
 LDFLAGS += -nostdlib -Wl,--no-check-sections -u call_user_start -Wl,-static
 
-TARGETS += src/arch/esp8266/arch.cc src/arch/esp8266/driver/gpio.cc
-TARGETS += src/arch/esp8266/driver/stdout.cc src/arch/esp8266/driver/uptime.cc
+CXX_TARGETS += src/arch/esp8266/arch.cc src/arch/esp8266/driver/gpio.cc
+CXX_TARGETS += src/arch/esp8266/driver/stdout.cc src/arch/esp8266/driver/uptime.cc
 
-OBJECTS = ${TARGETS:.cc=.o}
+OBJECTS = ${CXX_TARGETS:.cc=.o}
 
 ifeq (${esp8266_led2}, 1)
 	COMMON_FLAGS += -DLED_ON_GPIO16
 endif
 
 ifneq ($(findstring stdin,${arch_drivers}), )
-	TARGETS += src/arch/esp8266/driver/stdin.cc
+	CXX_TARGETS += src/arch/esp8266/driver/stdin.cc
 endif
 
 .cc.o:
