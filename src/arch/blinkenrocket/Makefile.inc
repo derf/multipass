@@ -27,10 +27,13 @@ else ifneq ($(findstring i2c,${arch_drivers}), )
 	CXX_TARGETS += src/arch/blinkenrocket/driver/i2c.cc
 endif
 
-OBJECTS = ${CXX_TARGETS:.cc=.o}
+OBJECTS = ${CXX_TARGETS:.cc=.o} ${C_TARGETS:.c=.o}
 
 .cc.o:
-	${CXX} ${INCLUDES} ${COMMON_FLAGS} ${CXXFLAGS} -c -o $@ ${@:.o=.cc}
+	${QUIET}${CXX} ${INCLUDES} ${COMMON_FLAGS} ${CXXFLAGS} -c -o $@ ${@:.o=.cc}
+
+.cc.o:
+	${QUIET}${CC} ${INCLUDES} ${COMMON_FLAGS} ${CFLAGS} -c -o $@ ${@:.o=.c}
 
 build/system.elf: ${OBJECTS}
 	${CXX} ${COMMON_FLAGS} ${CXXFLAGS} -Wl,--gc-sections -o $@ ${OBJECTS}

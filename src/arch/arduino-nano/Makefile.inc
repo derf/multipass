@@ -45,10 +45,13 @@ else
 	COMMON_FLAGS += -DF_CPU=16000000UL
 endif
 
-OBJECTS = ${CXX_TARGETS:.cc=.o}
+OBJECTS = ${CXX_TARGETS:.cc=.o} ${C_TARGETS:.c=.o}
 
 .cc.o:
 	${QUIET}${CXX} ${INCLUDES} ${COMMON_FLAGS} ${CXXFLAGS} -c -o $@ ${@:.o=.cc}
+
+.c.o:
+	${QUIET}${CC} ${INCLUDES} ${COMMON_FLAGS} ${CFLAGS} -c -o $@ ${@:.o=.c}
 
 build/system.elf: ${OBJECTS}
 	${QUIET}${CXX} ${COMMON_FLAGS} ${CXXFLAGS} -Wl,--gc-sections -o $@ ${OBJECTS}

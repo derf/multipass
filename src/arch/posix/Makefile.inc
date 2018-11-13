@@ -12,7 +12,7 @@ endif
 CXX_TARGETS += src/arch/posix/arch.cc src/arch/posix/driver/gpio.cc
 CXX_TARGETS += src/arch/posix/driver/stdout.cc src/arch/posix/driver/uptime.cc
 
-OBJECTS = ${CXX_TARGETS:.cc=.o}
+OBJECTS = ${CXX_TARGETS:.cc=.o} ${C_TARGETS:.c=.o}
 
 ifneq (${gpio_trace}, )
 	COMMON_FLAGS += -DGPIO_TRACE
@@ -20,6 +20,9 @@ endif
 
 .cc.o:
 	${CXX} ${INCLUDES} ${COMMON_FLAGS} ${CXXFLAGS} -c -o $@ ${@:.o=.cc}
+
+.c.o:
+	${CC} ${INCLUDES} ${COMMON_FLAGS} ${CFLAGS} -c -o $@ ${@:.o=.c}
 
 build/system.elf: ${OBJECTS}
 	${CXX} ${INCLUDES} ${COMMON_FLAGS} ${CXXFLAGS} \
@@ -30,7 +33,7 @@ run: build/system.elf
 
 monitor: run
 
-program: run
+program:
 
 arch_clean:
 	rm -f ${OBJECTS}

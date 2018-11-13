@@ -23,7 +23,7 @@ LDFLAGS += -nostdlib -Wl,--no-check-sections -u call_user_start -Wl,-static
 CXX_TARGETS += src/arch/esp8266/arch.cc src/arch/esp8266/driver/gpio.cc
 CXX_TARGETS += src/arch/esp8266/driver/stdout.cc src/arch/esp8266/driver/uptime.cc
 
-OBJECTS = ${CXX_TARGETS:.cc=.o}
+OBJECTS = ${CXX_TARGETS:.cc=.o} ${C_TARGETS:.c=.o}
 
 ifeq (${esp8266_led2}, 1)
 	COMMON_FLAGS += -DLED_ON_GPIO16
@@ -34,8 +34,12 @@ ifneq ($(findstring stdin,${arch_drivers}), )
 endif
 
 .cc.o:
-	${CXX} ${INCLUDES} ${COMMON_FLAGS} ${CXXFLAGS} -c -o $@ ${@:.o=.cc}
-	${OBJCOPY} --rename-section .text=.irom0.text --rename-section .literal=.irom0.literal $@
+	${QUIET}${CXX} ${INCLUDES} ${COMMON_FLAGS} ${CXXFLAGS} -c -o $@ ${@:.o=.cc}
+	${QUIET}${OBJCOPY} --rename-section .text=.irom0.text --rename-section .literal=.irom0.literal $@
+
+.c.o:
+	${QUIET}${CC} ${INCLUDES} ${COMMON_FLAGS} ${CFLAGS} -c -o $@ ${@:.o=.c}
+	${QUIET}${OBJCOPY} --rename-section .text=.irom0.text --rename-section .literal=.irom0.literal $@
 
 build/system.ar: ${OBJECTS}
 	${AR} cru $@ ${OBJECTS}
