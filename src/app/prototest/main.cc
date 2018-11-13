@@ -8,6 +8,9 @@
 #ifdef PROTOTEST_MODERNJSON
 #include "lib/modernjson/json.h"
 #endif
+#ifdef PROTOTEST_MPACK
+#include "mpack.h"
+#endif
 #ifdef PROTOTEST_NANOPB
 #include <pb.h>
 #include "nanopb.pb.h"
@@ -110,6 +113,38 @@ void loop(void)
 		len = stream.bytes_written;
 		kout << len << " bytes written" << endl;
 	}
+
+#endif
+
+	/*
+	 * MPack
+	 */
+
+#ifdef PROTOTEST_MPACK
+	char buf[128];
+	for (unsigned int i = 0; i < 128; i++) {
+		buf[i] = 0;
+	}
+	mpack_writer_t writer;
+	mpack_writer_init(&writer, buf, sizeof(buf));
+
+	mpack_start_map(&writer, 2);
+	mpack_write_cstr(&writer, "gps");
+	mpack_write_uint(&writer, ts);
+	mpack_start_array(&writer, 2);
+	mpack_write_float(&writer, 48.756080);
+	mpack_write_float(&writer, 2.302038);
+	mpack_finish_array(&writer);
+	mpack_finish_map(&writer);
+
+	if (mpack_writer_destroy(&writer) != mpack_ok) {
+		kout << "Encoding failed" << endl;
+	}
+	kout << "mpack is " << hex;
+	for (unsigned int i = 0; i < 128; i++) {
+		kout << (uint8_t)buf[i];
+	}
+	kout << endl;
 
 #endif
 

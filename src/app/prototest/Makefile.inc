@@ -8,6 +8,12 @@ ifeq (${prototest_modernjson}, 1)
 	COMMON_FLAGS += -DPROTOTEST_MODERNJSON
 endif
 
+ifeq (${prototest_mpack}, 1)
+	COMMON_FLAGS += -DPROTOTEST_MPACK
+	TARGETS += src/lib/mpack/mpack.cc
+	INCLUDES += -Iinclude/lib/mpack
+endif
+
 ifeq (${prototest_nanopb}, 1)
 	COMMON_FLAGS += -DPROTOTEST_NANOPB
 	TARGETS += src/app/prototest/nanopb.pb.cc src/lib/nanopb/pb_common.cc
