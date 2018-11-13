@@ -23,3 +23,4 @@ endif
 %.pb.cc: %.proto
 	protoc --plugin=protoc-gen-nanopb=${HOME}/var/ess/protocol-modeling/nanopb/generator/protoc-gen-nanopb --nanopb_out=. src/app/prototest/nanopb.proto
 	mv src/app/prototest/nanopb.pb.c src/app/prototest/nanopb.pb.cc
+	sed -i 's!src/app/prototest/!!' src/app/prototest/nanopb.pb.cc
