@@ -1,11 +1,20 @@
 loop ?= 1
 
+ifeq (${prototest_include_global}, 1)
+	COMMON_FLAGS += -DPROTOTEST_INCLUDE_GLOBAL
+endif
+
+ifeq (${prototest_include_local}, 1)
+	COMMON_FLAGS += -DPROTOTEST_INCLUDE_LOCAL
+endif
+
 ifeq (${prototest_arduinojson}, 1)
 	COMMON_FLAGS += -DPROTOTEST_ARDUINOJSON
 endif
 
 ifeq (${prototest_modernjson}, 1)
 	COMMON_FLAGS += -DPROTOTEST_MODERNJSON
+	ostream = 1
 endif
 
 ifeq (${prototest_mpack}, 1)

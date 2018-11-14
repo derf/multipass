@@ -28,6 +28,10 @@
 
 #include <stdint.h>
 
+#ifdef PROTOTEST_INCLUDE_GLOBAL
+#include "prototest_global.cc.inc"
+#endif
+
 #ifdef PROTOTEST_XDR
 char buf[256];
 #endif
@@ -49,6 +53,10 @@ char buf[256];
 void loop(void)
 {
 	static uint16_t ts = 0;
+
+#ifdef PROTOTEST_INCLUDE_LOCAL
+#include "prototest_local.cc.inc"
+#endif
 
 	/*
 	 * XDR
@@ -96,6 +104,32 @@ void loop(void)
 	ArduinoJson::JsonObject& root = jsonBuffer.parseObject(json);
 	const char *sensor = root["sensor"];
 	kout << "sensor: " << sensor << endl;
+#endif
+
+	/*
+	 * ModernJSON
+	 */
+
+#ifdef PROTOTEST_MODERNJSON
+	nlohmann::json js1;
+	js1["sensor"] = "gps";
+	js1["time"] = ts;
+	js1["data"] = {48.756080, 2.302038};
+	kout << js1.dump() << endl;
+
+	nlohmann::json js2 = {
+		{"sensor", "gps"},
+		{"time", ts},
+		{"data", {48.756080, 2.302038} }
+	};
+	kout << js2.dump() << endl;
+
+	std::vector<std::uint8_t> v_cbor = nlohmann::json::to_cbor(js2);
+	kout << "CBOR vector is " << hex;
+	for (unsigned int i = 0; i < v_cbor.size(); i++) {
+		kout << v_cbor[i] << " ";
+	}
+	kout << endl;
 #endif
 
 	/*
