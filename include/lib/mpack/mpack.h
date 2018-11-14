@@ -144,7 +144,13 @@
  * for debugging and in allocation helpers.
  */
 #ifndef MPACK_STDLIB
+#if defined(MULTIPASS_ARCH_msp430fr5969lp) || \
+    defined(MULTIPASS_ARCH_arduino_nano) || defined(MULTIPASS_ARCH_blinkenrocket) || \
+    defined(MULTIPASS_ARCH_esp8266)
 #define MPACK_STDLIB 0
+#else
+#define MPACK_STDLIB 1
+#endif
 #endif
 
 /**
@@ -154,7 +160,13 @@
  * reading/writing C files and makes debugging easier.
  */
 #ifndef MPACK_STDIO
+#if defined(MULTIPASS_ARCH_msp430fr5969lp) || \
+    defined(MULTIPASS_ARCH_arduino_nano) || defined(MULTIPASS_ARCH_blinkenrocket) || \
+    defined(MULTIPASS_ARCH_esp8266)
 #define MPACK_STDIO 0
+#else
+#define MPACK_STDIO 1
+#endif
 #endif
 
 /**
