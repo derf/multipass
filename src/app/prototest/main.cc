@@ -32,6 +32,9 @@
 #include "prototest_global.cc.inc"
 #endif
 
+#ifdef PROTOTEST_ARDUINOJSON
+char buf[256];
+#endif
 #ifdef PROTOTEST_XDR
 char buf[256];
 #endif
@@ -99,11 +102,30 @@ void loop(void)
 	 */
 
 #ifdef PROTOTEST_ARDUINOJSON
-	char json[] = "{\"sensor\":\"gps\",\"time\":1351824120,\"data\":[48.756080,2.302038]}";
-	ArduinoJson::StaticJsonBuffer<200> jsonBuffer;
-	ArduinoJson::JsonObject& root = jsonBuffer.parseObject(json);
-	const char *sensor = root["sensor"];
-	kout << "sensor: " << sensor << endl;
+	for (unsigned int i = 0; i < 128; i++) {
+		buf[i] = 0;
+	}
+
+	{
+		ArduinoJson::StaticJsonBuffer<200> jsonBuffer;
+		ArduinoJson::JsonObject& root = jsonBuffer.createObject();
+		root["sensor"] = "gps";
+		root["time"] = ts;
+		ArduinoJson::JsonArray& data = root.createNestedArray("data");
+		data.add(48.756080);
+		data.add(2.302038);
+
+		root.printTo(buf);
+		kout << "buf is " << buf << endl;
+	}
+
+	{
+		char json[] = "{\"sensor\":\"gps\",\"time\":1351824120,\"data\":[48.756080,2.302038]}";
+		ArduinoJson::StaticJsonBuffer<200> jsonBuffer;
+		ArduinoJson::JsonObject& root = jsonBuffer.parseObject(json);
+		const char *sensor = root["sensor"];
+		kout << "sensor: " << sensor << endl;
+	}
 #endif
 
 	/*
@@ -122,12 +144,26 @@ void loop(void)
 		{"time", ts},
 		{"data", {48.756080, 2.302038} }
 	};
-	kout << js2.dump() << endl;
+	kout << "string:" << js2.dump() << endl;
 
 	std::vector<std::uint8_t> v_cbor = nlohmann::json::to_cbor(js2);
-	kout << "CBOR vector is " << hex;
+	kout << "CBOR:" << hex;
 	for (unsigned int i = 0; i < v_cbor.size(); i++) {
 		kout << v_cbor[i] << " ";
+	}
+	kout << endl;
+
+	std::vector<std::uint8_t> v_msgpack = nlohmann::json::to_msgpack(js2);
+	kout << "MsgPack:" << hex;
+	for (unsigned int i = 0; i < v_msgpack.size(); i++) {
+		kout << v_msgpack[i] << " ";
+	}
+	kout << endl;
+
+	std::vector<std::uint8_t> v_ubjson = nlohmann::json::to_ubjson(js2);
+	kout << "UBJSON:" << hex;
+	for (unsigned int i = 0; i < v_ubjson.size(); i++) {
+		kout << v_ubjson[i] << " ";
 	}
 	kout << endl;
 #endif
