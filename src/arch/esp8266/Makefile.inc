@@ -17,7 +17,7 @@ endif
 
 INCLUDES += -I${SDK_BASE}/include
 COMMON_FLAGS += -nostdlib -mlongcalls -D__ets__ -DICACHE_FLASH -DMULTIPASS_ARCH_esp8266
-CXXFLAGS = -std=c++11
+CXXFLAGS = -std=c++11 -fno-rtti -fno-threadsafe-statics
 LDFLAGS += -nostdlib -Wl,--no-check-sections -u call_user_start -Wl,-static
 
 CXX_TARGETS += src/arch/esp8266/arch.cc src/arch/esp8266/driver/gpio.cc

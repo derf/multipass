@@ -1,9 +1,9 @@
 default: build/system.elf
 
 INCLUDES = -Iinclude -Iinclude/arch/${arch}
-COMMON_FLAGS = -g -Os -Wall -Wextra -fno-rtti -fno-threadsafe-statics
+COMMON_FLAGS = -g -Os -Wall -Wextra
 CFLAGS = -std=c99
-CXXFLAGS = -std=c++14
+CXXFLAGS = -std=c++14 -fno-rtti -fno-threadsafe-statics
 
 C_TARGETS =
 CXX_TARGETS = src/app/${app}/main.cc src/os/object/cpp_helpers.cc src/os/object/outputstream.cc
