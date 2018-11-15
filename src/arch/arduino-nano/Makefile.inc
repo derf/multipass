@@ -40,6 +40,10 @@ ifneq ($(findstring timer,${arch_drivers}), )
 	CXX_TARGETS += src/arch/arduino-nano/driver/timer.cc
 endif
 
+ifneq ($(findstring counter,${arch_drivers}), )
+	CXX_TARGETS += src/arch/arduino-nano/driver/counter.cc
+endif
+
 ifeq (${cpu_freq}, 16000000)
 	uart_baud = 57600
 else ifeq (${cpu_freq}, 8000000)
