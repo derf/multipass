@@ -1,11 +1,20 @@
-loop ?= 1
-
-ifeq (${prototest_include_global}, 1)
-	COMMON_FLAGS += -DPROTOTEST_INCLUDE_GLOBAL
+ifeq (${prototest_bench_energy}, 1)
+	loop = 1
+	COMMON_FLAGS += -DPROTOTEST_BENCH_ENERGY
 endif
 
-ifeq (${prototest_include_local}, 1)
-	COMMON_FLAGS += -DPROTOTEST_INCLUDE_LOCAL
+ifeq (${prototest_bench_cycles}, 1)
+	loop = 0
+	arch_drivers += ,counter
+	COMMON_FLAGS += -DPROTOTEST_BENCH_CYCLES
+endif
+
+ifneq (${prototest_include_global}, )
+	COMMON_FLAGS += -DPROTOTEST_INCLUDE_GLOBAL=${prototest_include_global}
+endif
+
+ifneq (${prototest_include_local}, )
+	COMMON_FLAGS += -DPROTOTEST_INCLUDE_LOCAL=${prototest_include_local}
 endif
 
 ifeq (${prototest_arduinojson}, 1)
