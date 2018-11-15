@@ -8,6 +8,7 @@ cpu_freq ?= 16000000
 
 COMMON_FLAGS += -Werror=overflow
 COMMON_FLAGS += -mmcu=${MCU} -DMULTIPASS_ARCH_arduino_nano
+COMMON_FLAGS += -DF_CPU=${cpu_freq}UL
 COMMON_FLAGS += -flto
 COMMON_FLAGS += -DMULTIPASS_ARCH_HAS_I2C
 
@@ -39,11 +40,29 @@ ifneq ($(findstring timer,${arch_drivers}), )
 	CXX_TARGETS += src/arch/arduino-nano/driver/timer.cc
 endif
 
-ifneq (${cpu_freq}, )
-	COMMON_FLAGS += -DF_CPU=${cpu_freq}UL
+ifeq (${cpu_freq}, 16000000)
+	uart_baud = 57600
+else ifeq (${cpu_freq}, 8000000)
+	uart_baud = 38400
+else ifeq (${cpu_freq}, 4000000)
+	uart_baud = 38400
+else ifeq (${cpu_freq}, 2000000)
+	uart_baud = 19200
+else ifeq (${cpu_freq}, 1000000)
+	uart_baud = 9600
+else ifeq (${cpu_freq}, 500000)
+	uart_baud = 4800
+else ifeq (${cpu_freq}, 250000)
+	uart_baud = 2400
+else ifeq (${cpu_freq}, 125000)
+	uart_baud = 1200
+else ifeq (${cpu_freq}, 62500)
+	uart_baud = 300
 else
-	COMMON_FLAGS += -DF_CPU=16000000UL
+	uart_baud = 9600
 endif
+
+COMMON_FLAGS += -DBAUD=${uart_baud}UL
 
 OBJECTS = ${CXX_TARGETS:.cc=.o} ${C_TARGETS:.c=.o}
 
@@ -67,7 +86,7 @@ arch_clean:
 	${QUIET}rm -f ${OBJECTS} build/system.hex
 
 monitor:
-	${QUIET}screen ${PORT} 19200
+	${QUIET}screen ${PORT} ${uart_baud}
 
 arch_help:
 	@echo "arduino-nano specific flags:"
