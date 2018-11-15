@@ -49,6 +49,10 @@ ifneq ($(findstring timer,${arch_drivers}), )
 	CXX_TARGETS += src/arch/msp430fr5969lp/driver/timer.cc
 endif
 
+ifneq ($(findstring counter,${arch_drivers}), )
+	CXX_TARGETS += src/arch/msp430fr5969lp/driver/counter.cc
+endif
+
 ifneq (${cpu_freq}, )
 	COMMON_FLAGS += -DF_CPU=${cpu_freq}UL
 else
