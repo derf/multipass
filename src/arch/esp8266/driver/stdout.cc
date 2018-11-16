@@ -9,7 +9,11 @@ void os_printf_plus(const char *s, ...);
 
 StandardOutput & StandardOutput::operator<<(unsigned char c)
 {
-	put(c);
+	if (base == 16) {
+		os_printf("%02x", c);
+	} else {
+		os_printf("%d", c);
+	}
 	return *this;
 }
 
@@ -33,13 +37,21 @@ StandardOutput & StandardOutput::operator<<(short number)
 
 StandardOutput & StandardOutput::operator<<(unsigned int number)
 {
-	os_printf("%u", number);
+	if (base == 16) {
+		os_printf("%08x", number);
+	} else {
+		os_printf("%u", number);
+	}
 	return *this;
 }
 
 StandardOutput & StandardOutput::operator<<(int number)
 {
-	os_printf("%d", number);
+	if (base == 16) {
+		os_printf("%08x", number);
+	} else {
+		os_printf("%d", number);
+	}
 	return *this;
 }
 
