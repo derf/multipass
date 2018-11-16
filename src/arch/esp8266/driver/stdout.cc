@@ -21,37 +21,37 @@ StandardOutput & StandardOutput::operator<<(char c)
 
 StandardOutput & StandardOutput::operator<<(unsigned short number)
 {
-	*this << (unsigned long long)number;
+	os_printf("%u", number);
 	return *this;
 }
 
 StandardOutput & StandardOutput::operator<<(short number)
 {
-	*this << (long long)number;
+	os_printf("%d", number);
 	return *this;
 }
 
 StandardOutput & StandardOutput::operator<<(unsigned int number)
 {
-	*this << (unsigned long long)number;
+	os_printf("%u", number);
 	return *this;
 }
 
 StandardOutput & StandardOutput::operator<<(int number)
 {
-	*this << (long long)number;
+	os_printf("%d", number);
 	return *this;
 }
 
 StandardOutput & StandardOutput::operator<<(unsigned long number)
 {
-	*this << (unsigned long long)number;
+	os_printf("%lu", number);
 	return *this;
 }
 
 StandardOutput & StandardOutput::operator<<(long number)
 {
-	*this << (long long)number;
+	os_printf("%ld", number);
 	return *this;
 }
 
@@ -122,10 +122,7 @@ StandardOutput & StandardOutput::operator<<(void *pointer)
 
 StandardOutput & StandardOutput::operator<<(const char *text)
 {
-	int i = 0;
-	while (text[i] != '\0') {
-		put(text[i++]);
-	}
+	write(text);
 	return *this;
 }
 
@@ -225,11 +222,6 @@ StandardOutput & term(StandardOutput & os)
 	os.put('\0');
 	os.flush();
 	return os;
-}
-
-StandardOutput::StandardOutput()
-{
-	base = 10;
 }
 
 void StandardOutput::setup()

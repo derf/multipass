@@ -8,7 +8,7 @@ class StandardOutput {
 		unsigned char base;
 
 	public:
-		StandardOutput ();
+		StandardOutput() : base(10) {};
 		void setup();
 
 		void put(char c);
