@@ -1,10 +1,10 @@
 ifeq (${prototest_bench_energy}, 1)
-	loop = 1
+	loop ?= 1
 	COMMON_FLAGS += -DPROTOTEST_BENCH_ENERGY
 endif
 
 ifeq (${prototest_bench_cycles}, 1)
-	loop = 0
+	loop ?= 0
 	arch_drivers += ,counter
 	COMMON_FLAGS += -DPROTOTEST_BENCH_CYCLES
 endif
