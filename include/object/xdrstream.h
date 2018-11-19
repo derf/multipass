@@ -27,6 +27,8 @@ class XDRStream {
 	XDRStream & operator<<(int32_t number);
 	XDRStream & operator<<(uint64_t number);
 	XDRStream & operator<<(int64_t number);
+	XDRStream & operator<<(float number);
+	XDRStream & operator<<(double number);
 	XDRStream & operator<<(char const *text);
 	template<uint32_t TSize> XDRStream & operator<<(char const (&text)[TSize]);
 	XDRStream & operator<<(XDRStream & (*fun) (XDRStream &));

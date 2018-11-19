@@ -68,6 +68,18 @@ XDRStream & XDRStream::operator<<(int64_t number)
 	return *this;
 }
 
+XDRStream & XDRStream::operator<<(float number)
+{
+	*this << *(uint32_t*)&number;
+	return *this;
+}
+
+XDRStream & XDRStream::operator<<(double number)
+{
+	*this << *(uint64_t*)&number;
+	return *this;
+}
+
 XDRStream & XDRStream::operator<<(char const *data){
 	if (!is_fixed_length) {
 		*this << next_array_len;
