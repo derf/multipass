@@ -14,7 +14,7 @@
 #endif
 #ifdef PROTOTEST_NANOPB
 #include <pb.h>
-#include "nanopb.pb.h"
+#include "nanopbbench.pb.h"
 #include <pb_encode.h>
 #include <pb_decode.h>
 #endif
