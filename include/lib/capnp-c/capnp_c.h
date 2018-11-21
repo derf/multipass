@@ -28,6 +28,11 @@ typedef intmax_t ssize_t;
 #include <stddef.h>
 #endif
 
+// AVR does not have ssize_T either
+#ifdef MULTIPASS_ARCH_arduino_nano
+typedef intmax_t ssize_t;
+#endif
+
 // Cross-platform macro ALIGNED_(x) aligns a struct by `x` bytes.
 #ifdef _MSC_VER
 #define ALIGNED_(x) __declspec(align(x))
