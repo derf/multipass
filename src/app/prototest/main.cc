@@ -6,6 +6,10 @@
 #ifdef PROTOTEST_ARDUINOJSON
 #include "lib/ArduinoJson.h"
 #endif
+#ifdef PROTOTEST_CAPNPROTO_C
+#include <capnp_c.h>
+#include "capnp_c_bench.capnp.h"
+#endif
 #ifdef PROTOTEST_MODERNJSON
 #include "lib/modernjson/json.h"
 #endif
@@ -38,6 +42,19 @@ char buf[256];
 #endif
 #ifdef PROTOTEST_XDR
 char buf[256];
+#endif
+
+#ifdef PROTOTEST_NANOPB
+bool encode_hurr(pb_ostream_t *stream, const pb_field_t *field, void * const *arg)
+{
+if (!pb_encode_tag_for_field(stream, field)) return false;
+return pb_encode_string(stream, (uint8_t*)"durr", 4);
+}
+bool encode_sensor(pb_ostream_t *stream, const pb_field_t *field, void * const *arg)
+{
+if (!pb_encode_tag_for_field(stream, field)) return false;
+return pb_encode_string(stream, (uint8_t*)"gps", 3);
+}
 #endif
 
 // TODOs
@@ -91,29 +108,65 @@ kout << "\"sensor\":\"gps\"" << ",";
 kout << "\"time\":" << dec << ts;
 kout << "}" << endl;
 
+#ifdef PROTOTEST_CAPNPROTO_C
+	uint8_t buf[1024];
+	for (unsigned int i = 0; i < sizeof(buf); i++) {
+		buf[i] = 0;
+	}
+	struct capn c;
+	capn_init_malloc(&c);
+	capn_ptr cr = capn_root(&c);
+	struct capn_segment *cs = cr.seg;
+
+	struct Benchmark benchmark;
+	//struct Benchmark_Nesting benchmark_nesting;
+	//struct Benchmark_Nesting_Foo benchmark_nesting_foo;
+	benchmark.time = ts + 1;
+
+	//benchmark.nesting = new_Benchmark_Nesting(cs);
+	//benchmark_nesting.foo = new_Benchmark_Nesting_Foo(cs);
+
+	//write_Benchmark_Nesting_Foo(&benchmark_nesting_foo, benchmark_nesting.foo);
+	//write_Benchmark_Nesting(&benchmark_nesting, benchmark.nesting);
+
+	Benchmark_ptr benchmark_ptr = new_Benchmark(cs);
+	write_Benchmark(&benchmark, benchmark_ptr);
+
+	capn_write_mem(&c, buf, sizeof(buf), 0 /* packed */);
+	capn_free(&c);
+
+	kout << "capnproto is " << hex;
+	for (unsigned int i = 0; i < sizeof(buf); i++) {
+		kout << buf[i];
+	}
+	kout << endl;
+#endif
 
 #ifdef PROTOTEST_XDR
-	BufferOutput<XDRStream> foostream(buf);
-	XDRInput input(buf);
+	BufferOutput<XDRStream> xdrstream(buf);
+	xdrstream.setNextArrayLen(2);
+	xdrstream << 48.75608;
+	xdrstream << 2.302038;
+	xdrstream.setNextArrayLen(3);
+	xdrstream.setNextArrayLen(1);
+	xdrstream << 1;
+	xdrstream.setNextArrayLen(2);
+	xdrstream << 2;
+	xdrstream << 2;
+	xdrstream.setNextArrayLen(4);
+	xdrstream << variable << "durr";
+	xdrstream.setNextArrayLen(3);
+	xdrstream << variable << "gps";
+	xdrstream << ts;
 
-	char test[] = "Obai World!";
-
-	//counter.start();
-	foostream << (uint32_t)123 << (int16_t)-2 << ts << (uint16_t)0 << (uint64_t)4294967296 << (uint16_t)0;
-	foostream.setNextArrayLen(3);
-	foostream << variable << "Hai";
-	foostream.setNextArrayLen(sizeof(test));
-	foostream << variable << (char const *)test;
-
-	//tmp = counter.stop();
-	//kout << "XDR serialization took " << tmp << " >" << counter.overflowed << " cycles" << endl;
-	kout << "foostream is " << hex;
+	kout << "xdrstream is " << hex;
 	for (unsigned int i = 0; i < 64; i += 4) {
 		kout << (unsigned char)buf[i] << (unsigned char)buf[i+1];
 		kout << (unsigned char)buf[i+2] << (unsigned char)buf[i+3] << " ";
 	}
 	kout << endl;
 
+	XDRInput input(buf);
 	kout << dec;
 	kout << "foostream = " << input.get_uint32() << " = " << 123;
 	kout << ", " << input.get_int32() << " = " << -2;
@@ -233,10 +286,15 @@ kout << "}" << endl;
 	bool status;
 
 	{
-		TestMessage msg = TestMessage_init_zero;
+		Benchmark msg = Benchmark_init_zero;
 		pb_ostream_t stream = pb_ostream_from_buffer(buf, sizeof(buf));
-		msg.number = 423;
-		status = pb_encode(&stream, TestMessage_fields, &msg);
+		msg.data[0] = 48.75608;
+		msg.data[1] = 2.302038;
+		msg.nesting.foo.hurr.funcs.encode = encode_hurr;
+		msg.nesting.foo.qwop = 9001;
+		msg.sensor.funcs.encode = encode_sensor;
+		msg.time = ts;
+		status = pb_encode(&stream, Benchmark_fields, &msg);
 		len = stream.bytes_written;
 		kout << len << " bytes written" << endl;
 	}
@@ -254,17 +312,26 @@ kout << "}" << endl;
 	}
 	mpack_writer_t writer;
 	mpack_writer_init(&writer, buf, sizeof(buf));
-
-	start = uptime.get_cycles();
-	mpack_start_map(&writer, 2);
-	stop = uptime.get_cycles();
-	kout << stop - start << endl;
-	mpack_write_cstr(&writer, "gps");
-	mpack_write_uint(&writer, ts);
+	mpack_start_map(&writer, 4);
+	mpack_write_cstr(&writer, "data");
 	mpack_start_array(&writer, 2);
 	mpack_write_float(&writer, 48.756080);
 	mpack_write_float(&writer, 2.302038);
 	mpack_finish_array(&writer);
+	mpack_write_cstr(&writer, "nesting");
+	mpack_start_map(&writer, 1);
+	mpack_write_cstr(&writer, "foo");
+	mpack_start_map(&writer, 2);
+	mpack_write_cstr(&writer, "hurr");
+	mpack_write_cstr(&writer, "durr");
+	mpack_write_cstr(&writer, "qwop");
+	mpack_write_uint(&writer, 9001);
+	mpack_finish_map(&writer);
+	mpack_finish_map(&writer);
+	mpack_write_cstr(&writer, "sensor");
+	mpack_write_cstr(&writer, "gps");
+	mpack_write_cstr(&writer, "time");
+	mpack_write_uint(&writer, ts);
 	mpack_finish_map(&writer);
 
 	if (mpack_writer_destroy(&writer) != mpack_ok) {

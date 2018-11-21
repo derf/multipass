@@ -21,6 +21,15 @@ ifeq (${prototest_arduinojson}, 1)
 	COMMON_FLAGS += -DPROTOTEST_ARDUINOJSON
 endif
 
+ifeq (${prototest_capnproto_c}, 1)
+	COMMON_FLAGS += -DPROTOTEST_CAPNPROTO_C
+	CXX_TARGETS += src/app/prototest/capnp_c_bench.capnp.cc
+	CXX_TARGETS += src/lib/capnp-c/capn.c
+	CXX_TARGETS += src/lib/capnp-c/capn-malloc.c
+	CXX_TARGETS += src/lib/capnp-c/capn-stream.c
+	INCLUDES += -Iinclude/lib/capnp-c
+endif
+
 ifeq (${prototest_modernjson}, 1)
 	COMMON_FLAGS += -DPROTOTEST_MODERNJSON
 	ostream = 1
@@ -50,8 +59,19 @@ ifeq (${prototest_xdr}, 1)
 	CXX_TARGETS += src/os/object/xdrstream.cc src/os/object/xdrinput.cc
 endif
 
+# Don't try to make .capnp from .capnp.c
+%.capnp: ;
+
+# Don't try to make .proto from .proto.c
+%.proto: ;
+
 %.pb.cc: %.proto
 	protoc --plugin=protoc-gen-nanopb=${HOME}/var/ess/protocol-modeling/nanopb/generator/protoc-gen-nanopb --nanopb_out=. src/app/prototest/nanopbbench.proto
 	mv src/app/prototest/nanopbbench.pb.c src/app/prototest/nanopbbench.pb.cc
 	sed -i 's!src/app/prototest/!!' src/app/prototest/nanopbbench.pb.cc
 	sed -i 's!\#include "src/app/prototest/nanopb.pb.h"!!' src/app/prototest/nanopbbench.pb.h
+
+%.capnp.cc: %.capnp
+	capnp compile -oc $<
+	mv $<.c $<.cc
+	cp $<.cc /tmp
