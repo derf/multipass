@@ -16,7 +16,9 @@
 #include <stdlib.h>
 #include <string.h>
 #ifndef _MSC_VER
+#ifndef MULTIPASS_ARCH_arduino_nano
 #include <sys/param.h>
+#endif
 #endif
 
 #define STRUCT_PTR 0

@@ -24,9 +24,9 @@ endif
 ifeq (${prototest_capnproto_c}, 1)
 	COMMON_FLAGS += -DPROTOTEST_CAPNPROTO_C
 	CXX_TARGETS += src/app/prototest/capnp_c_bench.capnp.cc
-	CXX_TARGETS += src/lib/capnp-c/capn.c
-	CXX_TARGETS += src/lib/capnp-c/capn-malloc.c
-	CXX_TARGETS += src/lib/capnp-c/capn-stream.c
+	CXX_TARGETS += src/lib/capnp-c/capn.cc
+	CXX_TARGETS += src/lib/capnp-c/capn-malloc.cc
+	CXX_TARGETS += src/lib/capnp-c/capn-stream.cc
 	INCLUDES += -Iinclude/lib/capnp-c
 endif
 
