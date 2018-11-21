@@ -123,6 +123,13 @@ kout << "}" << endl;
 	//struct Benchmark_Nesting_Foo benchmark_nesting_foo;
 	benchmark.time = ts + 1;
 
+	capn_text sensor_text;
+	sensor_text.len = 3;
+	sensor_text.str = "gps";
+	sensor_text.seg = NULL;
+
+	benchmark.sensor = sensor_text;
+
 	//benchmark.nesting = new_Benchmark_Nesting(cs);
 	//benchmark_nesting.foo = new_Benchmark_Nesting_Foo(cs);
 
