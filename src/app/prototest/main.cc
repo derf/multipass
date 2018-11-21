@@ -113,37 +113,48 @@ kout << "}" << endl;
 	for (unsigned int i = 0; i < sizeof(buf); i++) {
 		buf[i] = 0;
 	}
-	struct capn c;
-	capn_init_malloc(&c);
-	capn_ptr cr = capn_root(&c);
-	struct capn_segment *cs = cr.seg;
 
-	struct Benchmark benchmark;
-	//struct Benchmark_Nesting benchmark_nesting;
-	//struct Benchmark_Nesting_Foo benchmark_nesting_foo;
-	benchmark.time = ts + 1;
+struct capn c;
+capn_init_malloc(&c);
+capn_ptr cr = capn_root(&c);
+struct capn_segment *cs = cr.seg;
 
-	capn_text sensor_text;
-	sensor_text.len = 3;
-	sensor_text.str = "gps";
-	sensor_text.seg = NULL;
+struct Benchmark benchmark;
+benchmark.data = capn_new_list64(cs, 2);
+capn_set64(benchmark.data, 0, capn_from_f64(48.756080));
+capn_set64(benchmark.data, 1, capn_from_f64(2.302038));
+benchmark.nesting = new_Benchmark_Nesting(cs);
+struct Benchmark_Nesting nesting;
+nesting.foo = new_Benchmark_Nesting_Foo(cs);
+struct Benchmark_Nesting_Foo foo;
+capn_text hurr_text;
+hurr_text.len = 4;
+hurr_text.str = "durr";
+hurr_text.seg = NULL;
+foo.hurr = hurr_text;
 
-	benchmark.sensor = sensor_text;
+foo.qwop = 9001;
 
-	//benchmark.nesting = new_Benchmark_Nesting(cs);
-	//benchmark_nesting.foo = new_Benchmark_Nesting_Foo(cs);
+write_Benchmark_Nesting_Foo(&foo, nesting.foo);
+write_Benchmark_Nesting(&nesting, benchmark.nesting);
+capn_text sensor_text;
+sensor_text.len = 3;
+sensor_text.str = "gps";
+sensor_text.seg = NULL;
+benchmark.sensor = sensor_text;
 
-	//write_Benchmark_Nesting_Foo(&benchmark_nesting_foo, benchmark_nesting.foo);
-	//write_Benchmark_Nesting(&benchmark_nesting, benchmark.nesting);
+benchmark.time = ts;
 
-	Benchmark_ptr benchmark_ptr = new_Benchmark(cs);
-	write_Benchmark(&benchmark, benchmark_ptr);
+Benchmark_ptr benchmark_ptr = new_Benchmark(cs);
+write_Benchmark(&benchmark, benchmark_ptr);
+capn_setp(cr, 0, benchmark_ptr.p);
 
-	capn_write_mem(&c, buf, sizeof(buf), 0 /* packed */);
+
+	unsigned int sz = capn_write_mem(&c, buf, sizeof(buf), 0 /* packed */);
 	capn_free(&c);
 
 	kout << "capnproto is " << hex;
-	for (unsigned int i = 0; i < sizeof(buf); i++) {
+	for (unsigned int i = 0; i < sz; i++) {
 		kout << buf[i];
 	}
 	kout << endl;
