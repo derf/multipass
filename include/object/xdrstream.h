@@ -6,7 +6,7 @@
 class XDRStream {
  private:
 	XDRStream(const XDRStream& copy);
-	uint32_t next_array_len;
+	uint16_t next_array_len;
 	bool is_fixed_length;
 
  public:
