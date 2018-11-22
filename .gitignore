@@ -3,3 +3,11 @@
 /src/app/prototest/nanopb.pb.h
 /src/app/prototest/nanopb.pb.cc
 /src/app/prototest/nanopb.proto
+/src/app/prototest/nanopbbench.pb.h
+/src/app/prototest/nanopbbench.pb.cc
+/src/app/prototest/nanopbbench.proto
+/src/app/prototest/capnp_c_bench.capnp
+/src/app/prototest/capnp_c_bench.capnp.cc
+/src/app/prototest/capnp_c_bench.capnp.h
+/src/app/prototest/prototest_global.cc.inc
+/src/app/prototest/prototest_local.cc.inc
