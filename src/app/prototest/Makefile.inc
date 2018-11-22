@@ -30,6 +30,10 @@ ifeq (${prototest_capnproto_c}, 1)
 	INCLUDES += -Iinclude/lib/capnp-c
 endif
 
+ifeq (${prototest_manualjson}, 1)
+	COMMON_FLAGS += -DPROTOTEST_MANUALJSON
+endif
+
 ifeq (${prototest_modernjson}, 1)
 	COMMON_FLAGS += -DPROTOTEST_MODERNJSON
 	ostream = 1
