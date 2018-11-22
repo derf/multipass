@@ -70,12 +70,12 @@ endif
 %.proto: ;
 
 %.pb.cc: %.proto
-	protoc --plugin=protoc-gen-nanopb=${HOME}/var/ess/protocol-modeling/nanopb/generator/protoc-gen-nanopb --nanopb_out=. src/app/prototest/nanopbbench.proto
-	mv src/app/prototest/nanopbbench.pb.c src/app/prototest/nanopbbench.pb.cc
-	sed -i 's!src/app/prototest/!!' src/app/prototest/nanopbbench.pb.cc
-	sed -i 's!\#include "src/app/prototest/nanopb.pb.h"!!' src/app/prototest/nanopbbench.pb.h
+	${QUIET}protoc --plugin=protoc-gen-nanopb=${HOME}/var/ess/protocol-modeling/nanopb/generator/protoc-gen-nanopb --nanopb_out=. src/app/prototest/nanopbbench.proto
+	${QUIET}mv src/app/prototest/nanopbbench.pb.c src/app/prototest/nanopbbench.pb.cc
+	${QUIET}sed -i 's!src/app/prototest/!!' src/app/prototest/nanopbbench.pb.cc
+	${QUIET}sed -i 's!\#include "src/app/prototest/nanopb.pb.h"!!' src/app/prototest/nanopbbench.pb.h
 
 %.capnp.cc: %.capnp
-	capnp compile -oc $<
-	mv $<.c $<.cc
-	cp $<.cc /tmp
+	${QUIET}capnp compile -oc $<
+	${QUIET}mv $<.c $<.cc
+	${QUIET}cp $<.cc /tmp
