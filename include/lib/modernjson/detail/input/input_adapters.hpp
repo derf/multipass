@@ -18,7 +18,7 @@ namespace nlohmann
 namespace detail
 {
 /// the supported input formats
-enum class input_format_t { json, cbor, msgpack, ubjson };
+enum class input_format_t { json, cbor, msgpack, ubjson, bson };
 
 ////////////////////
 // input adapters //
@@ -60,8 +60,8 @@ class input_stream_adapter : public input_adapter_protocol
     ~input_stream_adapter() override
     {
         // clear stream flags; we use underlying streambuf I/O, do not
-        // maintain ifstream flags
-        is.clear();
+        // maintain ifstream flags, except eof
+        is.clear(is.rdstate() & std::ios::eofbit);
     }
 
     explicit input_stream_adapter(std::istream& i)
@@ -71,13 +71,21 @@ class input_stream_adapter : public input_adapter_protocol
     // delete because of pointer members
     input_stream_adapter(const input_stream_adapter&) = delete;
     input_stream_adapter& operator=(input_stream_adapter&) = delete;
+    input_stream_adapter(input_stream_adapter&&) = delete;
+    input_stream_adapter& operator=(input_stream_adapter&&) = delete;
 
     // std::istream/std::streambuf use std::char_traits<char>::to_int_type, to
     // ensure that std::char_traits<char>::eof() and the character 0xFF do not
     // end up as the same value, eg. 0xFFFFFFFF.
     std::char_traits<char>::int_type get_character() override
     {
-        return sb.sbumpc();
+        auto res = sb.sbumpc();
+        // set eof manually, as we don't use the istream interface.
+        if (res == EOF)
+        {
+            is.clear(is.rdstate() | std::ios::eofbit);
+        }
+        return res;
     }
 
   private:
@@ -90,13 +98,16 @@ class input_stream_adapter : public input_adapter_protocol
 class input_buffer_adapter : public input_adapter_protocol
 {
   public:
-    input_buffer_adapter(const char* b, const std::size_t l)
+    input_buffer_adapter(const char* b, const std::size_t l) noexcept
         : cursor(b), limit(b + l)
     {}
 
     // delete because of pointer members
     input_buffer_adapter(const input_buffer_adapter&) = delete;
     input_buffer_adapter& operator=(input_buffer_adapter&) = delete;
+    input_buffer_adapter(input_buffer_adapter&&) = delete;
+    input_buffer_adapter& operator=(input_buffer_adapter&&) = delete;
+    ~input_buffer_adapter() override = default;
 
     std::char_traits<char>::int_type get_character() noexcept override
     {
@@ -115,38 +126,11 @@ class input_buffer_adapter : public input_adapter_protocol
     const char* const limit;
 };
 
-template<typename WideStringType>
-class wide_string_input_adapter : public input_adapter_protocol
+template<typename WideStringType, size_t T>
+struct wide_string_input_helper
 {
-  public:
-    explicit wide_string_input_adapter(const WideStringType& w) : str(w) {}
-
-    std::char_traits<char>::int_type get_character() noexcept override
-    {
-        // check if buffer needs to be filled
-        if (utf8_bytes_index == utf8_bytes_filled)
-        {
-            if (sizeof(typename WideStringType::value_type) == 2)
-            {
-                fill_buffer_utf16();
-            }
-            else
-            {
-                fill_buffer_utf32();
-            }
-
-            assert(utf8_bytes_filled > 0);
-            assert(utf8_bytes_index == 0);
-        }
-
-        // use buffer
-        assert(utf8_bytes_filled > 0);
-        assert(utf8_bytes_index < utf8_bytes_filled);
-        return utf8_bytes[utf8_bytes_index++];
-    }
-
-  private:
-    void fill_buffer_utf16()
+    // UTF-32
+    static void fill_buffer(const WideStringType& str, size_t& current_wchar, std::array<std::char_traits<char>::int_type, 4>& utf8_bytes, size_t& utf8_bytes_index, size_t& utf8_bytes_filled)
     {
         utf8_bytes_index = 0;
 
@@ -158,7 +142,62 @@ class wide_string_input_adapter : public input_adapter_protocol
         else
         {
             // get the current character
-            const int wc = static_cast<int>(str[current_wchar++]);
+            const auto wc = static_cast<int>(str[current_wchar++]);
+
+            // UTF-32 to UTF-8 encoding
+            if (wc < 0x80)
+            {
+                utf8_bytes[0] = wc;
+                utf8_bytes_filled = 1;
+            }
+            else if (wc <= 0x7FF)
+            {
+                utf8_bytes[0] = 0xC0 | ((wc >> 6) & 0x1F);
+                utf8_bytes[1] = 0x80 | (wc & 0x3F);
+                utf8_bytes_filled = 2;
+            }
+            else if (wc <= 0xFFFF)
+            {
+                utf8_bytes[0] = 0xE0 | ((wc >> 12) & 0x0F);
+                utf8_bytes[1] = 0x80 | ((wc >> 6) & 0x3F);
+                utf8_bytes[2] = 0x80 | (wc & 0x3F);
+                utf8_bytes_filled = 3;
+            }
+            else if (wc <= 0x10FFFF)
+            {
+                utf8_bytes[0] = 0xF0 | ((wc >> 18) & 0x07);
+                utf8_bytes[1] = 0x80 | ((wc >> 12) & 0x3F);
+                utf8_bytes[2] = 0x80 | ((wc >> 6) & 0x3F);
+                utf8_bytes[3] = 0x80 | (wc & 0x3F);
+                utf8_bytes_filled = 4;
+            }
+            else
+            {
+                // unknown character
+                utf8_bytes[0] = wc;
+                utf8_bytes_filled = 1;
+            }
+        }
+    }
+};
+
+template<typename WideStringType>
+struct wide_string_input_helper<WideStringType, 2>
+{
+    // UTF-16
+    static void fill_buffer(const WideStringType& str, size_t& current_wchar, std::array<std::char_traits<char>::int_type, 4>& utf8_bytes, size_t& utf8_bytes_index, size_t& utf8_bytes_filled)
+    {
+        utf8_bytes_index = 0;
+
+        if (current_wchar == str.size())
+        {
+            utf8_bytes[0] = std::char_traits<char>::eof();
+            utf8_bytes_filled = 1;
+        }
+        else
+        {
+            // get the current character
+            const auto wc = static_cast<int>(str[current_wchar++]);
 
             // UTF-16 to UTF-8 encoding
             if (wc < 0x80)
@@ -183,7 +222,7 @@ class wide_string_input_adapter : public input_adapter_protocol
             {
                 if (current_wchar < str.size())
                 {
-                    const int wc2 = static_cast<int>(str[current_wchar++]);
+                    const auto wc2 = static_cast<int>(str[current_wchar++]);
                     const int charcode = 0x10000 + (((wc & 0x3FF) << 10) | (wc2 & 0x3FF));
                     utf8_bytes[0] = 0xf0 | (charcode >> 18);
                     utf8_bytes[1] = 0x80 | ((charcode >> 12) & 0x3F);
@@ -201,58 +240,40 @@ class wide_string_input_adapter : public input_adapter_protocol
             }
         }
     }
+};
 
-    void fill_buffer_utf32()
+template<typename WideStringType>
+class wide_string_input_adapter : public input_adapter_protocol
+{
+  public:
+    explicit wide_string_input_adapter(const WideStringType& w)  noexcept
+        : str(w)
+    {}
+
+    std::char_traits<char>::int_type get_character() noexcept override
     {
-        utf8_bytes_index = 0;
-
-        if (current_wchar == str.size())
+        // check if buffer needs to be filled
+        if (utf8_bytes_index == utf8_bytes_filled)
         {
-            utf8_bytes[0] = std::char_traits<char>::eof();
-            utf8_bytes_filled = 1;
-        }
-        else
-        {
-            // get the current character
-            const int wc = static_cast<int>(str[current_wchar++]);
+            fill_buffer<sizeof(typename WideStringType::value_type)>();
 
-            // UTF-32 to UTF-8 encoding
-            if (wc < 0x80)
-            {
-                utf8_bytes[0] = wc;
-                utf8_bytes_filled = 1;
-            }
-            else if (wc <= 0x7FF)
-            {
-                utf8_bytes[0] = 0xC0 | ((wc >> 6) & 0x1F);
-                utf8_bytes[1] = 0x80 | (wc & 0x3F);
-                utf8_bytes_filled = 2;
-            }
-            else if (wc <= 0xFFFF)
-            {
-                utf8_bytes[0] = 0xE0 | ((wc >> 12) & 0x0F);
-                utf8_bytes[1] = 0x80 | ((wc >> 6) & 0x3F);
-                utf8_bytes[2] = 0x80 | (wc & 0x3F);
-                utf8_bytes_filled = 3;
-            }
-            else if (wc <= 0x10FFFF)
-            {
-                utf8_bytes[0] = 0xF0 | ((wc >> 18 ) & 0x07);
-                utf8_bytes[1] = 0x80 | ((wc >> 12) & 0x3F);
-                utf8_bytes[2] = 0x80 | ((wc >> 6) & 0x3F);
-                utf8_bytes[3] = 0x80 | (wc & 0x3F);
-                utf8_bytes_filled = 4;
-            }
-            else
-            {
-                // unknown character
-                utf8_bytes[0] = wc;
-                utf8_bytes_filled = 1;
-            }
+            assert(utf8_bytes_filled > 0);
+            assert(utf8_bytes_index == 0);
         }
+
+        // use buffer
+        assert(utf8_bytes_filled > 0);
+        assert(utf8_bytes_index < utf8_bytes_filled);
+        return utf8_bytes[utf8_bytes_index++];
     }
 
   private:
+    template<size_t T>
+    void fill_buffer()
+    {
+        wide_string_input_helper<WideStringType, T>::fill_buffer(str, current_wchar, utf8_bytes, utf8_bytes_index, utf8_bytes_filled);
+    }
+
     /// the wstring to process
     const WideStringType& str;
 
@@ -373,5 +394,5 @@ class input_adapter
     /// the actual adapter
     input_adapter_t ia = nullptr;
 };
-}
-}
+}  // namespace detail
+}  // namespace nlohmann
