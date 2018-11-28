@@ -57,6 +57,7 @@ ubjr_context_t* ubjr_open_callback(void* userdata,
 size_t ubjr_close_context(ubjr_context_t* ctx)
 {
 	size_t n = ctx->total_read;
+	free(ctx->userdata);
 	free(ctx);
 	return n;
 }
