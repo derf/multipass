@@ -72,6 +72,7 @@ endif
 %.pb.cc: %.proto
 	${QUIET}protoc --plugin=protoc-gen-nanopb=${HOME}/var/ess/protocol-modeling/nanopb/generator/protoc-gen-nanopb --nanopb_out=. src/app/prototest/nanopbbench.proto
 	${QUIET}mv src/app/prototest/nanopbbench.pb.c src/app/prototest/nanopbbench.pb.cc
+	${QUIET}cp src/app/prototest/nanopbbench.pb.cc /tmp
 	${QUIET}sed -i 's!src/app/prototest/!!' src/app/prototest/nanopbbench.pb.cc
 	${QUIET}sed -i 's!\#include "src/app/prototest/nanopb.pb.h"!!' src/app/prototest/nanopbbench.pb.h
 
