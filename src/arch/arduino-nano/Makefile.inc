@@ -79,6 +79,7 @@ OBJECTS = ${CXX_TARGETS:.cc=.o} ${C_TARGETS:.c=.o}
 build/system.elf: ${OBJECTS}
 	${QUIET}${CXX} ${COMMON_FLAGS} ${CXXFLAGS} -Wl,--gc-sections -o $@ ${OBJECTS}
 	${QUIET}avr-size --format=avr --mcu=${MCU} $@
+	${QUIET}test $$(avr-size --format=avr --mcu=${MCU} build/system.elf | fgrep Program | grep -o '[0-9.]*%' | cut -d . -f 1) -lt 100
 
 build/system.hex: build/system.elf
 	${QUIET}${OBJCOPY} -O ihex ${@:.hex=.elf} $@
