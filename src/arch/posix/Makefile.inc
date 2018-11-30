@@ -19,13 +19,13 @@ ifneq (${gpio_trace}, )
 endif
 
 .cc.o:
-	${CXX} ${INCLUDES} ${COMMON_FLAGS} ${CXXFLAGS} -c -o $@ ${@:.o=.cc}
+	${QUIET}${CXX} ${INCLUDES} ${COMMON_FLAGS} ${CXXFLAGS} -c -o $@ ${@:.o=.cc}
 
 .c.o:
-	${CC} ${INCLUDES} ${COMMON_FLAGS} ${CFLAGS} -c -o $@ ${@:.o=.c}
+	${QUIET}${CC} ${INCLUDES} ${COMMON_FLAGS} ${CFLAGS} -c -o $@ ${@:.o=.c}
 
 build/system.elf: ${OBJECTS}
-	${CXX} ${INCLUDES} ${COMMON_FLAGS} ${CXXFLAGS} \
+	${QUIET}${CXX} ${INCLUDES} ${COMMON_FLAGS} ${CXXFLAGS} \
 		-o $@ ${OBJECTS}
 
 run: build/system.elf
