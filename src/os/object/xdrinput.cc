@@ -35,6 +35,18 @@ int64_t XDRInput::get_int64()
 	return (ret0 << 32) | ret1;
 }
 
+float XDRInput::get_float()
+{
+	uint32_t val = get_uint32();
+	return *(float*)&val;
+}
+
+double XDRInput::get_double()
+{
+	uint64_t val = get_uint64();
+	return *(double*)&val;
+}
+
 uint32_t XDRInput::get_opaque_length()
 {
 	return get_uint32();
