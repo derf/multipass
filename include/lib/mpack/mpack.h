@@ -2133,12 +2133,21 @@ MPACK_INLINE float mpack_load_float(const char* p) {
 
 MPACK_INLINE double mpack_load_double(const char* p) {
     MPACK_CHECK_FLOAT_ORDER();
+#ifdef MULTIPASS_ARCH_arduino_nano
+    MPACK_STATIC_ASSERT(sizeof(double) == sizeof(uint32_t), "double is wrong size??");
+    union {
+        double d;
+        uint32_t u;
+    } v;
+    v.u = mpack_load_u32(p);
+#else
     MPACK_STATIC_ASSERT(sizeof(double) == sizeof(uint64_t), "double is wrong size??");
     union {
         double d;
         uint64_t u;
     } v;
     v.u = mpack_load_u64(p);
+#endif
     return v.d;
 }
 
