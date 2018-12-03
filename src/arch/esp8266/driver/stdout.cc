@@ -67,7 +67,19 @@ StandardOutput & StandardOutput::operator<<(long number)
 	return *this;
 }
 
-StandardOutput & StandardOutput::operator<<(unsigned long long number)
+StandardOutput & StandardOutput::operator<<(float number)
+{
+	printf_float(number);
+	return *this;
+}
+
+StandardOutput & StandardOutput::operator<<(double number)
+{
+	printf_float(number);
+	return *this;
+}
+
+ICACHE_FLASH_ATTR StandardOutput & StandardOutput::operator<<(unsigned long long number)
 {
 	switch (base) {
 	case 2:
@@ -164,7 +176,7 @@ void StandardOutput::printf_uint8(uint8_t num)
 	put(format_hex_nibble(num % 16));
 }
 
-void StandardOutput::printf_float(float num)
+ICACHE_FLASH_ATTR void StandardOutput::printf_float(float num)
 {
 	if (num < 0) {
 		put('-');

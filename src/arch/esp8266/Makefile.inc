@@ -33,6 +33,10 @@ ifneq ($(findstring stdin,${arch_drivers}), )
 	CXX_TARGETS += src/arch/esp8266/driver/stdin.cc
 endif
 
+ifneq ($(findstring counter,${arch_drivers}), )
+	CXX_TARGETS += src/arch/esp8266/driver/counter.cc
+endif
+
 .cc.o:
 	${QUIET}${CXX} ${INCLUDES} ${COMMON_FLAGS} ${CXXFLAGS} -c -o $@ ${@:.o=.cc}
 	${QUIET}${OBJCOPY} --rename-section .text=.irom0.text --rename-section .literal=.irom0.literal $@
@@ -47,7 +51,7 @@ build/system.ar: ${OBJECTS}
 build/system.elf: build/system.ar
 	${CC} -L${SDK_BASE}/lib -T${SDK_BASE}/lib/eagle.app.v6-derf.ld ${LDFLAGS} \
 		-Wl,--start-group -lc -lgcc -lhal -lpp -lphy -lnet80211 -llwip -lwpa \
-		-lmain $< -Wl,--end-group -o $@
+		-lmain -flto $< -Wl,--end-group -o $@
 
 build/0x00000.bin: build/system.elf
 	${ESPTOOL} --chip esp8266 elf2image -o build/ $<

@@ -27,6 +27,8 @@ class StandardOutput {
 		StandardOutput & operator<<(long number);
 		StandardOutput & operator<<(unsigned long long number);
 		StandardOutput & operator<<(long long number);
+		StandardOutput & operator<<(float number);
+		StandardOutput & operator<<(double number);
 		StandardOutput & operator<<(void *pointer);
 		StandardOutput & operator<<(const char *text);
 		StandardOutput & operator<<(StandardOutput & (*fun) (StandardOutput &));
