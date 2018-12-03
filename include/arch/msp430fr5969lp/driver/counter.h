@@ -6,6 +6,7 @@ class Counter {
 		Counter(const Counter &copy);
 
 	public:
+		uint16_t value;
 		uint8_t overflowed;
 
 		Counter() : overflowed(0) {}
@@ -17,9 +18,9 @@ class Counter {
 			TA2CTL |= TACLR;
 		}
 
-		inline uint16_t stop() {
+		inline void stop() {
 			TA2CTL = 0;
-			return TA2R;
+			value = TA2R;
 		}
 };
 
