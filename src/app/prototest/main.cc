@@ -1,7 +1,10 @@
 #include "arch.h"
 #include "driver/gpio.h"
 #include "driver/stdout.h"
-//#include "driver/counter.h"
+
+#ifdef PROTOTEST_BENCH_CYCLES
+#include "driver/counter.h"
+#endif
 
 #ifdef PROTOTEST_ARDUINOJSON
 #include "lib/ArduinoJson.h"
@@ -71,7 +74,7 @@ int main(void)
 	gpio.setup();
 	kout.setup();
 
-	gpio.led_on(0);
+	//gpio.led_on(0);
 	kout << "Hello, World!" << endl;
 
 #if defined(PROTOTEST_BENCH_CYCLES) and (defined(MULTIPASS_ARCH_arduino_nano) or defined(MULTIPASS_ARCH_msp430fr5969lp))
