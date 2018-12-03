@@ -16,7 +16,7 @@ ifeq (${aspectc}, 1)
 endif
 
 INCLUDES += -I${SDK_BASE}/include
-COMMON_FLAGS += -nostdlib -mlongcalls -D__ets__ -DICACHE_FLASH -DMULTIPASS_ARCH_esp8266
+COMMON_FLAGS += -nostdlib -mlongcalls -flto -D__ets__ -DICACHE_FLASH -DMULTIPASS_ARCH_esp8266
 CXXFLAGS = -std=c++11 -fno-rtti -fno-threadsafe-statics
 LDFLAGS += -nostdlib -Wl,--no-check-sections -u call_user_start -Wl,-static
 
@@ -50,8 +50,9 @@ build/system.ar: ${OBJECTS}
 
 build/system.elf: build/system.ar
 	${CC} -L${SDK_BASE}/lib -T${SDK_BASE}/lib/eagle.app.v6-derf.ld ${LDFLAGS} \
+		-Wl,--gc-sections \
 		-Wl,--start-group -lc -lgcc -lhal -lpp -lphy -lnet80211 -llwip -lwpa \
-		-lmain -flto $< -Wl,--end-group -o $@
+		-lmain $< -Wl,--end-group -o $@
 
 build/0x00000.bin: build/system.elf
 	${ESPTOOL} --chip esp8266 elf2image -o build/ $<
