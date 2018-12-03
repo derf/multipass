@@ -9,6 +9,8 @@ INCLUDES += -I/opt/msp430/ti/gcc/include
 COMMON_FLAGS += -mcpu=${CPU} -mmcu=${MCU} -DMULTIPASS_ARCH_msp430fr5969lp
 COMMON_FLAGS += -DMULTIPASS_ARCH_HAS_I2C
 
+# LTO seems to be broken.
+
 CC = /opt/msp430/ti/gcc/bin/msp430-elf-gcc
 CXX = /opt/msp430/ti/gcc/bin/msp430-elf-g++
 OBJCOPY = /opt/msp430/ti/gcc/bin/msp430-elf-objcopy
@@ -71,7 +73,8 @@ OBJECTS = ${CXX_TARGETS:.cc=.o} ${C_TARGETS:.c=.o}
 build/system.elf: ${OBJECTS}
 	${QUIET}${CXX} ${INCLUDES} ${COMMON_FLAGS} ${CXXFLAGS} \
 		-Wl,--library-path=/opt/msp430/ti/gcc/include/ \
-		-flto -o $@ ${OBJECTS}
+		-Wl,--gc-sections \
+		-o $@ ${OBJECTS}
 
 build/system.hex: build/system.elf
 	${QUIET}${OBJCOPY} -O ihex ${@:.hex=.elf} $@
