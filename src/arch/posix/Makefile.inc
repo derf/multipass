@@ -12,6 +12,10 @@ endif
 CXX_TARGETS += src/arch/posix/arch.cc src/arch/posix/driver/gpio.cc
 CXX_TARGETS += src/arch/posix/driver/stdout.cc src/arch/posix/driver/uptime.cc
 
+ifneq ($(findstring counter,${arch_drivers}), )
+	CXX_TARGETS += src/arch/posix/driver/counter.cc
+endif
+
 OBJECTS = ${CXX_TARGETS:.cc=.o} ${C_TARGETS:.c=.o}
 
 ifneq (${gpio_trace}, )
@@ -43,5 +47,6 @@ arch_help:
 	@echo "    - none -"
 
 arch_info:
+	@echo "Monitor: run build/system.elf"
 
 .PHONY: arch_clean arch_help arch_info monitor program run
