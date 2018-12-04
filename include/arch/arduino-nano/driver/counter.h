@@ -6,7 +6,8 @@ class Counter {
 		Counter(const Counter &copy);
 
 	public:
-		uint8_t overflowed;
+		uint16_t value;
+		volatile uint8_t overflowed;
 
 		Counter() : overflowed(0) {}
 
@@ -14,13 +15,13 @@ class Counter {
 			overflowed = 0;
 			TCNT1 = 0;
 			TCCR1A = 0;
-			TCCR1B = _BV(CS10);
+			TCCR1B = _BV(CS10); // no prescaler
 			TIMSK1 = _BV(TOIE1);
 		}
 
-		inline uint16_t stop() {
+		inline void stop() {
 			TCCR1B = 0;
-			return TCNT1;
+			value = TCNT1;
 		}
 };
 
