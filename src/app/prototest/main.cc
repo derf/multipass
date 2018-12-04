@@ -77,7 +77,7 @@ int main(void)
 	//gpio.led_on(0);
 	kout << "Hello, World!" << endl;
 
-#if defined(PROTOTEST_BENCH_CYCLES) and (defined(MULTIPASS_ARCH_arduino_nano) or defined(MULTIPASS_ARCH_msp430fr5969lp))
+#if defined(PROTOTEST_BENCH_CYCLES) and !defined(PROTOTEST_ARCH_esp8266)
 	while (1) {
 		loop();
 	}
