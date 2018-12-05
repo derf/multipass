@@ -70,13 +70,23 @@ XDRStream & XDRStream::operator<<(int64_t number)
 
 XDRStream & XDRStream::operator<<(float number)
 {
-	*this << *(uint32_t*)&number;
+	union {
+		uint32_t i;
+		float f;
+	} v;
+	v.f = number;
+	*this << v.i;
 	return *this;
 }
 
 XDRStream & XDRStream::operator<<(double number)
 {
-	*this << *(uint64_t*)&number;
+	union {
+		uint64_t i;
+		double d;
+	} v;
+	v.d = number;
+	*this << v.i;
 	return *this;
 }
 
