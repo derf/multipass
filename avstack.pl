@@ -53,7 +53,7 @@ use 5.010;
 
 # Configuration: set these as appropriate for your architecture/project.
 
-my $objdump = shift;
+my $objdump   = shift;
 my $call_cost = shift;
 
 # First, we need to read all object and corresponding .su files. We're
@@ -61,72 +61,78 @@ my $call_cost = shift;
 # sizes. We're just parsing at this stage -- callee name resolution
 # comes later.
 
-my %frame_size;     # "func@file" -> size
-my %call_graph;     # "func@file" -> {callees}
-my %addresses;      # "addr@file" -> "func@file"
+my %frame_size;    # "func@file" -> size
+my %call_graph;    # "func@file" -> {callees}
+my %addresses;     # "addr@file" -> "func@file"
 
-my %global_name;    # "func" -> "func@file"
-my %ambiguous;      # "func" -> 1
+my %global_name;   # "func" -> "func@file"
+my %ambiguous;     # "func" -> 1
 
 foreach (@ARGV) {
-    # Disassemble this object file to obtain a callees. Sources in the
-    # call graph are named "func@file". Targets in the call graph are
-    # named either "offset@file" or "funcname". We also keep a list of
-    # the addresses and names of each function we encounter.
-    my $objfile = $_;
-    my $source;
 
-    open(DISASSEMBLY, "$objdump -Cdr $objfile|") ||
-	die "Can't disassemble $objfile";
-    while (<DISASSEMBLY>) {
-	chomp;
+	# Disassemble this object file to obtain a callees. Sources in the
+	# call graph are named "func@file". Targets in the call graph are
+	# named either "offset@file" or "funcname". We also keep a list of
+	# the addresses and names of each function we encounter.
+	my $objfile = $_;
+	my $source;
 
-	if (/^([0-9a-fA-F]+) <(.*)>:/) {
-	    my $a = $1;
-	    my $name = $2;
+	open( DISASSEMBLY, "$objdump -Cdr $objfile|" )
+	  || die "Can't disassemble $objfile";
+	while (<DISASSEMBLY>) {
+		chomp;
 
-	    $source = "$name\@$objfile";
-	    $call_graph{$source} = {};
-	    $ambiguous{$name} = 1 if defined($global_name{$name});
-	    $global_name{$name} = "$name\@$objfile";
+		if (/^([0-9a-fA-F]+) <(.*)>:/) {
+			my $a    = $1;
+			my $name = $2;
 
-	    $a =~ s/^0*//;
-	    $addresses{"$a\@$objfile"} = "$name\@$objfile";
-	}
+			$source = "$name\@$objfile";
+			$call_graph{$source} = {};
+			$ambiguous{$name} = 1 if defined( $global_name{$name} );
+			$global_name{$name} = "$name\@$objfile";
 
-	if (/: R_[A-Za-z0-9_]+_(?:CALL|PLT32|ABS16)[ \t]+(.*)/) {
-	    my $t = $1;
+			$a =~ s/^0*//;
+			$addresses{"$a\@$objfile"} = "$name\@$objfile";
+		}
 
-	    if ($t eq ".text") {
-		$t = "\@$objfile";
-	    } elsif ($t =~ /^\.text\+0x(.*)$/) {
-		$t = "$1\@$objfile";
-	    }
+		if (/: R_[A-Za-z0-9_]+_(?:CALL|PLT32|ABS16)[ \t]+(.*)/) {
+			my $t = $1;
 
-		 $t =~ s{-0x4$}{};
+			if ( $t eq ".text" ) {
+				$t = "\@$objfile";
+			}
+			elsif ( $t =~ /^\.text\+0x(.*)$/ ) {
+				$t = "$1\@$objfile";
+			}
 
-	    $call_graph{$source}->{$t} = 1;
-	}
-    }
-    close(DISASSEMBLY);
+			$t =~ s{-0x4$}{};
 
-    # Extract frame sizes from the corresponding .su file.
-    if ($objfile =~ /^(.*).o$/) {
-	my $sufile = "$1.su";
-
-	open(SUFILE, "<$sufile") || die "Can't open $sufile";
-	while (<SUFILE>) {
-		if (m{ ^ [^:]+ : \d+ : \d+ : [^\t]+? \s (?<name> \S+ ) \( .*? \)
-			(?: \s* \[with [^]]*\])?
-			\t
-			(?<size> \d+ )}x) {
-			$frame_size{"$+{name}\@$objfile"} = $+{size} + $call_cost;
-		} else {
-			say "No match $_";
+			$call_graph{$source}->{$t} = 1;
 		}
 	}
-	close(SUFILE);
-    }
+	close(DISASSEMBLY);
+
+	# Extract frame sizes from the corresponding .su file.
+	if ( $objfile =~ /^(.*).o$/ ) {
+		my $sufile = "$1.su";
+
+		open( SUFILE, "<$sufile" ) || die "Can't open $sufile";
+		while (<SUFILE>) {
+			if (
+				m{ ^ [^:]+ : \d+ : \d+ : [^\t]+? \s (?<name> \S+ ) \( .*? \)
+			(?: \s* \[with [^]]*\])?
+			\t
+			(?<size> \d+ )}x
+			  )
+			{
+				$frame_size{"$+{name}\@$objfile"} = $+{size} + $call_cost;
+			}
+			else {
+				say "No match $_";
+			}
+		}
+		close(SUFILE);
+	}
 }
 
 # In this step, we enumerate each list of callees in the call graph and
@@ -135,34 +141,37 @@ foreach (@ARGV) {
 
 my %unresolved;
 
-foreach (keys %call_graph) {
-    my $from = $_;
-    my $callees = $call_graph{$from};
-    my %resolved;
+foreach ( keys %call_graph ) {
+	my $from    = $_;
+	my $callees = $call_graph{$from};
+	my %resolved;
 
-    foreach (keys %$callees) {
-	my $t = $_;
+	foreach ( keys %$callees ) {
+		my $t = $_;
 
-	if (defined($addresses{$t})) {
-	    $resolved{$addresses{$t}} = 1;
-	} elsif (defined($global_name{$t})) {
-	    $resolved{$global_name{$t}} = 1;
-	    warn "Ambiguous resolution: $t" if defined ($ambiguous{$t});
-	} elsif (defined($call_graph{$t})) {
-	    $resolved{$t} = 1;
-	} else {
-	    $unresolved{$t} = 1;
+		if ( defined( $addresses{$t} ) ) {
+			$resolved{ $addresses{$t} } = 1;
+		}
+		elsif ( defined( $global_name{$t} ) ) {
+			$resolved{ $global_name{$t} } = 1;
+			warn "Ambiguous resolution: $t" if defined( $ambiguous{$t} );
+		}
+		elsif ( defined( $call_graph{$t} ) ) {
+			$resolved{$t} = 1;
+		}
+		else {
+			$unresolved{$t} = 1;
+		}
 	}
-    }
 
-    $call_graph{$from} = \%resolved;
+	$call_graph{$from} = \%resolved;
 }
 
 # Create fake edges and nodes to account for dynamic behaviour.
 $call_graph{"INTERRUPT"} = {};
 
-foreach (keys %call_graph) {
-    $call_graph{"INTERRUPT"}->{$_} = 1 if /^__vector_/;
+foreach ( keys %call_graph ) {
+	$call_graph{"INTERRUPT"}->{$_} = 1 if /^__vector_/;
 }
 
 # Trace the call graph and calculate, for each function:
@@ -179,84 +188,84 @@ my %total_cost;
 my %call_depth;
 
 sub trace {
-    my $f = shift;
+	my $f = shift;
 
-    if ($visited{$f}) {
-	$visited{$f} = "R" if $visited{$f} eq "?";
-	return;
-    }
-
-    $visited{$f} = "?";
-
-    my $max_depth = 0;
-    my $max_frame = 0;
-
-    my $targets = $call_graph{$f} || die "Unknown function: $f";
-    if (defined($targets)) {
-	foreach (keys %$targets) {
-	    my $t = $_;
-
-	    $has_caller{$t} = 1;
-	    trace($t);
-
-	    my $is = $total_cost{$t};
-	    my $d = $call_depth{$t};
-
-	    $max_frame = $is if $is > $max_frame;
-	    $max_depth = $d if $d > $max_depth;
+	if ( $visited{$f} ) {
+		$visited{$f} = "R" if $visited{$f} eq "?";
+		return;
 	}
-    }
 
-    $call_depth{$f} = $max_depth + 1;
-    $total_cost{$f} = $max_frame + ($frame_size{$f} || 0);
-    $visited{$f} = " " if $visited{$f} eq "?";
+	$visited{$f} = "?";
+
+	my $max_depth = 0;
+	my $max_frame = 0;
+
+	my $targets = $call_graph{$f} || die "Unknown function: $f";
+	if ( defined($targets) ) {
+		foreach ( keys %$targets ) {
+			my $t = $_;
+
+			$has_caller{$t} = 1;
+			trace($t);
+
+			my $is = $total_cost{$t};
+			my $d  = $call_depth{$t};
+
+			$max_frame = $is if $is > $max_frame;
+			$max_depth = $d  if $d > $max_depth;
+		}
+	}
+
+	$call_depth{$f} = $max_depth + 1;
+	$total_cost{$f} = $max_frame + ( $frame_size{$f} || 0 );
+	$visited{$f}    = " " if $visited{$f} eq "?";
 }
 
-foreach (keys %call_graph) { trace $_; }
+foreach ( keys %call_graph ) { trace $_; }
 
 # Now, print results in a nice table.
-printf "  %-30s %8s %8s %8s\n",
-    "Func", "Cost", "Frame", "Height";
+printf "  %-30s %8s %8s %8s\n", "Func", "Cost", "Frame", "Height";
 print "------------------------------------";
 print "------------------------------------\n";
 
 my $max_iv = 0;
-my $main = 0;
+my $main   = 0;
 
-foreach (sort { $total_cost{$b} <=> $total_cost{$a} } keys %visited) {
-    my $name = $_;
+foreach ( sort { $total_cost{$b} <=> $total_cost{$a} } keys %visited ) {
+	my $name = $_;
 
-    if (/^(.*)@(.*)$/) {
-	$name = $1 unless $ambiguous{$name};
-    }
+	if (/^(.*)@(.*)$/) {
+		$name = $1 unless $ambiguous{$name};
+	}
 
-    my $tag = $visited{$_};
-    my $cost = $total_cost{$_};
+	my $tag  = $visited{$_};
+	my $cost = $total_cost{$_};
 
-    $name = $_ if $ambiguous{$name};
-    $tag = ">" unless $has_caller{$_};
+	$name = $_ if $ambiguous{$name};
+	$tag = ">" unless $has_caller{$_};
 
-    if (/^__vector_/) {
-	$max_iv = $cost if $cost > $max_iv;
-    } elsif (/^main@/) {
-	$main = $cost;
-    }
+	if (/^__vector_/) {
+		$max_iv = $cost if $cost > $max_iv;
+	}
+	elsif (/^main@/) {
+		$main = $cost;
+	}
 
-    if ($ambiguous{$name}) { $name = $_; }
+	if ( $ambiguous{$name} ) { $name = $_; }
 
-    printf "%s %-30s %8d %8d %8d\n", $tag, $name, $cost,
-	$frame_size{$_} || 0, $call_depth{$_};
+	printf "%s %-30s %8d %8d %8d\n", $tag, $name, $cost,
+	  $frame_size{$_} || 0, $call_depth{$_};
 }
 
 print "\n";
 
 print "Peak execution estimate (main + worst-case IV):\n";
 printf "  main = %d, worst IV = %d, total = %d\n",
-      $total_cost{$global_name{"main"}},
-      $total_cost{"INTERRUPT"},
-      $total_cost{$global_name{"main"}} + $total_cost{"INTERRUPT"};
+  $total_cost{ $global_name{"main"} },
+  $total_cost{"INTERRUPT"},
+  $total_cost{ $global_name{"main"} } + $total_cost{"INTERRUPT"};
 
 print "\n";
 
 print "The following functions were not resolved:\n";
-foreach (keys %unresolved) { print "  $_\n"; }
+foreach ( keys %unresolved ) { print "  $_\n"; }
