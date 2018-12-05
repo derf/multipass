@@ -19,6 +19,7 @@ class XDRInput {
 		double get_double();
 		uint32_t get_opaque_length();
 		char* get_opaque(uint32_t length);
+		void get_string(char *target);
 };
 
 #endif

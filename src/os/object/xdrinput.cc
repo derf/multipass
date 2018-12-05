@@ -61,3 +61,17 @@ char *XDRInput::get_opaque(uint32_t length)
 	}
 	return ret;
 }
+
+void XDRInput::get_string(char* target)
+{
+	uint16_t length = get_opaque_length();
+	uint16_t i;
+	for (i = 0; i < length; i++) {
+		target[i] = data[pos + i];
+	}
+	target[i] = 0;
+	pos += length;
+	if (length % 4) {
+		pos += 4 - (length % 4);
+	}
+}
