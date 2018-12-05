@@ -10,6 +10,7 @@ CXX = ${TOOLCHAIN_BASE}/xtensa-lx106-elf-g++
 AR = ${TOOLCHAIN_BASE}/xtensa-lx106-elf-ar
 LD = ${TOOLCHAIN_BASE}/xtensa-lx106-elf-gcc
 OBJCOPY = ${TOOLCHAIN_BASE}/xtensa-lx106-elf-objcopy
+OBJDUMP = ${TOOLCHAIN_BASE}/xtensa-lx106-elf-objdump
 
 ifeq (${aspectc}, 1)
 	CXX = ag++ -r build/repo.acp -v 0 --c_compiler ${TOOLCHAIN_BASE}/xtensa-lx106-elf-g++ -p . --Xcompiler

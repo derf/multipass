@@ -14,6 +14,11 @@ COMMON_FLAGS += -DMULTIPASS_ARCH_HAS_I2C
 CC = /opt/msp430/ti/gcc/bin/msp430-elf-gcc
 CXX = /opt/msp430/ti/gcc/bin/msp430-elf-g++
 OBJCOPY = /opt/msp430/ti/gcc/bin/msp430-elf-objcopy
+OBJDUMP = /opt/msp430/ti/gcc/bin/msp430-elf-objdump
+
+# For each function call, the 4-Byte (20 bits at 2-Byte alignment) return
+# address is pushed onto the stack.
+ARCH_CALL_COST = 4
 
 CXX_TARGETS += src/arch/msp430fr5969lp/arch.cc
 

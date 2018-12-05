@@ -14,6 +14,10 @@ ifneq (${verbose}, )
 	QUIET =
 endif
 
+ifneq (${stack_usage}, )
+	COMMON_FLAGS += -fstack-usage
+endif
+
 include src/app/${app}/Makefile.inc
 
 ifneq ($(findstring lm75,${drivers}), )
@@ -123,6 +127,11 @@ endif
 
 include src/arch/${arch}/Makefile.inc
 
+stack: default
+	@test -n "${OBJDUMP}"
+	@test -n "${ARCH_CALL_COST}"
+	@./avstack.pl ${OBJDUMP} ${ARCH_CALL_COST} ${OBJECTS}
+
 clean: arch_clean
 	rm -f build/system.elf
 
@@ -144,4 +153,4 @@ help: arch_help
 info: arch_info
 	@echo "Selected Drivers: ${drivers} / ${arch_drivers}"
 
-.PHONY: clean help info
+.PHONY: clean default stack help info

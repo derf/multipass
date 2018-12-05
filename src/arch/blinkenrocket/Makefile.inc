@@ -12,6 +12,7 @@ CXX = avr-g++
 NM = avr-nm
 OBJCOPY = avr-objcopy
 OBJDUMP = avr-objdump
+ARCH_CALL_COST = 4
 
 ifeq (${aspectc}, 1)
 	CXX = ag++ -r build/repo.acp -v 0 --c_compiler avr-g++ -p . --Xcompiler
