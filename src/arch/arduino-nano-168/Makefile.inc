@@ -21,8 +21,7 @@ NM = avr-nm
 OBJCOPY = avr-objcopy
 OBJDUMP = avr-objdump
 
-# On each function call, the 2-Byte return address is pushed onto the stack
-ARCH_CALL_COST = 2
+ARCH_SHORTNAME = avr
 
 ifeq (${aspectc}, 1)
 	CXX = ag++ -r build/repo.acp -v 0 --c_compiler avr-g++ -p . --Xcompiler

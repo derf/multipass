@@ -128,9 +128,9 @@ endif
 include src/arch/${arch}/Makefile.inc
 
 stack: default
-	@test -n "${OBJDUMP}"
-	@test -n "${ARCH_CALL_COST}"
-	@./avstack.pl ${OBJDUMP} ${ARCH_CALL_COST} ${OBJECTS}
+	${QUIET}test -n "${OBJDUMP}"
+	${QUIET}test -n "${ARCH_SHORTNAME}"
+	${QUIET}./static-stack-analyze.pl ${OBJDUMP} ${ARCH_SHORTNAME} ${OBJECTS}
 
 clean: arch_clean
 	rm -f build/system.elf

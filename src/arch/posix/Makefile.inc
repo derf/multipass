@@ -6,8 +6,7 @@ CC = gcc
 CXX = g++
 OBJDUMP = objdump
 
-# For each function call, the 8-Byte return address is pushed onto the stack.
-ARCH_CALL_COST = 8
+ARCH_SHORTNAME = x64
 
 ifeq (${aspectc}, 1)
 	CXX = ag++ -r build/repo.acp -v 0 -p . --Xcompiler
