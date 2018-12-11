@@ -156,6 +156,9 @@ help: arch_help
 	@echo "    $(shell ls src/arch)"
 
 info: arch_info
+	@echo "COMMON_FLAGS: ${COMMON_FLAGS}"
+	@echo "CFLAGS: ${CFLAGS}"
+	@echo "CXXFLAGS: ${CXXFLAGS}"
 	@echo "Selected Drivers: ${drivers} / ${arch_drivers}"
 
 .PHONY: clean default stack help info
