@@ -1,0 +1,5 @@
+outputstream.h:21:15:virtual void OutputStream::write(const char*)	6	static
+outputstream.h:27:15:virtual void OutputStream::flush()	2	static
+stdout.cc:51:6:virtual void StandardOutput::put(char)	2	static
+stdout.cc:12:6:void StandardOutput::setup()	2	static
+stdout.cc:61:20:cc)	2	static
