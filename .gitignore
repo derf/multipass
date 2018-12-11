@@ -1,4 +1,5 @@
 *.o
+*.su
 /build
 /src/app/prototest/nanopb.pb.h
 /src/app/prototest/nanopb.pb.cc
