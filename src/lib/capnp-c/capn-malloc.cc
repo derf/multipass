@@ -43,11 +43,19 @@ struct check_segment_alignment {
 static struct capn_segment *create(void *u, uint32_t id, int sz) {
 	struct capn_segment *s;
 	sz += sizeof(*s);
-	if (sz < 4096) { // TODO auskommentieren?
+#if 0
+	if (sz < 1024) {
+		sz = 1024;
+	} else {
+		sz = (sz + 1023) & ~1023;
+	}
+#else
+	if (sz < 4096) {
 		sz = 4096;
 	} else {
 		sz = (sz + 4095) & ~4095;
 	}
+#endif
 	s = (struct capn_segment*) mpcalloc(1, sz);
 	s->data = (char*) (s+1);
 	s->cap = sz - sizeof(*s);
