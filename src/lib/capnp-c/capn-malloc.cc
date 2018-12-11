@@ -19,6 +19,13 @@
 #include <limits.h>
 #include <errno.h>
 
+#ifdef MULTIPASS_TRACE_MALLOC
+#include "lib/mpmalloc.h"
+#else
+#define mpcalloc calloc
+#define mpfree free
+#endif
+
 /*
  * 8 byte alignment is required for struct capn_segment.
  * This struct check_segment_alignment verifies this at compile time.
@@ -36,12 +43,12 @@ struct check_segment_alignment {
 static struct capn_segment *create(void *u, uint32_t id, int sz) {
 	struct capn_segment *s;
 	sz += sizeof(*s);
-	if (sz < 4096) {
+	if (sz < 4096) { // TODO auskommentieren?
 		sz = 4096;
 	} else {
 		sz = (sz + 4095) & ~4095;
 	}
-	s = (struct capn_segment*) calloc(1, sz);
+	s = (struct capn_segment*) mpcalloc(1, sz);
 	s->data = (char*) (s+1);
 	s->cap = sz - sizeof(*s);
 	s->user = s;
@@ -62,7 +69,7 @@ void capn_free(struct capn *c) {
 	struct capn_segment *s = c->seglist;
 	while (s != NULL) {
 		struct capn_segment *n = s->next;
-		free(s->user);
+		mpfree(s->user);
 		s = n;
 	}
 	capn_reset_copy(c);
@@ -72,7 +79,7 @@ void capn_reset_copy(struct capn *c) {
 	struct capn_segment *s = c->copylist;
 	while (s != NULL) {
 		struct capn_segment *n = s->next;
-		free(s->user);
+		mpfree(s->user);
 		s = n;
 	}
 	c->copy = NULL;
@@ -156,7 +163,7 @@ static int init_fp(struct capn *c, FILE *f, struct capn_stream *z, int packed) {
 	}
 
 	/* Allocate space for the data and the capn_segment structs */
-	s = (struct capn_segment*) calloc(1, total + (sizeof(*s) * segnum));
+	s = (struct capn_segment*) mpcalloc(1, total + (sizeof(*s) * segnum));
 	if (!s)
 		goto err;
 
@@ -179,7 +186,7 @@ static int init_fp(struct capn *c, FILE *f, struct capn_stream *z, int packed) {
 
 err:
 	memset(c, 0, sizeof(*c));
-	free(s);
+	mpfree(s);
 	return -1;
 }
 

@@ -3,6 +3,13 @@
 #include <stdlib.h>
 #include <string.h>
 
+#ifdef MULTIPASS_TRACE_MALLOC
+#include "lib/mpmalloc.h"
+#else
+#define mpmalloc malloc
+#define mpfree free
+#endif
+
 #if _MSC_VER
 #define inline __inline
 #endif
@@ -33,7 +40,7 @@ ubjr_context_t* ubjr_open_callback(void* userdata,
 	void(*error_cb)(const char* error_msg)
 	)
 {
-	ubjr_context_t* ctx = (ubjr_context_t*)malloc(sizeof(ubjr_context_t));
+	ubjr_context_t* ctx = (ubjr_context_t*)mpmalloc(sizeof(ubjr_context_t));
 	ctx->userdata = userdata;
 	ctx->read_cb = read_cb;
 	ctx->peek_cb = peek_cb;
@@ -57,8 +64,8 @@ ubjr_context_t* ubjr_open_callback(void* userdata,
 size_t ubjr_close_context(ubjr_context_t* ctx)
 {
 	size_t n = ctx->total_read;
-	free(ctx->userdata);
-	free(ctx);
+	mpfree(ctx->userdata);
+	mpfree(ctx);
 	return n;
 }
 
@@ -90,7 +97,7 @@ struct mem_r_fd
 };
 static int memclose(void* mfd)
 {
-	//free(mfd);
+	//mpfree(mfd);
 	return 0;
 }
 static size_t memread(void* data, size_t size, size_t count, struct mem_r_fd* fp)
@@ -112,7 +119,7 @@ static int mempeek(struct mem_r_fd* mfd)
 
 ubjr_context_t* ubjr_open_memory(const uint8_t* be, const uint8_t* en)
 {
-	struct mem_r_fd* mfd = (struct mem_r_fd*)malloc(sizeof(struct mem_r_fd));
+	struct mem_r_fd* mfd = (struct mem_r_fd*)mpmalloc(sizeof(struct mem_r_fd));
 	mfd->current = be;
 	mfd->begin = be;
 	mfd->end = en;
@@ -160,7 +167,7 @@ size_t ubjr_local_type_size(UBJ_TYPE typ)
 
 static inline priv_ubjr_sorted_key_t* priv_ubjr_object_build_sorted_keys(ubjr_object_t* obj)
 {
-	priv_ubjr_sorted_key_t* sorted_keysmem = malloc(obj->size*sizeof(priv_ubjr_sorted_key_t));
+	priv_ubjr_sorted_key_t* sorted_keysmem = mpmalloc(obj->size*sizeof(priv_ubjr_sorted_key_t));
 	size_t i;
 	for (i = 0; i < obj->size; i++)
 	{
@@ -216,7 +223,7 @@ static inline void priv_ubjr_read_to_ptr(ubjr_context_t* ctx, uint8_t* dst, UBJ_
 	}
 	case UBJ_CHAR:
 	{
-		tstr = malloc(n + 1);
+		tstr = mpmalloc(n + 1);
 		priv_ubjr_context_read(ctx, tstr, n);
 		tstr[n] = 0;
 		*(ubjr_string_t*)dst = tstr;
@@ -341,7 +348,7 @@ static inline ubjr_array_t priv_ubjr_read_raw_array(ubjr_context_t* ctx)
 			uint8_t dselect;
 			priv_ubjr_context_getc(ctx);//skip over the '@' marker
 			myarray.num_dims = priv_ubjr_context_getc(ctx);//since max is 8, no type indicator needed...always a int7 type
-			myarray.dims = malloc(sizeof(size_t)*myarray.num_dims);
+			myarray.dims = mpmalloc(sizeof(size_t)*myarray.num_dims);
 			myarray.size = 1;
 			for (dselect = 0; dselect < myarray.num_dims; dselect++)
 			{
@@ -357,7 +364,7 @@ static inline ubjr_array_t priv_ubjr_read_raw_array(ubjr_context_t* ctx)
 	{
 		myarray.originally_sized = 0;
 		size_t arrpot = 0;
-		myarray.values=malloc(1*ls+1); //the +1 is for memory for the 0-size elements
+		myarray.values=mpmalloc(1*ls+1); //the +1 is for memory for the 0-size elements
 		for (myarray.size = 0; priv_ubjr_context_peek(ctx) != ']'; myarray.size++)
 		{
 			if (myarray.size >= (1ULL << arrpot))
@@ -373,7 +380,7 @@ static inline ubjr_array_t priv_ubjr_read_raw_array(ubjr_context_t* ctx)
 	{
 		myarray.originally_sized = 1;
 		size_t i;
-		myarray.values = malloc(ls*myarray.size+1);
+		myarray.values = mpmalloc(ls*myarray.size+1);
 		size_t sz = UBJI_TYPE_size[myarray.type];
 
 		if (sz >= 0 && myarray.type != UBJ_STRING && myarray.type != UBJ_HIGH_PRECISION && myarray.type != UBJ_CHAR && myarray.type != UBJ_MIXED) //constant size,fastread
@@ -391,7 +398,7 @@ static inline ubjr_array_t priv_ubjr_read_raw_array(ubjr_context_t* ctx)
 	}
 	if (myarray.dims == NULL)
 	{
-		myarray.dims = malloc(sizeof(size_t));
+		myarray.dims = mpmalloc(sizeof(size_t));
 		myarray.dims[0] = myarray.size;
 	}
 	return myarray;
@@ -408,8 +415,8 @@ static inline ubjr_object_t priv_ubjr_read_raw_object(ubjr_context_t* ctx)
 	{
 		myobject.originally_sized = 0;
 		size_t arrpot = 0;
-		myobject.values = malloc(1 * ls + 1); //the +1 is for memory for the 0-size elements
-		myobject.keys = malloc(1 * sizeof(ubjr_string_t));
+		myobject.values = mpmalloc(1 * ls + 1); //the +1 is for memory for the 0-size elements
+		myobject.keys = mpmalloc(1 * sizeof(ubjr_string_t));
 		for (myobject.size = 0; priv_ubjr_context_peek(ctx) != '}'; myobject.size++)
 		{
 			if (myobject.size >= (1ULL << arrpot))
@@ -427,8 +434,8 @@ static inline ubjr_object_t priv_ubjr_read_raw_object(ubjr_context_t* ctx)
 	{
 		size_t i;
 		myobject.originally_sized = 1;
-		myobject.values = malloc(ls*myobject.size + 1);
-		myobject.keys = malloc(myobject.size * sizeof(ubjr_string_t));
+		myobject.values = mpmalloc(ls*myobject.size + 1);
+		myobject.keys = mpmalloc(myobject.size * sizeof(ubjr_string_t));
 
 		for (i = 0; i < myobject.size; i++)
 		{
@@ -452,7 +459,7 @@ static inline priv_ubjr_cleanup_container(UBJ_TYPE type,size_t size,void* values
 			priv_ubjr_cleanup_pointer(type,(void*)viter);
 		}
 	}
-	free(values);
+	mpfree(values);
 }
 static inline void priv_ubjr_cleanup_pointer(UBJ_TYPE typ,void* value)
 {
@@ -478,14 +485,14 @@ static inline void priv_ubjr_cleanup_pointer(UBJ_TYPE typ,void* value)
 		case UBJ_STRING:
 		{
 			ubjr_string_t* st=(ubjr_string_t*)value;
-			free((void*)*st);
+			mpfree((void*)*st);
 			break;
 		}
 		case UBJ_ARRAY:
 		{
 			ubjr_array_t* arr=(ubjr_array_t*)value;
 			priv_ubjr_cleanup_container(arr->type,arr->size,arr->values);
-			free(arr->dims);
+			mpfree(arr->dims);
 			break;
 		}
 		case UBJ_OBJECT:
@@ -495,7 +502,7 @@ static inline void priv_ubjr_cleanup_pointer(UBJ_TYPE typ,void* value)
 			priv_ubjr_cleanup_container(UBJ_STRING,obj->size,obj->keys);
 			if(obj->metatable)
 			{
-				free(obj->metatable);
+				mpfree(obj->metatable);
 			}
 			break;
 		}

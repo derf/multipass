@@ -1,6 +1,12 @@
 #include "ubj.h"
 #include "ubj_internal.h"
 
+#ifdef MULTIPASS_TRACE_MALLOC
+#include "lib/mpmalloc.h"
+#else
+#define mpmalloc malloc
+#endif
+
 #define CONTAINER_IS_SIZED		0x1
 #define CONTAINER_IS_TYPED		0x2
 #define CONTAINER_IS_UBJ_ARRAY		0x4
@@ -47,7 +53,7 @@ ubjw_context_t* ubjw_open_callback(void* userdata,
 	void (*error_cb)(const char* error_msg)
  					)
 {
-	ubjw_context_t* ctx = (ubjw_context_t*)malloc(sizeof(ubjw_context_t));
+	ubjw_context_t* ctx = (ubjw_context_t*)mpmalloc(sizeof(ubjw_context_t));
 	ctx->userdata = userdata;
 	ctx->write_cb = write_cb;
 	ctx->close_cb = close_cb;
@@ -96,7 +102,7 @@ static size_t memwrite(const void* data, size_t size, size_t count, struct mem_w
 
 ubjw_context_t* ubjw_open_memory(uint8_t* be, uint8_t* en)
 {
-	struct mem_w_fd* mfd = (struct mem_w_fd*)malloc(sizeof(struct mem_w_fd));
+	struct mem_w_fd* mfd = (struct mem_w_fd*)mpmalloc(sizeof(struct mem_w_fd));
 	mfd->current = be;
 	mfd->begin = be;
 	mfd->end = en;

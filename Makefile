@@ -125,6 +125,11 @@ ifeq (${ostream}, 1)
 	COMMON_FLAGS += -DWITH_OSTREAM
 endif
 
+ifeq (${trace_malloc}, 1)
+	CXX_TARGETS += src/lib/mpmalloc.cc
+	COMMON_FLAGS += -DMULTIPASS_TRACE_MALLOC
+endif
+
 include src/arch/${arch}/Makefile.inc
 
 stack: default
