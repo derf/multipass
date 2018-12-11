@@ -9,6 +9,10 @@ INCLUDES += -I/opt/msp430/ti/msp430-gcc-full-linux-5.0.0.36/include
 COMMON_FLAGS += -mcpu=${CPU} -mmcu=${MCU} -DMULTIPASS_ARCH_msp430fr5994lp
 COMMON_FLAGS += -DMULTIPASS_ARCH_HAS_I2C
 
+ifneq (${msp430_large}, )
+	COMMON_FLAGS += -mcode-region=either -mlarge
+endif
+
 # LTO seems to be broken.
 
 CC = /opt/msp430/ti/msp430-gcc-full-linux-5.0.0.36/bin/msp430-elf-gcc
