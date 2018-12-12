@@ -137,6 +137,11 @@ stack: default
 	${QUIET}test -n "${ARCH_SHORTNAME}"
 	${QUIET}./static-stack-analyze.pl ${OBJDUMP} ${ARCH_SHORTNAME} ${OBJECTS}
 
+stackm: default
+	${QUIET}test -n "${OBJDUMP}"
+	${QUIET}test -n "${ARCH_SHORTNAME}"
+	${QUIET}./static-stack-analyze.pl --machine-readable ${OBJDUMP} ${ARCH_SHORTNAME} ${OBJECTS}
+
 clean: arch_clean
 	rm -f build/system.elf
 
