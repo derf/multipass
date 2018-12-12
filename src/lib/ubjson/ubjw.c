@@ -5,6 +5,7 @@
 #include "lib/mpmalloc.h"
 #else
 #define mpmalloc malloc
+#define mpfree free
 #endif
 
 #define CONTAINER_IS_SIZED		0x1
@@ -84,7 +85,7 @@ struct mem_w_fd
 
 static int memclose(void* mfd)
 {
-	free(mfd);
+	mpfree(mfd);
 	return 0;
 }
 static size_t memwrite(const void* data, size_t size, size_t count, struct mem_w_fd* fp)
@@ -191,7 +192,7 @@ size_t ubjw_close_context(ubjw_context_t* ctx)
 	size_t n = ctx->total_written;
 	if (ctx->close_cb)
 		ctx->close_cb(ctx->userdata);
-	free(ctx);
+	mpfree(ctx);
 	return n;
 }
 
