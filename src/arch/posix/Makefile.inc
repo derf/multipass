@@ -50,6 +50,7 @@ arch_help:
 	@echo "    - none -"
 
 arch_info:
+	@echo "Counter Overflow: 18446744073709551616/1"
 	@echo "Monitor: run build/system.elf"
 
 .PHONY: arch_clean arch_help arch_info monitor program run

@@ -76,6 +76,7 @@ arch_help:
 	@echo "    - none -"
 
 arch_info:
+	@echo "Counter Overflow: ?/?"
 	@echo "Monitor: /dev/ttyUSB0 115200"
 
 .PHONY: arch_clean arch_help arch_info monitor program
