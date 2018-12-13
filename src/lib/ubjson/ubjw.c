@@ -15,7 +15,7 @@
 
 #define CONTAINER_EXPECTS_KEY	0x10
 
-#define CONTAINER_STACK_MAX		64
+#define CONTAINER_STACK_MAX		16
 #define BUFFER_OUT_SIZE			1024
 
 #define MAX_DIMS	8
@@ -569,6 +569,7 @@ void ubjw_end(ubjw_context_t* ctx)
 }
 
 
+// Not used by benchmark.py -> high BUFFER_OUT_SIZE does not matter
 static inline void priv_ubjw_write_byteswap(ubjw_context_t* ctx, const uint8_t* data, int sz, size_t count)
 {
 	uint8_t buf[BUFFER_OUT_SIZE];
