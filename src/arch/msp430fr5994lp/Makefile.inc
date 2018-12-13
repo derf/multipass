@@ -10,7 +10,7 @@ COMMON_FLAGS += -mcpu=${CPU} -mmcu=${MCU} -DMULTIPASS_ARCH_msp430fr5994lp
 COMMON_FLAGS += -DMULTIPASS_ARCH_HAS_I2C
 
 ifneq (${msp430_large}, )
-	COMMON_FLAGS += -mcode-region=either -mlarge
+	COMMON_FLAGS += -mcode-region=either -mlarge -DADDR_20BIT
 endif
 
 # LTO seems to be broken.
