@@ -59,8 +59,8 @@
 
 void loop(void)
 {
-	static uint16_t ts = 0;
-	ts++;
+	//static uint16_t ts = 0;
+	//ts++;
 
 #ifdef PROTOTEST_INCLUDE_LOCAL
 #include "prototest_local.cc.inc"
