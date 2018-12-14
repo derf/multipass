@@ -7,6 +7,7 @@
 #include "lib/mpmalloc.h"
 #else
 #define mpmalloc malloc
+#define mprealloc realloc
 #define mpfree free
 #endif
 
@@ -370,7 +371,7 @@ static inline ubjr_array_t priv_ubjr_read_raw_array(ubjr_context_t* ctx)
 			if (myarray.size >= (1ULL << arrpot))
 			{
 				arrpot ++;
-				myarray.values = realloc(myarray.values, (1ULL << arrpot)*ls+1);
+				myarray.values = mprealloc(myarray.values, (1ULL << arrpot)*ls+1);
 			}
 			priv_ubjr_read_to_ptr(ctx,(uint8_t*)myarray.values + ls*myarray.size,myarray.type);
 		}
@@ -422,8 +423,8 @@ static inline ubjr_object_t priv_ubjr_read_raw_object(ubjr_context_t* ctx)
 			if (myobject.size >= (1ULL << arrpot))
 			{
 				arrpot++;
-				myobject.values = realloc(myobject.values, (1ULL << arrpot)*ls + 1);
-				myobject.keys = realloc((uint8_t*)myobject.keys, (1ULL << arrpot)*sizeof(ubjr_string_t));
+				myobject.values = mprealloc(myobject.values, (1ULL << arrpot)*ls + 1);
+				myobject.keys = mprealloc((uint8_t*)myobject.keys, (1ULL << arrpot)*sizeof(ubjr_string_t));
 			}
 			priv_ubjr_read_to_ptr(ctx, (uint8_t*)(myobject.keys + myobject.size), UBJ_STRING);
 			priv_ubjr_read_to_ptr(ctx, (uint8_t*)myobject.values + ls*myobject.size, myobject.type);

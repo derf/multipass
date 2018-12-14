@@ -7,6 +7,7 @@ extern "C" {
 
 void* mpcalloc(size_t nmemb, size_t size);
 void* mpmalloc(size_t size);
+void* mprealloc(void* addr, size_t size);
 void mpfree(void* addr);
 
 #ifdef __cplusplus
