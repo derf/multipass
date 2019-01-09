@@ -21,6 +21,11 @@ ifeq (${prototest_arduinojson}, 1)
 	COMMON_FLAGS += -DPROTOTEST_ARDUINOJSON
 endif
 
+ifeq (${prototest_binn}, 1)
+	COMMON_FLAGS += -DPROTOTEST_BINN
+	CXX_TARGETS += src/lib/binn.cc
+endif
+
 ifeq (${prototest_capnproto_c}, 1)
 	COMMON_FLAGS += -DPROTOTEST_CAPNPROTO_C
 	CXX_TARGETS += src/app/prototest/capnp_c_bench.capnp.cc

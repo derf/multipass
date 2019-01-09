@@ -9,6 +9,9 @@
 #ifdef PROTOTEST_ARDUINOJSON
 #include "lib/ArduinoJson.h"
 #endif
+#ifdef PROTOTEST_BINN
+#include "lib/binn.h"
+#endif
 #ifdef PROTOTEST_CAPNPROTO_C
 #include <capnp_c.h>
 #include "capnp_c_bench.capnp.h"
@@ -42,20 +45,6 @@
 #ifdef PROTOTEST_INCLUDE_GLOBAL
 #include "prototest_global.cc.inc"
 #endif
-
-// TODOs
-//
-// Code -> JSON
-// Code -> XDR
-// Code -> MsgPack
-// Code -> ProtoBuf
-// Code -> CBOR
-//
-// JSON -> Code/Data
-// XDR -> Code/Data
-// MsgPack -> Code/Data
-// ProtoBuf -> Code/Data
-// CBOR -> Code/Data
 
 void loop(void)
 {
