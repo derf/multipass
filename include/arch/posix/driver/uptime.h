@@ -12,6 +12,7 @@ class Uptime {
 		uint64_t get_s();
 		uint64_t get_us();
 		uint64_t get_cycles();
+		void tick_s() {};
 };
 
 extern Uptime uptime;
