@@ -47,7 +47,7 @@ arch_clean:
 
 arch_help:
 	@echo "posix specific flags:"
-	@echo "    - none -"
+	@echo "    gpio_trace = 0 (show GPIO changes on stdout)"
 
 arch_info:
 	@echo "Counter Overflow: 18446744073709551616/1"
