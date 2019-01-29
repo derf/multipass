@@ -5,6 +5,8 @@ MCU = msp430fr5969
 
 cpu_freq ?= 16000000
 
+MSP430_FLASHER_DIR ?= /home/derf/var/projects/msp430/MSP430Flasher_1.3.7
+
 INCLUDES += -I/opt/msp430/ti/gcc/include
 COMMON_FLAGS += -mcpu=${CPU} -mmcu=${MCU} -DMULTIPASS_ARCH_msp430fr5969lp
 COMMON_FLAGS += -DMULTIPASS_ARCH_HAS_I2C
@@ -83,8 +85,8 @@ build/system.hex: build/system.elf
 	${QUIET}${OBJCOPY} -O ihex ${@:.hex=.elf} $@
 
 program: build/system.hex
-	${QUIET}LD_LIBRARY_PATH=/home/derf/var/projects/msp430/MSP430Flasher_1.3.7 \
-	/home/derf/var/projects/msp430/MSP430Flasher_1.3.7/MSP430Flasher \
+	${QUIET}LD_LIBRARY_PATH=${MSP430_FLASHER_DIR} \
+	${MSP430_FLASHER_DIR}/MSP430Flasher \
 	-w build/system.hex -v -g -z '[VCC]'
 
 arch_clean:
@@ -95,8 +97,10 @@ monitor:
 	${QUIET}screen /dev/ttyACM1 115200
 
 arch_help:
-	@echo "msp430fR5969lp specific flags:"
-	@echo "    - none -"
+	@echo "msp430fr5969lp specific flags:"
+	@echo "    cpu_freq = 16000000 (desired CPU frequency in Hz, not all values are supported)"
+	@echo "    MSP430_FLASHER_DIR = /home/derf/var/projects/msp430/MSP430Flasher_1.3.7"
+	@echo "        (required for flashing, must contain libmsp430.so and MSP430Flasher)"
 
 arch_info:
 	@echo "CPU   Freq: ${cpu_freq} Hz"

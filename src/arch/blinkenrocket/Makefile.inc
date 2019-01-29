@@ -34,7 +34,7 @@ OBJECTS = ${CXX_TARGETS:.cc=.o} ${C_TARGETS:.c=.o}
 .cc.o:
 	${QUIET}${CXX} ${INCLUDES} ${COMMON_FLAGS} ${CXXFLAGS} -c -o $@ ${@:.o=.cc}
 
-.cc.o:
+.c.o:
 	${QUIET}${CC} ${INCLUDES} ${COMMON_FLAGS} ${CFLAGS} -c -o $@ ${@:.o=.c}
 
 build/system.elf: ${OBJECTS}

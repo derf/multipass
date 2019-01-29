@@ -151,23 +151,23 @@ clean: arch_clean
 
 help: arch_help
 	@echo
-	@echo "Global flags:"
+	@echo "common flags:"
 	@echo "    timer_cycles timer_us timer_s"
 	@echo "    loop"
 	@echo
 	@echo "${arch} drivers:"
-	@echo "    $(shell ls src/arch/${arch}/driver | fgrep .c | cut -d . -f 1)"
+	@ls -1 src/arch/${arch}/driver | fgrep .c | cut -d . -f 1 | sed 's/^/    /'
 	@echo
-	@echo "Global drivers:"
-	@echo "    $(shell ls src/driver | fgrep .c | cut -d . -f 1)"
+	@echo "common drivers:"
+	@ls -1 src/driver | fgrep .c | cut -d . -f 1 | sed 's/^/    /'
 	@echo
-	@echo "Global architectures:"
-	@echo "    $(shell ls src/arch)"
+	@echo "available architectures:"
+	@ls -1 src/arch | sed 's/^/    /'
 
 info: arch_info
 	@echo "COMMON_FLAGS: ${COMMON_FLAGS}"
 	@echo "CFLAGS: ${CFLAGS}"
 	@echo "CXXFLAGS: ${CXXFLAGS}"
-	@echo "Selected Drivers: ${drivers} / ${arch_drivers}"
+	@echo "Selected (common/arch) drivers: ${drivers} / ${arch_drivers}"
 
-.PHONY: clean default stack help info
+.PHONY: clean default stack stackm help info

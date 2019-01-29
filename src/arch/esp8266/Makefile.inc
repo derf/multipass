@@ -1,9 +1,9 @@
 # vim:ft=make
 
-TOOLCHAIN_BASE = /home/derf/var/projects/esp8266/toolchain/xtensa-lx106-elf/bin
-SDK_BASE = /home/derf/var/projects/esp8266/toolchain/xtensa-lx106-elf/xtensa-lx106-elf/sysroot/usr
-ESPTOOL = esptool
-PORT = /dev/ttyUSB0
+TOOLCHAIN_BASE ?= /home/derf/var/projects/esp8266/toolchain/xtensa-lx106-elf/bin
+SDK_BASE ?= /home/derf/var/projects/esp8266/toolchain/xtensa-lx106-elf/xtensa-lx106-elf/sysroot/usr
+ESPTOOL ?= esptool
+PORT ?= /dev/ttyUSB0
 
 CC = ${TOOLCHAIN_BASE}/xtensa-lx106-elf-gcc
 CXX = ${TOOLCHAIN_BASE}/xtensa-lx106-elf-g++
@@ -72,8 +72,17 @@ monitor:
 	screen /dev/ttyUSB0 115200
 
 arch_help:
+	@echo "esp8266 coding advice:"
+	@echo "    The ESP8266 SDK does not give full hardware control."
+	@echo "    Applications must release control every hundred or so milliseconds."
+	@echo "    It is strongly recommended to only use loop=1"
+	@echo
 	@echo "esp8266 specific flags:"
-	@echo "    - none -"
+	@echo "    esp8266_led2 = 0 (enable if you are using a NodeMCU dev board with two LEDs)"
+	@echo "    TOOLCHAIN_BASE = /home/derf/var/projects/esp8266/toolchain/xtensa-lx106-elf/bin"
+	@echo "    SDK_BASE = /home/derf/var/projects/esp8266/toolchain/xtensa-lx106-elf/xtensa-lx106-elf/sysroot/usr"
+	@echo "    ESPTOOL = esptool"
+	@echo "    PORT = /dev/ttyUSB0"
 
 arch_info:
 	@echo "Counter Overflow: ?/?"
