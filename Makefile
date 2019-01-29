@@ -18,7 +18,9 @@ ifneq (${stack_usage}, )
 	COMMON_FLAGS += -fstack-usage
 endif
 
-include src/app/${app}/Makefile.inc
+ifneq (${app}, )
+	include src/app/${app}/Makefile.inc
+endif
 
 ifneq ($(findstring lm75,${drivers}), )
 	CXX_TARGETS += src/driver/lm75.cc
@@ -130,7 +132,9 @@ ifeq (${trace_malloc}, 1)
 	COMMON_FLAGS += -DMULTIPASS_TRACE_MALLOC
 endif
 
-include src/arch/${arch}/Makefile.inc
+ifneq (${arch}, )
+	include src/arch/${arch}/Makefile.inc
+endif
 
 stack: default
 	${QUIET}test -n "${OBJDUMP}"
