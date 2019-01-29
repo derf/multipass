@@ -152,8 +152,20 @@ clean: arch_clean
 help: arch_help
 	@echo
 	@echo "common flags:"
-	@echo "    timer_cycles timer_us timer_s"
-	@echo "    loop"
+	@echo "    timer_cycles timer_us timer_s -- enable specific timers. May be mutually exclusive"
+	@echo "    loop -- enable loop() function"
+	@echo "    i2c_freq -- I2C Frequency in Hz"
+	@echo "    timer_freq -- Timer frequency in Hz"
+	@echo "    softi2c_pullup -- When using softi2c driver: configure SDA/SCL pull-ups"
+	@echo "        internal: Use internal pull-ups. Pull-ups are disabled when transmitting a LOW signal"
+	@echo "        external: Use external pull-ups connected to two separate CPU pins. Pull-Ups are disabled when transmitting a LOW signal"
+	@echo "        gpio: Use external pull-ups connected to two separate CPU pins. Pull-Ups are always enabled"
+	@echo "    softi2c_timer -- Use hardware timer instead of busy waiting for I2C timing"
+	@echo "    i2c_pullup -- When using arch i2c driver: configure SDA/SCL pull-ups"
+	@echo "        gpio: Use external pull-ups connected to two separate CPU pins. Pull-Ups are always enabled"
+	@echo "    kout_nop -- Do not write output to stdout / serial console"
+	@echo "    ostream -- include C++ ostream standard library"
+	@echo "    trace_malloc -- trace mpmalloc/mpcalloc/mprealloc calls on stdout"
 	@echo
 	@echo "${arch} drivers:"
 	@ls -1 src/arch/${arch}/driver | fgrep .c | cut -d . -f 1 | sed 's/^/    /'
