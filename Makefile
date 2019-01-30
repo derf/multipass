@@ -139,12 +139,12 @@ endif
 stack: default
 	${QUIET}test -n "${OBJDUMP}"
 	${QUIET}test -n "${ARCH_SHORTNAME}"
-	${QUIET}./static-stack-analyze.pl ${OBJDUMP} ${ARCH_SHORTNAME} ${OBJECTS}
+	${QUIET}script/static-stack-analyze.pl ${OBJDUMP} ${ARCH_SHORTNAME} ${OBJECTS}
 
 stackm: default
 	${QUIET}test -n "${OBJDUMP}"
 	${QUIET}test -n "${ARCH_SHORTNAME}"
-	${QUIET}./static-stack-analyze.pl --machine-readable ${OBJDUMP} ${ARCH_SHORTNAME} ${OBJECTS}
+	${QUIET}script/static-stack-analyze.pl --machine-readable ${OBJDUMP} ${ARCH_SHORTNAME} ${OBJECTS}
 
 clean: arch_clean
 	rm -f build/system.elf
@@ -166,6 +166,7 @@ help: arch_help
 	@echo "    kout_nop -- Do not write output to stdout / serial console"
 	@echo "    ostream -- include C++ ostream standard library"
 	@echo "    trace_malloc -- trace mpmalloc/mpcalloc/mprealloc calls on stdout"
+	@echo "    stack_usage -- Generate .su files for stack usage estimation (-> make stack)"
 	@echo
 	@echo "${arch} drivers:"
 	@ls -1 src/arch/${arch}/driver | fgrep .c | cut -d . -f 1 | sed 's/^/    /'
