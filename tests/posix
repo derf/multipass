@@ -1,0 +1,10 @@
+#!/bin/sh
+
+uarttest() {
+	~/var/projects/uarttest/bin/uarttest.py "$@"
+}
+
+uarttest --runtime=2 --check "grep 'Hello, World!$'" '!build/system.elf' './mp app=test_basic arch=posix loop={!1} aspectc={0!1} gpio_trace={!1} arch_drivers={!counter} drivers={!softi2c}'
+
+# Loop
+uarttest --runtime=2 --check "grep 'Hello, World!$'" '!build/system.elf' './mp app=test_basic arch=posix loop=1 aspectc={0!1} gpio_trace={!1} arch_drivers={!counter}'

@@ -40,7 +40,7 @@ run: build/system.elf
 
 monitor: run
 
-program:
+program: build/system.elf
 
 arch_clean:
 	rm -f ${OBJECTS}
