@@ -1,4 +1,5 @@
 #include "arch.h"
+#include <time.h>
 #include <unistd.h>
 
 #if defined(WITH_LOOP) || defined(TIMER_S)
@@ -29,6 +30,22 @@ void Arch::idle_loop(void)
 
 void Arch::idle(void)
 {
+}
+
+void Arch::delay_us(unsigned int const us)
+{
+	struct timespec ts;
+	ts.tv_sec = 0;
+	ts.tv_nsec = us * 1000;
+	nanosleep(&ts, NULL);
+}
+
+void Arch::delay_ms(unsigned int const ms)
+{
+	struct timespec ts;
+	ts.tv_sec = ms / 1000;
+	ts.tv_nsec = (ms % 1000) * 1000000;
+	nanosleep(&ts, NULL);
 }
 
 Arch arch;
