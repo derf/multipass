@@ -102,7 +102,8 @@ monitor:
 
 arch_help:
 	@echo "msp430fr5994lp specific flags:"
-	@echo "    cpu_freq = 16000000 (desired CPU frequency in Hz, not all values are supported)"
+	@echo "    cpu_freq = 16000000 (desired CPU frequency in Hz)"
+	@echo "        supported frequencies: 1 / 4 / 8 / 16 MHz"
 	@echo "    MSP430_FLASHER_DIR = /home/derf/var/projects/msp430/MSP430Flasher_1.3.15"
 	@echo "        (required for flashing, must contain libmsp430.so and MSP430Flasher)"
 
