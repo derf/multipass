@@ -1,6 +1,9 @@
 #include <msp430.h>
 #include <stdint.h>
 
+typedef counter_value_t uint16_t;
+typedef counter_overflowed_t uint8_t;
+
 class Counter {
 	private:
 		Counter(const Counter &copy);

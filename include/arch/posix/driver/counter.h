@@ -1,6 +1,9 @@
 #include <stdint.h>
 #include <time.h>
 
+typedef uint64_t counter_value_t;
+typedef uint8_t counter_overflowed_t;
+
 class Counter {
 	private:
 		Counter(const Counter &copy);
