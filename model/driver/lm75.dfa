@@ -1,0 +1,35 @@
+instance: lm75
+
+parameters:
+  - os
+  - hyst
+
+states:
+  - UNINITIALIZED
+  - POWEROFF
+  - ACTIVE
+
+transition:
+  shutdown:
+    src: [UNINITIALIZED, POWEROFF, ACTIVE]
+    dst: POWEROFF
+  init:
+    src: [UNINITIALIZED, POWEROFF, ACTIVE]
+    dst: ACTIVE
+  getTemp:
+    src: [ACTIVE]
+    dst: ACTIVE
+  setOS:
+    src: [ACTIVE]
+    dst: ACTIVE
+    arguments:
+      - name: os
+        values: [30, 90]
+        parameter: os
+  setHyst:
+    src: [ACTIVE]
+    dst: ACTIVE
+    arguments:
+      - name: hyst
+        values: [29, 60]
+        parameter: hyst

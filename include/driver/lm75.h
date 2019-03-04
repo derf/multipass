@@ -16,6 +16,8 @@ class LM75 {
 		unsigned int getHyst();
 		void setOS(unsigned char os);
 		void setHyst(unsigned char hyst);
+		void init();
+		void shutdown();
 };
 
 extern LM75 lm75;

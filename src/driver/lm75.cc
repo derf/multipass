@@ -49,4 +49,18 @@ void LM75::setHyst(unsigned char hyst)
 	i2c.xmit(address, 3, txbuf, 0, rxbuf);
 }
 
+void LM75::init()
+{
+	txbuf[0] = 0x01;
+	txbuf[1] = 0x00;
+	i2c.xmit(address, 2, txbuf, 0, rxbuf);
+}
+
+void LM75::shutdown()
+{
+	txbuf[0] = 0x01;
+	txbuf[1] = 0x01;
+	i2c.xmit(address, 2, txbuf, 0, rxbuf);
+}
+
 LM75 lm75(0x48);
