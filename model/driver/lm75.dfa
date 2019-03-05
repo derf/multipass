@@ -1,4 +1,6 @@
-instance: lm75
+codegen:
+  instance: lm75
+  includes: ['driver/lm75.h']
 
 parameters:
   - os

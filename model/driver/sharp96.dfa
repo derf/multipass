@@ -1,0 +1,36 @@
+codegen:
+  instance: sharp96
+  includes: ['driver/spi_b.h', 'driver/sharp96.h']
+  setup: ['spi.setup();', 'sharp96.setup();']
+
+states:
+  - UNINITIALIZED
+  - POWERON
+  - POWEROFF
+
+transition:
+  setup:
+    src: [UNINITIALIZED]
+    dst: POWEROFF
+  powerOn:
+    src: [POWEROFF]
+    dst: POWERON
+  powerOff:
+    src: [POWERON]
+    dst: POWEROFF
+  clear:
+    src: [POWERON]
+    dst: POWERON
+  writeLine:
+    src: [POWERON]
+    dst: POWERON
+    arguments:
+      - name: line_no
+        values: [0, 63, 95]
+      - name: data
+        values:
+          - '(unsigned char *)"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"'
+          - '(unsigned char *)"\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff"'
+  toggleVCOM:
+    src: [POWERON]
+    dst: POWERON
