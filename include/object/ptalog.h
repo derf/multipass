@@ -41,6 +41,13 @@ class PTALog {
 			}
 		}
 
+#ifdef PTALOG_TIMING
+		inline void passNop(Counter& counter)
+		{
+			kout << "[PTA] nop=" << counter.value << "/" << counter.overflow << endl;
+		}
+#endif
+
 		inline void reset()
 		{
 			log_index = 0;
@@ -64,7 +71,8 @@ class PTALog {
 			kout << "[PTA] trace, count=" << dec << log_index << endl;
 			for (uint8_t i = 0; i < log_index; i++) {
 #ifdef PTALOG_TIMING
-				kout << "[PTA] transition=" << log[i].transition_id << endl;
+				kout << "[PTA] transition=" << log[i].transition_id;
+				kout << " cycles=" << log[i].timer << "/" << log[i].overflow << endl;
 #else
 				kout << "[PTA] transition=" << log[i].transition_id << endl;
 #endif

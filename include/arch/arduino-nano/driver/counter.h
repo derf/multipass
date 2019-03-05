@@ -2,7 +2,7 @@
 #include <avr/interrupt.h>
 
 typedef counter_value_t uint16_t;
-typedef counter_overflowed_t uint8_t;
+typedef counter_overflow_t uint8_t;
 
 class Counter {
 	private:
@@ -10,12 +10,12 @@ class Counter {
 
 	public:
 		uint16_t value;
-		volatile uint8_t overflowed;
+		volatile uint8_t overflow;
 
-		Counter() : overflowed(0) {}
+		Counter() : overflow(0) {}
 
 		inline void start() {
-			overflowed = 0;
+			overflow = 0;
 			TCNT1 = 0;
 			TCCR1A = 0;
 			TCCR1B = _BV(CS10); // no prescaler

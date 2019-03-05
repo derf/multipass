@@ -2,7 +2,7 @@
 #include <stdint.h>
 
 typedef uint16_t counter_value_t;
-typedef uint8_t counter_overflowed_t;
+typedef uint8_t counter_overflow_t;
 
 class Counter {
 	private:
@@ -10,12 +10,12 @@ class Counter {
 
 	public:
 		uint16_t value;
-		uint8_t overflowed;
+		uint8_t overflow;
 
-		Counter() : overflowed(0) {}
+		Counter() : overflow(0) {}
 
 		inline void start() {
-			overflowed = 0;
+			overflow = 0;
 			TA2CTL = TASSEL__SMCLK | ID__1 | MC__CONTINUOUS;
 			TA2EX0 = 0;
 			TA2CTL |= TACLR;

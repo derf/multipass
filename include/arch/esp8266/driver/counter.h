@@ -8,7 +8,7 @@ extern "C" {
 #include "c_types.h"
 
 typedef counter_value_t uint32_t;
-typedef counter_overflowed_t uint32_t;
+typedef counter_overflow_t uint32_t;
 
 class Counter {
 	private:
@@ -17,9 +17,9 @@ class Counter {
 
 	public:
 		uint32_t value;
-		uint32_t overflowed;
+		uint32_t overflow;
 
-		Counter() : start_cycles(0), value(0), overflowed(0) {}
+		Counter() : start_cycles(0), value(0), overflow(0) {}
 
 		inline void start() {
 			asm volatile ("esync; rsr %0,ccount":"=a" (start_cycles));
@@ -31,7 +31,7 @@ class Counter {
 			if (stop_cycles > start_cycles) {
 				value = stop_cycles - start_cycles;
 			} else {
-				overflowed = 1;
+				overflow = 1;
 			}
 		}
 };

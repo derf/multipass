@@ -2,7 +2,7 @@
 #include <time.h>
 
 typedef uint64_t counter_value_t;
-typedef uint8_t counter_overflowed_t;
+typedef uint8_t counter_overflow_t;
 
 class Counter {
 	private:
@@ -11,9 +11,9 @@ class Counter {
 
 	public:
 		uint64_t value;
-		volatile uint8_t overflowed;
+		volatile uint8_t overflow;
 
-		Counter() : overflowed(0) {}
+		Counter() : overflow(0) {}
 
 		inline void start() {
 			struct timespec ts;
