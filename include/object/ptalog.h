@@ -30,7 +30,7 @@ class PTALog {
 #ifdef PTALOG_GPIO
 		PTALog(uint8_t pin_number) : log_index(0), sync_pin(pin_number) {}
 #else
-		PTALog(uint8_t pin_number) : log_index(0) {}
+		PTALog() : log_index(0) {}
 #endif
 
 		inline void passTransition(uint8_t transition_id)
