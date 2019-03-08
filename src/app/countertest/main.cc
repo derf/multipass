@@ -10,11 +10,6 @@ void loop(void)
 	kout << "nop: " << counter.value << "/" << counter.overflow << endl;
 
 	counter.start();
-	arch.delay_ms(1);
-	counter.stop();
-	kout << "1ms: " << counter.value << "/" << counter.overflow << endl;
-
-	counter.start();
 	arch.delay_us(10);
 	counter.stop();
 	kout << "10us: " << counter.value << "/" << counter.overflow << endl;
@@ -23,6 +18,11 @@ void loop(void)
 	arch.delay_us(20);
 	counter.stop();
 	kout << "20us: " << counter.value << "/" << counter.overflow << endl;
+
+	counter.start();
+	arch.delay_ms(1);
+	counter.stop();
+	kout << "1ms: " << counter.value << "/" << counter.overflow << endl;
 
 	counter.start();
 	arch.delay_ms(2);
