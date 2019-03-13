@@ -1,6 +1,10 @@
 #include "arch.h"
 #include <msp430.h>
 
+#ifdef __acweaving
+#define __delay_cycles(x)
+#endif
+
 void Arch::setup(void)
 {
 	WDTCTL = WDTPW | WDTHOLD;
@@ -157,6 +161,7 @@ Arch arch;
 
 #include "driver/uptime.h"
 
+#ifndef __acweaving
 __attribute__((interrupt(TIMER1_A1_VECTOR))) __attribute__((wakeup)) void handle_timer1_overflow()
 {
 	if (TA1IV == 0x0e) {
@@ -168,5 +173,6 @@ __attribute__((interrupt(TIMER1_A1_VECTOR))) __attribute__((wakeup)) void handle
 #endif
 	}
 }
+#endif
 
 #endif /* defined(WITH_LOOP) || defined(TIMER_S) */

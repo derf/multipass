@@ -1,3 +1,7 @@
+ifeq (${aspectc}, 1)
+	CXX_FLAGS += --Xweaver -asrc/app/prototest/prototest.ah --Xcompiler
+endif
+
 ifeq (${prototest_bench_energy}, 1)
 	loop ?= 1
 	COMMON_FLAGS += -DPROTOTEST_BENCH_ENERGY
