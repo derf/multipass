@@ -115,6 +115,7 @@ Arch arch;
 
 #if defined(WITH_LOOP) || defined(TIMER_S)
 
+#ifndef __acweaving
 ISR(TIMER1_COMPA_vect)
 {
 #ifdef WITH_LOOP
@@ -124,5 +125,6 @@ ISR(TIMER1_COMPA_vect)
 	uptime.tick_s();
 #endif
 }
+#endif
 
 #endif

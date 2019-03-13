@@ -1,8 +1,8 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
-typedef counter_value_t uint16_t;
-typedef counter_overflow_t uint8_t;
+typedef uint16_t counter_value_t;
+typedef uint8_t counter_overflow_t;
 
 class Counter {
 	private:
