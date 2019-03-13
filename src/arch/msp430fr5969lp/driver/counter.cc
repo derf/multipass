@@ -8,6 +8,7 @@
 
 Counter counter;
 
+#ifndef __acweaving
 __attribute__((interrupt(TIMER2_A1_VECTOR))) void handle_timer2_overflow()
 {
 	if (TA2IV == 0x0e) {
@@ -16,3 +17,4 @@ __attribute__((interrupt(TIMER2_A1_VECTOR))) void handle_timer2_overflow()
 		}
 	}
 }
+#endif
