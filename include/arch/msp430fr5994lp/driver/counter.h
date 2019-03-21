@@ -1,3 +1,6 @@
+#ifndef COUNTER_H
+#define COUNTER_H
+
 #include <msp430.h>
 #include <stdint.h>
 
@@ -28,3 +31,5 @@ class Counter {
 };
 
 extern Counter counter;
+
+#endif

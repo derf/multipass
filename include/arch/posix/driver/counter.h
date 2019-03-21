@@ -1,3 +1,6 @@
+#ifndef COUNTER_H
+#define COUNTER_H
+
 #include <stdint.h>
 #include <time.h>
 
@@ -32,3 +35,5 @@ class Counter {
 };
 
 extern Counter counter;
+
+#endif

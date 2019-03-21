@@ -1,3 +1,6 @@
+#ifndef COUNTER_H
+#define COUNTER_H
+
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
@@ -29,3 +32,5 @@ class Counter {
 };
 
 extern Counter counter;
+
+#endif
