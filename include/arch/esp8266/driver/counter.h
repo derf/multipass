@@ -7,8 +7,8 @@ extern "C" {
 }
 #include "c_types.h"
 
-typedef counter_value_t uint32_t;
-typedef counter_overflow_t uint32_t;
+typedef uint32_t counter_value_t;
+typedef uint32_t counter_overflow_t;
 
 class Counter {
 	private:

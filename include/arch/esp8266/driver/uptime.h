@@ -14,6 +14,7 @@ class Uptime {
 	public:
 		Uptime () {}
 		inline uint32_t get_us() { return system_get_time(); }
+		inline uint32_t get_s() { return system_get_time() / 1000000; }
 
 		inline uint32_t get_cycles()
 		{
