@@ -22,16 +22,16 @@
 #include "driver/mmsimple.h"
 #endif
 
-#ifndef I2CBENCH_SETOS
-#error must define I2CBENCH_SETOS
-#endif
+//#ifndef I2CBENCH_SETOS
+//#error must define I2CBENCH_SETOS
+//#endif
 
 void loop(void)
 {
 #ifdef DRIVER_LM75
-	//kout.printf_float(lm75.getTemp());
-	//kout << endl;
-	lm75.setOS(I2CBENCH_SETOS);
+	kout.printf_float(lm75.getTemp());
+	kout << endl;
+	//lm75.setOS(I2CBENCH_SETOS);
 #endif
 #ifdef DRIVER_AM2320
 	am2320.read();
