@@ -71,13 +71,16 @@ else
 endif
 
 
-OBJECTS = ${CXX_TARGETS:.cc=.o} ${C_TARGETS:.c=.o}
+OBJECTS = ${CXX_TARGETS:.cc=.o} ${C_TARGETS:.c=.o} ${ASM_TARGETS:.S=.o}
 
 .cc.o:
 	${QUIET}${CXX} ${INCLUDES} ${COMMON_FLAGS} ${CXXFLAGS} -c -o $@ ${@:.o=.cc}
 
 .c.o:
 	${QUIET}${CC} ${INCLUDES} ${COMMON_FLAGS} ${CFLAGS} -c -o $@ ${@:.o=.c}
+
+.S.o:
+	${QUIET}${CC} ${INCLUDES} ${COMMON_FLAGS} -Wa,-gstabs,-ggdb -x assembler-with-cpp -c -o $@ ${@:.o=.S}
 
 build/system.elf: ${OBJECTS}
 	${QUIET}${CXX} ${INCLUDES} ${COMMON_FLAGS} ${CXXFLAGS} \

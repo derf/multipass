@@ -5,6 +5,7 @@ COMMON_FLAGS = -g -Os -Wall -Wextra
 CFLAGS = -std=c99
 CXXFLAGS = -std=c++14 -fno-rtti -fno-threadsafe-statics
 
+ASM_TARGETS =
 C_TARGETS =
 CXX_TARGETS = src/app/${app}/main.cc src/os/object/cpp_helpers.cc src/os/object/outputstream.cc
 
