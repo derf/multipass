@@ -1,0 +1,31 @@
+codegen:
+  instance: gpio
+  includes: ['driver/gpio.h']
+
+states:
+  - UNINITIALIZED
+  - P0_INPUT
+  - P0_OUTPUT
+
+parameters:
+  - px00_status
+
+transition:
+  setup:
+    src: [UNINITIALIZED]
+    dst: P0_OUTPUT
+  input:
+    src: [P0_INPUT, P0_OUTPUT]
+    dst: P0_INPUT
+    arguments:
+      - name: pin
+        values: ['GPIO::px00']
+  output:
+    src: [P0_INPUT, P0_OUTPUT]
+    dst: P0_OUTPUT
+    arguments:
+      - name: pin
+        values: ['GPIO::px00']
+      - name: value
+        values: [0, 1]
+        parameter: px00_status

@@ -1,0 +1,13 @@
+states:
+  - UNINITIALIZED
+  - P0_INPUT
+  - P0_INPUT_PULLUP
+  - P0_OUTPUT_LOW
+  - P0_OUTPUT_HIGH
+
+transition:
+  setup:
+    src: [UNINITIALIZED]
+    dst: P0_OUTPUT
+  input:
+    src: [P0_INPUT, P0_INPUT_PULLUP, P0_OUTPUT_LOW, P0_OUTPUT_HIGH]

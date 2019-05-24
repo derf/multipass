@@ -1,6 +1,7 @@
 codegen:
   instance: lm75
   includes: ['driver/lm75.h']
+  flags: ['drivers=lm75', 'arch_drivers=i2c']
 
 parameters:
   - os
