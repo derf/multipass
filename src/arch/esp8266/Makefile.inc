@@ -62,7 +62,7 @@ build/0x40000.bin: build/0x00000.bin
 	# also created by commandline for 0x00000.bin
 
 program: build/0x00000.bin build/0x40000.bin
-	${ESPTOOL} write_flash 0x00000 build/0x00000.bin 0x40000 build/0x40000.bin
+	${ESPTOOL} write_flash 0x00000 build/0x00000.bin 0x40000 build/0x40000.bin -fm dout
 
 arch_clean:
 	rm -f ${OBJECTS}
@@ -85,7 +85,7 @@ arch_help:
 	@echo "    PORT = /dev/ttyUSB0"
 
 arch_info:
-	@echo "Counter Overflow: ?/?"
+	@echo "Counter Overflow: 4294967296/0"
 	@echo "Monitor: /dev/ttyUSB0 115200"
 
 .PHONY: arch_clean arch_help arch_info monitor program
