@@ -42,10 +42,12 @@ int main(void)
 	gpio.setup();
 	kout.setup();
 
-	//restore_state();
 
 	gpio.led_on(0);
 	gpio.input(GPIO::p4_5, 1);
+
+	asm_load_all();
+
 	kout << "Hello, World!" << endl;
 
 	arch.idle_loop();
