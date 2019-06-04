@@ -3,7 +3,7 @@
 .global asm_load_mem
 
 #define SRAM_BASE #1c00h
-#define SRAM_SIZE 2048
+#define SRAM_SIZE 4096
 
 ; SRAM backup space
 sram_backup:
@@ -74,11 +74,12 @@ asm_load_all:
     pop r11
     ret
 
+    dint
+
 do_load_all:
     ; restore SRAM from backup
     mov #sram_backup, r10
     mov SRAM_BASE, r11
-    dint
 load_sram_word:
     mov @r10+, 0(r11)
     add #2, r11
@@ -108,8 +109,9 @@ asm_load_mem:
     cmp #1234h, r11
     jeq do_load_mem
     pop r11
-    eint
     ret
+
+    dint
 
 do_load_mem:
     push r10
@@ -119,7 +121,6 @@ do_load_mem:
     mov r1, r9
     mov #sram_backup, r10
     mov SRAM_BASE, r11
-    dint
 load_sram_word2:
     mov @r10+, 0(r11)
     add #2, r11
