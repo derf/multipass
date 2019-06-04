@@ -71,8 +71,16 @@ class GPIO {
 				P2DIR &= ~(1 << (pin - p2_0));
 			} else if (pin < p4_0) {
 				P3DIR &= ~(1 << (pin - p3_0));
-			} else if (pin < pj_0) {
+			} else if (pin < p5_0) {
 				P4DIR &= ~(1 << (pin - p4_0));
+			} else if (pin < p6_0) {
+				P5DIR &= ~(1 << (pin - p5_0));
+			} else if (pin < p7_0) {
+				P6DIR &= ~(1 << (pin - p6_0));
+			} else if (pin < p8_0) {
+				P7DIR &= ~(1 << (pin - p7_0));
+			} else if (pin < pj_0) {
+				P8DIR &= ~(1 << (pin - p8_0));
 			} else if (pin < PIN_INVALID) {
 				PJDIR &= ~(1 << (pin - pj_0));
 			}
@@ -90,10 +98,26 @@ class GPIO {
 				P3DIR &= ~(1 << (pin - p3_0));
 				P3OUT = pull ? (P3OUT | (1 << (pin - p3_0))) : (P3OUT & ~(1 << (pin - p3_0)));
 				P3REN |= (1 << (pin - p3_0));
-			} else if (pin < pj_0) {
+			} else if (pin < p5_0) {
 				P4DIR &= ~(1 << (pin - p4_0));
 				P4OUT = pull ? (P4OUT | (1 << (pin - p4_0))) : (P4OUT & ~(1 << (pin - p4_0)));
 				P4REN |= (1 << (pin - p4_0));
+			} else if (pin < p6_0) {
+				P5DIR &= ~(1 << (pin - pj_0));
+				P5OUT = pull ? (P5OUT | (1 << (pin - p5_0))) : (P5OUT & ~(1 << (pin - p5_0)));
+				P5REN |= (1 << (pin - pj_0));
+			} else if (pin < p7_0) {
+				P6DIR &= ~(1 << (pin - p2_0));
+				P6OUT = pull ? (P6OUT | (1 << (pin - p6_0))) : (P6OUT & ~(1 << (pin - p6_0)));
+				P6REN |= (1 << (pin - p2_0));
+			} else if (pin < p8_0) {
+				P7DIR &= ~(1 << (pin - p3_0));
+				P7OUT = pull ? (P7OUT | (1 << (pin - p7_0))) : (P7OUT & ~(1 << (pin - p7_0)));
+				P7REN |= (1 << (pin - p3_0));
+			} else if (pin < pj_0) {
+				P8DIR &= ~(1 << (pin - p4_0));
+				P8OUT = pull ? (P8OUT | (1 << (pin - p8_0))) : (P8OUT & ~(1 << (pin - p8_0)));
+				P8REN |= (1 << (pin - p4_0));
 			} else if (pin < PIN_INVALID) {
 				PJDIR &= ~(1 << (pin - pj_0));
 				PJOUT = pull ? (PJOUT | (1 << (pin - pj_0))) : (PJOUT & ~(1 << (pin - pj_0)));
@@ -107,8 +131,16 @@ class GPIO {
 				P2DIR |= (1 << (pin - p2_0));
 			} else if (pin < p4_0) {
 				P3DIR |= (1 << (pin - p3_0));
-			} else if (pin < pj_0) {
+			} else if (pin < p5_0) {
 				P4DIR |= (1 << (pin - p4_0));
+			} else if (pin < p6_0) {
+				P5DIR |= (1 << (pin - p5_0));
+			} else if (pin < p7_0) {
+				P6DIR |= (1 << (pin - p6_0));
+			} else if (pin < p8_0) {
+				P7DIR |= (1 << (pin - p7_0));
+			} else if (pin < pj_0) {
+				P8DIR |= (1 << (pin - p8_0));
 			} else if (pin < PIN_INVALID) {
 				PJDIR |= (1 << (pin - pj_0));
 			}
@@ -123,9 +155,21 @@ class GPIO {
 			} else if (pin < p4_0) {
 				P3OUT = value ? (P3OUT | (1 << (pin - p3_0))) : (P3OUT & ~(1 << (pin - p3_0)));
 				P3DIR |= (1 << (pin - p3_0));
-			} else if (pin < pj_0) {
+			} else if (pin < p5_0) {
 				P4OUT = value ? (P4OUT | (1 << (pin - p4_0))) : (P4OUT & ~(1 << (pin - p4_0)));
 				P4DIR |= (1 << (pin - p4_0));
+			} else if (pin < p6_0) {
+				P5OUT = value ? (P5OUT | (1 << (pin - p5_0))) : (P5OUT & ~(1 << (pin - p5_0)));
+				P5DIR |= (1 << (pin - p5_0));
+			} else if (pin < p7_0) {
+				P6OUT = value ? (P6OUT | (1 << (pin - p6_0))) : (P6OUT & ~(1 << (pin - p6_0)));
+				P6DIR |= (1 << (pin - p6_0));
+			} else if (pin < p8_0) {
+				P7OUT = value ? (P7OUT | (1 << (pin - p7_0))) : (P7OUT & ~(1 << (pin - p7_0)));
+				P7DIR |= (1 << (pin - p7_0));
+			} else if (pin < pj_0) {
+				P8OUT = value ? (P8OUT | (1 << (pin - p8_0))) : (P8OUT & ~(1 << (pin - p8_0)));
+				P8DIR |= (1 << (pin - p8_0));
 			} else if (pin < PIN_INVALID) {
 				PJOUT = value ? (PJOUT | (1 << (pin - pj_0))) : (PJOUT & ~(1 << (pin - pj_0)));
 				PJDIR |= (1 << (pin - pj_0));
@@ -138,8 +182,16 @@ class GPIO {
 				return P2IN & (1 << (pin - p2_0));
 			} else if (pin < p4_0) {
 				return P3IN & (1 << (pin - p3_0));
-			} else if (pin < pj_0) {
+			} else if (pin < p5_0) {
 				return P4IN & (1 << (pin - p4_0));
+			} else if (pin < p6_0) {
+				return P5IN & (1 << (pin - p5_0));
+			} else if (pin < p7_0) {
+				return P6IN & (1 << (pin - p6_0));
+			} else if (pin < p8_0) {
+				return P7IN & (1 << (pin - p7_0));
+			} else if (pin < pj_0) {
+				return P8IN & (1 << (pin - p8_0));
 			} else if (pin < PIN_INVALID) {
 				return PJIN & (1 << (pin - pj_0));
 			}
@@ -164,11 +216,35 @@ class GPIO {
 				} else {
 					P3OUT &= ~(1 << (pin - p3_0));
 				}
-			} else if (pin < pj_0) {
+			} else if (pin < p5_0) {
 				if (value) {
 					P4OUT |= (1 << (pin - p4_0));
 				} else {
 					P4OUT &= ~(1 << (pin - p4_0));
+				}
+			} else if (pin < p6_0) {
+				if (value) {
+					P5OUT |= (1 << (pin - p5_0));
+				} else {
+					P5OUT &= ~(1 << (pin - p5_0));
+				}
+			} else if (pin < p7_0) {
+				if (value) {
+					P6OUT |= (1 << (pin - p6_0));
+				} else {
+					P6OUT &= ~(1 << (pin - p6_0));
+				}
+			} else if (pin < p8_0) {
+				if (value) {
+					P7OUT |= (1 << (pin - p7_0));
+				} else {
+					P7OUT &= ~(1 << (pin - p7_0));
+				}
+			} else if (pin < pj_0) {
+				if (value) {
+					P8OUT |= (1 << (pin - p8_0));
+				} else {
+					P8OUT &= ~(1 << (pin - p8_0));
 				}
 			} else if (pin < PIN_INVALID) {
 				if (value) {
@@ -181,17 +257,21 @@ class GPIO {
 		inline void write_mask(unsigned char const pin_base, unsigned char set_mask, unsigned char clear_mask) {
 			if (pin_base < p2_0) {
 				P1OUT = (P1OUT | set_mask) & ~clear_mask;
-			}
-			if (pin_base < p3_0) {
+			} else if (pin_base < p3_0) {
 				P2OUT = (P2OUT | set_mask) & ~clear_mask;
-			}
-			if (pin_base < p4_0) {
+			} else if (pin_base < p4_0) {
 				P3OUT = (P3OUT | set_mask) & ~clear_mask;
-			}
-			if (pin_base < pj_0) {
+			} else if (pin_base < p5_0) {
 				P4OUT = (P4OUT | set_mask) & ~clear_mask;
-			}
-			if (pin_base < PIN_INVALID) {
+			} else if (pin_base < p6_0) {
+				P5OUT = (P5OUT | set_mask) & ~clear_mask;
+			} else if (pin_base < p7_0) {
+				P6OUT = (P6OUT | set_mask) & ~clear_mask;
+			} else if (pin_base < p8_0) {
+				P7OUT = (P7OUT | set_mask) & ~clear_mask;
+			} else if (pin_base < pj_0) {
+				P8OUT = (P8OUT | set_mask) & ~clear_mask;
+			} else if (pin_base < PIN_INVALID) {
 				PJOUT = (PJOUT | set_mask) & ~clear_mask;
 			}
 		}
