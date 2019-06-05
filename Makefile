@@ -60,6 +60,9 @@ endif
 
 ifneq ($(findstring sharp96,${drivers}), )
 	CXX_TARGETS += src/driver/sharp96.cc
+	sharp96_power_pin ?= p1_2
+	sharp96_en_pin ?= p6_2
+	sharp96_cs_pin ?= p1_3
 	sharp96_power_pin ?= p4_2
 	sharp96_en_pin ?= p4_3
 	sharp96_cs_pin ?= p2_4

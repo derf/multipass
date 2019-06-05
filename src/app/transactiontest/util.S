@@ -5,15 +5,18 @@
 #define SRAM_BASE #1c00h
 #define SRAM_SIZE 4096
 
-; SRAM backup space
-sram_backup:
+; SRAM and stack pointer backup space
+sp_backup1:
+    .space 2
+sram_backup1:
+    .space SRAM_SIZE
+sp_backup2:
+    .space 2
+sram_backup2:
     .space SRAM_SIZE
 
-; Stack Pointer backup
-sp_backup:
-    .space 2
-
-; Backup Cookie: Do we have valid data or has the FRAM been wiped?
+; Backup Cookie: Do we have valid data (and if yes, where?)
+; or has the FRAM been wiped?
 backup_cookie:
     .space 2
 
@@ -27,35 +30,40 @@ asm_save_all:
     push r\reg
     .endr
 
-    ; We will soon have valid data
-    mov #1234h, r10
-    mov r10, &backup_cookie
+    mov &backup_cookie, r10 ; content of backup_cookie -> r10
+    mov #sp_backup1, r11 ; address of sp_backup1 -> r11
+    cmp r10, r11 ; backup_cookie == addr. of sp_backup1?
+    jne do_save_all ; if not, the previous backup went to space 2 or never happened -> write backup to space 1
+    ; otherwise, the previous backup went to space 1 -> write backup to space 2
 
-    mov r1, &sp_backup
+    mov #sp_backup2, r11
 
-    mov SRAM_BASE, r10
-    mov #sram_backup, r11
-
-    ; Interrupts may alter global variables in SRAM and thus lead to inconsistencies
+do_save_all:
     dint
+    mov r1, 0(r11) ; store stack pointer in sp_backup(1|2)
+    mov r11, r9 ; backup location -> r9
+    mov SRAM_BASE, r10 ; SRAM area start -> r10
 
 save_sram_word:
-    mov @r10+, 0(r11)
     add #2, r11
+    mov @r10+, 0(r11)
     cmp SRAM_BASE+SRAM_SIZE, r10
     jlo save_sram_word
+
+    mov r9, &backup_cookie ; save backup location (addr. of sp_backup(1|2)) in backup_cookie
 
     eint
 
     ; revert changes to callee-saved registers
     pop r11
     pop r10
+    pop r9
     ; remove unchanged registers from stack
-    add #12, r1
+    add #10, r1
 
     ret
 
-; load entire SRAM and CPU register stat from persistent FRAM,
+; load entire SRAM and CPU register state from persistent FRAM,
 ; if it contains valid backup data. Execution will resume at the
 ; last place where asm_save_all() was called is if nothing in between
 ; had happened. Does not take possible the state of hardware peripherals
@@ -64,30 +72,36 @@ asm_load_all:
 
     ; check if we have backup data
     push r11
-    mov &backup_cookie, r11
-    cmp #1234h, r11
+    push r10
+    mov &backup_cookie, r10
 
-    ; yes? -> load it
+    ; ... in location 1?
+    mov #sp_backup1, r11
+    cmp r10, r11
+    jeq do_load_all
+
+    ; ... in location 2?
+    mov #sp_backup2, r11
+    cmp r10, r11
     jeq do_load_all
 
     ; no? -> too bad, resume with normal startup
+    pop r10
     pop r11
     ret
 
-    dint
-
 do_load_all:
-    ; restore SRAM from backup
-    mov #sram_backup, r10
-    mov SRAM_BASE, r11
-load_sram_word:
-    mov @r10+, 0(r11)
-    add #2, r11
-    cmp SRAM_BASE+SRAM_SIZE, r11
-    jlo load_sram_word
-
+    dint
     ; restore stack pointer
-    mov &sp_backup, r1
+    mov @r11, r1
+    add #2, r11
+    ; restore SRAM from backup
+    mov SRAM_BASE, r10
+load_sram_word:
+    mov @r11+, 0(r10)
+    add #2, r10
+    cmp SRAM_BASE+SRAM_SIZE, r10
+    jlo load_sram_word
 
     ; restore registers
     .irp reg,11,10,9,8,7,6,5,4
@@ -104,30 +118,38 @@ load_sram_word:
 ; Stack and CPU registers are left as-is, the program flow is not altered.
 asm_load_mem:
 
+    ; check if we have backup data
     push r11
-    mov &backup_cookie, r11
-    cmp #1234h, r11
+    push r10
+    mov &backup_cookie, r10
+
+    ; ... in location 1?
+    mov #sp_backup1, r11
+    cmp r10, r11
     jeq do_load_mem
+
+    ; ... in location 2?
+    mov #sp_backup2, r11
+    cmp r10, r11
+    jeq do_load_mem
+
+    ; no? -> too bad, resume with normal startup
+    pop r10
     pop r11
     ret
 
-    dint
-
 do_load_mem:
-    push r10
-    push r9
+    dint
     ; restore SRAM from backup, excluding stack
     ; -> everything from SRAM start (inclusive) to @sp (exclusive). Reminder: SP == R1 on MSP430
-    mov r1, r9
-    mov #sram_backup, r10
-    mov SRAM_BASE, r11
-load_sram_word2:
-    mov @r10+, 0(r11)
     add #2, r11
-    cmp r9, r11
+    mov SRAM_BASE, r10
+load_sram_word2:
+    mov @r11+, 0(r10)
+    add #2, r10
+    cmp r1, r10
     jlo load_sram_word2
 
-    pop r9
     pop r10
     pop r11
 
