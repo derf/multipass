@@ -3,7 +3,7 @@ default: build/system.elf
 INCLUDES = -Iinclude -Iinclude/arch/${arch}
 COMMON_FLAGS = -g -Os -Wall -Wextra
 CFLAGS = -std=c99
-CXXFLAGS = -std=c++14 -fno-rtti -fno-threadsafe-statics
+CXXFLAGS = -std=c++14 -fno-rtti -fno-threadsafe-statics -fno-exceptions
 
 ASM_TARGETS =
 C_TARGETS =
