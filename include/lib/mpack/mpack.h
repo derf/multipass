@@ -72,7 +72,7 @@
  * Enables compilation of the dynamic Node API.
  */
 #ifndef MPACK_NODE
-#define MPACK_NODE 1
+#define MPACK_NODE 0
 #endif
 
 /**
