@@ -7,6 +7,8 @@ void loop(void)
 {
 	gpio.led_toggle(1);
 	kout << "status: " << hex << nrf24l01.getStatus() << endl;
+	kout << "write: ";
+	kout << nrf24l01.write("foo", 3, true) << endl;
 }
 
 int main(void)
