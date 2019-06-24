@@ -18,6 +18,16 @@
 #error makeflag nrf24l01_cs_pin required
 #endif
 
+static const uint8_t child_pipe[] =
+	{
+		RX_ADDR_P0, RX_ADDR_P1, RX_ADDR_P2, RX_ADDR_P3, RX_ADDR_P4, RX_ADDR_P5};
+static const uint8_t child_payload_size[] =
+	{
+		RX_PW_P0, RX_PW_P1, RX_PW_P2, RX_PW_P3, RX_PW_P4, RX_PW_P5};
+static const uint8_t child_pipe_enable[] =
+	{
+		ERX_P0, ERX_P1, ERX_P2, ERX_P3, ERX_P4, ERX_P5};
+
 void Nrf24l01::setup()
 {
 	spi.setup();
@@ -181,6 +191,85 @@ uint8_t Nrf24l01::write(const void *buf, uint8_t len, bool blocking)
 	return 1;
 }
 
+void Nrf24l01::startListening(void)
+{
+	writeRegister(NRF_CONFIG, readRegister(NRF_CONFIG) | (1 << PRIM_RX));
+	writeRegister(NRF_STATUS, (1 << RX_DR) | (1 << TX_DS) | (1 << MAX_RT));
+	gpio.write(NRF24L01_EN_PIN, 1);
+
+	// Restore the pipe0 adddress, if exists
+	if (pipe0_reading_address[0] > 0)
+	{
+		writeRegister(RX_ADDR_P0, pipe0_reading_address, addr_width);
+	}
+	else
+	{
+		closeReadingPipe(0);
+	}
+
+	if (readRegister(FEATURE) & (1 << EN_ACK_PAY))
+	{
+		flushTx();
+	}
+}
+
+void Nrf24l01::stopListening(void)
+{
+	gpio.write(NRF24L01_EN_PIN, 0);
+
+	arch.delay_us(txRxDelay);
+
+	if (readRegister(FEATURE) & (1 << EN_ACK_PAY))
+	{
+		arch.delay_us(txRxDelay); //200
+		flushTx();
+	}
+	//flush_rx();
+	writeRegister(NRF_CONFIG, (readRegister(NRF_CONFIG)) & ~(1 << PRIM_RX));
+
+	writeRegister(EN_RXADDR, readRegister(EN_RXADDR) | (1 << child_pipe_enable[0])); // Enable RX on pipe0
+}
+
+void Nrf24l01::openReadingPipe(uint8_t child, const uint8_t *address)
+{
+	// If this is pipe 0, cache the address.  This is needed because
+	// openWritingPipe() will overwrite the pipe 0 address, so
+	// startListening() will have to restore it.
+	if (child == 0)
+	{
+		pipe0_reading_address[0] = address[0];
+		pipe0_reading_address[1] = address[1];
+		pipe0_reading_address[2] = address[2];
+		pipe0_reading_address[3] = address[3];
+		pipe0_reading_address[4] = address[4];
+	}
+	if (child <= 6)
+	{
+		// For pipes 2-5, only write the LSB
+		if (child < 2)
+		{
+			writeRegister(child_pipe[child], address, addr_width);
+		}
+		else
+		{
+			writeRegister(child_pipe[child], address, 1);
+		}
+		writeRegister(child_payload_size[child], payload_size);
+
+		// Note it would be more efficient to set all of the bits for all open
+		// pipes at once.  However, I thought it would make the calling code
+		// more simple to do it this way.
+		writeRegister(EN_RXADDR, readRegister(EN_RXADDR) | (1 << child_pipe_enable[child]));
+	}
+}
+
+/****************************************************************************/
+
+void Nrf24l01::closeReadingPipe(uint8_t pipe)
+{
+	writeRegister(EN_RXADDR, readRegister(EN_RXADDR) & ~(1 << child_pipe_enable[pipe]));
+}
+
 void Nrf24l01::maskIRQ(bool tx, bool fail, bool rx)
 {
 
@@ -212,6 +301,18 @@ uint8_t Nrf24l01::readRegister(uint8_t reg)
 	endTransaction();
 
 	return rxbuf[1];
+}
+
+uint8_t Nrf24l01::writeRegister(uint8_t reg, const uint8_t *buf, uint8_t len)
+{
+	txbuf[0] = W_REGISTER | (REGISTER_MASK & reg);
+
+	beginTransaction();
+	spi.xmit(1, txbuf, 1, rxbuf);
+	spi.xmit(len, (unsigned char *)buf, 0, NULL);
+	endTransaction();
+
+	return rxbuf[0];
 }
 
 uint8_t Nrf24l01::writeRegister(uint8_t reg, uint8_t value)

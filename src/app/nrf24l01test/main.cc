@@ -9,6 +9,9 @@ void loop(void)
 	kout << "status: " << hex << nrf24l01.getStatus() << endl;
 	kout << "write: ";
 	kout << nrf24l01.write("foo", 3, true) << endl;
+	nrf24l01.startListening();
+	arch.delay_ms(10);
+	nrf24l01.stopListening();
 }
 
 int main(void)
