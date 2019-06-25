@@ -265,6 +265,30 @@ public:
    * are enabled.  See the datasheet for details.
    */
 	void toggleFeatures(void);
+
+	/**
+   * Enable dynamically-sized payloads
+   *
+   * This way you don't always have to send large packets just to send them
+   * once in a while.  This enables dynamic payloads on ALL pipes.
+   *
+   */
+	void enableDynamicPayloads(void);
+
+	/**
+   * Enable dynamic ACKs (single write multicast or unicast) for chosen messages
+   *
+   * @note To enable full multicast or per-pipe multicast, use setAutoAck()
+   *
+   * @warning This MUST be called prior to attempting single write NOACK calls
+   * @code
+   * radio.enableDynamicAck();
+   * radio.write(&data,32,1);  // Sends a payload with no acknowledgement requested
+   * radio.write(&data,32,0);  // Sends a payload using auto-retry/autoACK
+   * @endcode
+   */
+  void enableDynamicAck();
+
 	/**
    * Be sure to call openWritingPipe() first to set the destination
    * of where to write to.
@@ -288,7 +312,7 @@ public:
    * @endcode
    * @return True if the payload was delivered successfully false if not
    */
-	uint8_t write(const void *buf, uint8_t len, bool blocking);
+	uint8_t write(const void *buf, uint8_t len, bool await_ack, bool blocking);
 
 	/**
    * Start listening on the pipes opened for reading.

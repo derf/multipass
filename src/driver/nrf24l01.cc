@@ -166,9 +166,9 @@ void Nrf24l01::setChannel(uint8_t channel)
 	writeRegister(RF_CH, rf24_min(channel, 125));
 }
 
-uint8_t Nrf24l01::write(const void *buf, uint8_t len, bool blocking)
+uint8_t Nrf24l01::write(const void *buf, uint8_t len, bool await_ack, bool blocking)
 {
-	writePayload(buf, len, W_TX_PAYLOAD);
+	writePayload(buf, len, await_ack ? W_TX_PAYLOAD : W_TX_PAYLOAD_NO_ACK);
 
 	gpio.write(NRF24L01_EN_PIN, 1);
 	arch.delay_us(10);
@@ -185,7 +185,7 @@ uint8_t Nrf24l01::write(const void *buf, uint8_t len, bool blocking)
 
 	if (status & (1 << MAX_RT))
 	{
-		// flush_tx(); //Only going to be 1 packet int the FIFO at a time using this method, so just flush
+		flushTx();
 		return 0;
 	}
 	return 1;
@@ -325,6 +325,29 @@ uint8_t Nrf24l01::writeRegister(uint8_t reg, uint8_t value)
 	endTransaction();
 
 	return rxbuf[0];
+}
+
+void Nrf24l01::enableDynamicPayloads(void)
+{
+	// Enable dynamic payload throughout the system
+
+	//toggle_features();
+	writeRegister(FEATURE, readRegister(FEATURE) | (1 << EN_DPL));
+
+	//IF_SERIAL_DEBUG(printf("FEATURE=%i\r\n",read_register(FEATURE)));
+
+	// Enable dynamic payload on all pipes
+	//
+	// Not sure the use case of only having dynamic payload on certain
+	// pipes, so the library does not support it.
+	writeRegister(DYNPD, readRegister(DYNPD) | (1 << DPL_P5) | (1 << DPL_P4) | (1 << DPL_P3) | (1 << DPL_P2) | (1 << DPL_P1) | (1 << DPL_P0));
+
+	dynamic_payloads_enabled = true;
+}
+
+void Nrf24l01::enableDynamicAck(void)
+{
+	writeRegister(FEATURE, readRegister(FEATURE) | (1 << EN_DYN_ACK));
 }
 
 uint8_t Nrf24l01::writePayload(const void *buf, uint8_t data_len, const uint8_t writeType)
