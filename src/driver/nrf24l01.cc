@@ -95,6 +95,12 @@ void Nrf24l01::powerUp(void)
 	}
 }
 
+void Nrf24l01::powerDown(void)
+{
+	gpio.write(NRF24L01_EN_PIN, 0);
+	writeRegister(NRF_CONFIG, readRegister(NRF_CONFIG) & ~(1 << PWR_UP));
+}
+
 void Nrf24l01::setRetries(uint8_t delay, uint8_t count)
 {
 	writeRegister(SETUP_RETR, (delay & 0xf) << ARD | (count & 0xf) << ARC);
