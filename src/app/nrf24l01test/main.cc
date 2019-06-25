@@ -35,8 +35,8 @@ void loop(void)
 
 	kout << "write: ";
 	nrf24l01.setRetries(0, 0);
-	nrf24l01.enableDynamicPayloads(false);
-	nrf24l01.enableDynamicAck(false);
+	nrf24l01.setDynamicPayloads(false);
+	nrf24l01.setDynamicAck(false);
 	TIMEIT("blocking write(3)", nrf24l01.write("foo", 3, true, true));
 	TIMEIT("blocking write(10)", nrf24l01.write("123456789", 10, true, true));
 	TIMEIT("blocking write(20)", nrf24l01.write("123456789123456789", 20, true, true));

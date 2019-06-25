@@ -338,7 +338,7 @@ uint8_t Nrf24l01::writeRegister(uint8_t reg, uint8_t value)
 	return rxbuf[0];
 }
 
-void Nrf24l01::enableDynamicPayloads(const bool enabled)
+void Nrf24l01::setDynamicPayloads(const bool enabled)
 {
 	if (enabled)
 	{
@@ -354,7 +354,7 @@ void Nrf24l01::enableDynamicPayloads(const bool enabled)
 	dynamic_payloads_enabled = enabled;
 }
 
-void Nrf24l01::enableDynamicAck(const bool enabled)
+void Nrf24l01::setDynamicAck(const bool enabled)
 {
 	if (enabled)
 	{
@@ -364,6 +364,31 @@ void Nrf24l01::enableDynamicAck(const bool enabled)
 	{
 		writeRegister(FEATURE, readRegister(FEATURE) & ~(1 << EN_DYN_ACK));
 	}
+}
+
+void Nrf24l01::setAutoAck(bool enable)
+{
+  if ( enable )
+    writeRegister(EN_AA, 0b111111);
+  else
+    writeRegister(EN_AA, 0);
+}
+
+void Nrf24l01::setAutoAck( uint8_t pipe, bool enable )
+{
+  if ( pipe <= 6 )
+  {
+    uint8_t en_aa = readRegister( EN_AA ) ;
+    if( enable )
+    {
+      en_aa |= (1<<pipe) ;
+    }
+    else
+    {
+      en_aa &= ~(1<<pipe) ;
+    }
+    writeRegister( EN_AA, en_aa ) ;
+  }
 }
 
 uint8_t Nrf24l01::writePayload(const void *buf, uint8_t data_len, const uint8_t writeType)

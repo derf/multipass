@@ -275,7 +275,7 @@ public:
    * @param enable desired DynamicPayloads status
    *
    */
-	void enableDynamicPayloads(bool enabled);
+	void setDynamicPayloads(bool enabled);
 
 	/**
    * Enable dynamic ACKs (single write multicast or unicast) for chosen messages
@@ -286,12 +286,33 @@ public:
    *
    * @warning This MUST be called prior to attempting single write NOACK calls
    * @code
-   * radio.enableDynamicAck();
+   * radio.setDynamicAck();
    * radio.write(&data,32,1);  // Sends a payload with no acknowledgement requested
    * radio.write(&data,32,0);  // Sends a payload using auto-retry/autoACK
    * @endcode
    */
-  void enableDynamicAck(bool enabled);
+	void setDynamicAck(bool enabled);
+
+	/**
+   * Enable or disable auto-acknowlede packets
+   *
+   * This is enabled by default, so it's only needed if you want to turn
+   * it off for some reason.
+   *
+   * @param enable Whether to enable (true) or disable (false) auto-acks
+   */
+	void setAutoAck(bool enable);
+
+	/**
+   * Enable or disable auto-acknowlede packets on a per pipeline basis.
+   *
+   * AA is enabled by default, so it's only needed if you want to turn
+   * it off/on for some reason on a per pipeline basis.
+   *
+   * @param pipe Which pipeline to modify
+   * @param enable Whether to enable (true) or disable (false) auto-acks
+   */
+	void setAutoAck(uint8_t pipe, bool enable);
 
 	/**
    * Be sure to call openWritingPipe() first to set the destination
