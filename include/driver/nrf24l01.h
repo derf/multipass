@@ -271,12 +271,16 @@ public:
    *
    * This way you don't always have to send large packets just to send them
    * once in a while.  This enables dynamic payloads on ALL pipes.
+   * 
+   * @param enable desired DynamicPayloads status
    *
    */
-	void enableDynamicPayloads(void);
+	void enableDynamicPayloads(bool enabled);
 
 	/**
    * Enable dynamic ACKs (single write multicast or unicast) for chosen messages
+   * 
+   * @param enable desired DynamicAck status
    *
    * @note To enable full multicast or per-pipe multicast, use setAutoAck()
    *
@@ -287,7 +291,7 @@ public:
    * radio.write(&data,32,0);  // Sends a payload using auto-retry/autoACK
    * @endcode
    */
-  void enableDynamicAck();
+  void enableDynamicAck(bool enabled);
 
 	/**
    * Be sure to call openWritingPipe() first to set the destination

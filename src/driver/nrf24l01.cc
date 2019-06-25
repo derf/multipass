@@ -100,6 +100,11 @@ void Nrf24l01::setRetries(uint8_t delay, uint8_t count)
 	writeRegister(SETUP_RETR, (delay & 0xf) << ARD | (count & 0xf) << ARC);
 }
 
+void Nrf24l01::setPayloadSize(uint8_t size)
+{
+	payload_size = rf24_min(size, 32);
+}
+
 void Nrf24l01::setPALevel(uint8_t level)
 {
 	uint8_t setup = readRegister(RF_SETUP) & 0b11111000;
@@ -327,27 +332,32 @@ uint8_t Nrf24l01::writeRegister(uint8_t reg, uint8_t value)
 	return rxbuf[0];
 }
 
-void Nrf24l01::enableDynamicPayloads(void)
+void Nrf24l01::enableDynamicPayloads(const bool enabled)
 {
-	// Enable dynamic payload throughout the system
+	if (enabled)
+	{
+		writeRegister(FEATURE, readRegister(FEATURE) | (1 << EN_DPL));
+		writeRegister(DYNPD, readRegister(DYNPD) | (1 << DPL_P5) | (1 << DPL_P4) | (1 << DPL_P3) | (1 << DPL_P2) | (1 << DPL_P1) | (1 << DPL_P0));
+	}
+	else
+	{
+		writeRegister(FEATURE, readRegister(FEATURE) & ~(1 << EN_DPL));
+		writeRegister(DYNPD, readRegister(DYNPD) & ~((1 << DPL_P5) | (1 << DPL_P4) | (1 << DPL_P3) | (1 << DPL_P2) | (1 << DPL_P1) | (1 << DPL_P0)));
+	}
 
-	//toggle_features();
-	writeRegister(FEATURE, readRegister(FEATURE) | (1 << EN_DPL));
-
-	//IF_SERIAL_DEBUG(printf("FEATURE=%i\r\n",read_register(FEATURE)));
-
-	// Enable dynamic payload on all pipes
-	//
-	// Not sure the use case of only having dynamic payload on certain
-	// pipes, so the library does not support it.
-	writeRegister(DYNPD, readRegister(DYNPD) | (1 << DPL_P5) | (1 << DPL_P4) | (1 << DPL_P3) | (1 << DPL_P2) | (1 << DPL_P1) | (1 << DPL_P0));
-
-	dynamic_payloads_enabled = true;
+	dynamic_payloads_enabled = enabled;
 }
 
-void Nrf24l01::enableDynamicAck(void)
+void Nrf24l01::enableDynamicAck(const bool enabled)
 {
-	writeRegister(FEATURE, readRegister(FEATURE) | (1 << EN_DYN_ACK));
+	if (enabled)
+	{
+		writeRegister(FEATURE, readRegister(FEATURE) | (1 << EN_DYN_ACK));
+	}
+	else
+	{
+		writeRegister(FEATURE, readRegister(FEATURE) & ~(1 << EN_DYN_ACK));
+	}
 }
 
 uint8_t Nrf24l01::writePayload(const void *buf, uint8_t data_len, const uint8_t writeType)

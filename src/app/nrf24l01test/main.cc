@@ -35,12 +35,12 @@ void loop(void)
 
 	kout << "write: ";
 	nrf24l01.setRetries(0, 0);
-	nrf24l01.enableDynamicPayloads();
-	nrf24l01.enableDynamicAck();
-	TIMEIT("blocking write(3)", nrf24l01.write("foo", 3, false, true));
-	TIMEIT("blocking write(10)", nrf24l01.write("123456789", 10, false, true));
-	TIMEIT("blocking write(20)", nrf24l01.write("123456789123456789", 20, false, true));
-	TIMEIT("blocking write(30)", nrf24l01.write("123456789123456789123456789", 30, false, true));
+	nrf24l01.enableDynamicPayloads(false);
+	nrf24l01.enableDynamicAck(false);
+	TIMEIT("blocking write(3)", nrf24l01.write("foo", 3, true, true));
+	TIMEIT("blocking write(10)", nrf24l01.write("123456789", 10, true, true));
+	TIMEIT("blocking write(20)", nrf24l01.write("123456789123456789", 20, true, true));
+	//TIMEIT("blocking write(30)", nrf24l01.write("123456789123456789123456789", 30, true, true));
 	nrf24l01.startListening();
 	arch.delay_ms(10);
 	nrf24l01.stopListening();
