@@ -72,6 +72,11 @@ ifeq (${prototest_xdr}, 1)
 	CXX_TARGETS += src/os/object/xdrstream.cc src/os/object/xdrinput.cc
 endif
 
+ifeq (${prototest_xdr16}, 1)
+	COMMON_FLAGS += -DPROTOTEST_XDR16
+	CXX_TARGETS += src/os/object/xdr16stream.cc src/os/object/xdr16input.cc
+endif
+
 # Don't try to make .capnp from .capnp.c
 %.capnp: ;
 

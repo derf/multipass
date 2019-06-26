@@ -39,6 +39,11 @@
 #include "object/xdrstream.h"
 #include "object/xdrinput.h"
 #endif
+#ifdef PROTOTEST_XDR16
+#include "object/stdbuf.h"
+#include "object/xdr16stream.h"
+#include "object/xdr16input.h"
+#endif
 
 #include <stdint.h>
 
