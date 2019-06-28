@@ -82,30 +82,38 @@ void XDRWriter::put(double number)
 	put(v.i);
 }
 
-void XDRWriter::put(char const *data){
-	if (!is_fixed_length) {
+void XDRWriter::put(char const *data)
+{
+	if (!is_fixed_length)
+	{
 		put(next_array_len);
 	}
 	uint16_t i;
-	for (i = 0; i < next_array_len; i++) {
+	for (i = 0; i < next_array_len; i++)
+	{
 		*buffer++ = data[i];
 	}
-	while ((i++) % 2 != 0){
+	while ((i++) % 2 != 0)
+	{
 		*buffer++ = 0;
 	}
 	pos += i;
 }
 
-template<uint16_t TSize>
-void XDRWriter::put(char const (&data)[TSize]){
-	if (!is_fixed_length) {
+template <uint16_t TSize>
+void XDRWriter::put(char const (&data)[TSize])
+{
+	if (!is_fixed_length)
+	{
 		put(TSize);
 	}
 	uint16_t i;
-	for (i = 0; i < TSize; i++) {
+	for (i = 0; i < TSize; i++)
+	{
 		*buffer++ = data[i];
 	}
-	while ((i++) % 2 != 0){
+	while ((i++) % 2 != 0)
+	{
 		*buffer++ = 0;
 	}
 	pos += i;
@@ -113,51 +121,42 @@ void XDRWriter::put(char const (&data)[TSize]){
 
 uint16_t XDRReader::get_uint16()
 {
-	uint16_t ret = ((uint8_t)data[pos]<<8) | (uint8_t)data[pos+1];
+	uint16_t ret = (((uint16_t)data[pos] & 0xffU) << 8) | ((uint16_t)data[pos + 1] & 0xffU);
 	pos += 2;
 	return ret;
 }
 
 int16_t XDRReader::get_int16()
 {
-	int16_t ret = (data[pos]<<8) | data[pos+1];
+	int16_t ret = (((int16_t)data[pos] & 0xff) << 8) | ((int16_t)data[pos + 1] & 0xff);
 	pos += 2;
 	return ret;
 }
 
 uint32_t XDRReader::get_uint32()
 {
-	uint32_t ret = ((uint8_t)data[pos]<<24) | ((uint8_t)data[pos+1]<<16)
-		| ((uint8_t)data[pos+2]<<8) | (uint8_t)data[pos+3];
+	uint32_t ret = (((uint32_t)data[pos] & 0xffU) << 24) | (((uint32_t)data[pos + 1] & 0xffU) << 16) | (((uint32_t)data[pos + 2] & 0xffU) << 8) | ((uint32_t)data[pos + 3] & 0xffU);
 	pos += 4;
 	return ret;
 }
 
 int32_t XDRReader::get_int32()
 {
-	int32_t ret = (data[pos]<<24) | (data[pos+1]<<16) | (data[pos+2]<<8) | data[pos+3];
+	int32_t ret = (((int32_t)data[pos] & 0xff) << 24) | (((int32_t)data[pos + 1] & 0xff) << 16) | (((int32_t)data[pos + 2] & 0xff) << 8) | ((int32_t)data[pos + 3] & 0xff);
 	pos += 4;
 	return ret;
 }
 
 uint64_t XDRReader::get_uint64()
 {
-	uint64_t ret0 = ((uint8_t)data[pos]<<24) | ((uint8_t)data[pos+1]<<16)
-		| ((uint8_t)data[pos+2]<<8) | (uint8_t)data[pos+3];
-	pos += 4;
-	uint64_t ret1 = ((uint8_t)data[pos]<<24) | ((uint8_t)data[pos+1]<<16)
-		| ((uint8_t)data[pos+2]<<8) | (uint8_t)data[pos+3];
-	pos += 4;
-	return (ret0 << 32) | ret1;
+	uint64_t ret = (((uint64_t)data[pos] & 0xffU) << 56) | (((uint64_t)data[pos + 1] & 0xffU) << 48) | (((uint64_t)data[pos + 2] & 0xffU) << 40) | (((uint64_t)data[pos + 3] & 0xffU) << 32) | (((uint64_t)data[pos + 4] & 0xffU) << 24) | (((uint64_t)data[pos + 5] & 0xffU) << 16) | (((uint64_t)data[pos + 6] & 0xffU) << 8) | ((uint64_t)data[pos + 7] & 0xffU);
+	return ret;
 }
 
 int64_t XDRReader::get_int64()
 {
-	int64_t ret0 = (data[pos]<<24) | (data[pos+1]<<16) | (data[pos+2]<<8) | data[pos+3];
-	pos += 4;
-	int64_t ret1 = (data[pos]<<24) | (data[pos+1]<<16) | (data[pos+2]<<8) | data[pos+3];
-	pos += 4;
-	return (ret0 << 32) | ret1;
+	int64_t ret = (((int64_t)data[pos] & 0xff) << 56) | (((int64_t)data[pos + 1] & 0xff) << 48) | (((int64_t)data[pos + 2] & 0xff) << 40) | (((int64_t)data[pos + 3] & 0xff) << 32) | (((int64_t)data[pos + 4] & 0xff) << 24) | (((int64_t)data[pos + 5] & 0xff) << 16) | (((int64_t)data[pos + 6] & 0xff) << 8) | ((int64_t)data[pos + 7] & 0xff);
+	return ret;
 }
 
 float XDRReader::get_float()
@@ -193,22 +192,25 @@ char *XDRReader::get_opaque(uint32_t length)
 {
 	char *ret = data + pos;
 	pos += length;
-	if (length % 2) {
+	if (length % 2)
+	{
 		pos += 2 - (length % 2);
 	}
 	return ret;
 }
 
-void XDRReader::get_string(char* target)
+void XDRReader::get_string(char *target)
 {
 	uint16_t length = get_opaque_length();
 	uint16_t i;
-	for (i = 0; i < length; i++) {
+	for (i = 0; i < length; i++)
+	{
 		target[i] = data[pos + i];
 	}
 	target[i] = 0;
 	pos += length;
-	if (length % 2) {
+	if (length % 2)
+	{
 		pos += 2 - (length % 2);
 	}
 }
