@@ -41,6 +41,8 @@ float XDRInput::get_float()
 		uint32_t i;
 		float f;
 	} v;
+	// Setting one member of a struct and then reading another is undefined
+	// behaviour, but works as intended in nearly any (embedded) compiler
 	v.i = get_uint32();
 	return v.f;
 }
@@ -51,6 +53,8 @@ double XDRInput::get_double()
 		uint64_t i;
 		double d;
 	} v;
+	// Setting one member of a struct and then reading another is undefined
+	// behaviour, but works as intended in nearly any (embedded) compiler
 	v.i = get_uint64();
 	return v.d;
 }

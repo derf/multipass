@@ -74,6 +74,8 @@ XDRStream & XDRStream::operator<<(float number)
 		uint32_t i;
 		float f;
 	} v;
+	// Setting one member of a struct and then reading another is undefined
+	// behaviour, but works as intended in nearly any (embedded) compiler
 	v.f = number;
 	*this << v.i;
 	return *this;
@@ -85,6 +87,8 @@ XDRStream & XDRStream::operator<<(double number)
 		uint64_t i;
 		double d;
 	} v;
+	// Setting one member of a struct and then reading another is undefined
+	// behaviour, but works as intended in nearly any (embedded) compiler
 	v.d = number;
 	*this << v.i;
 	return *this;
