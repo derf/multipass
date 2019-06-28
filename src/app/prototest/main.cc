@@ -35,14 +35,10 @@
 #include "ubj.h"
 #endif
 #ifdef PROTOTEST_XDR
-#include "object/stdbuf.h"
-#include "object/xdrstream.h"
-#include "object/xdrinput.h"
+#include "lib/xdr.h"
 #endif
 #ifdef PROTOTEST_XDR16
-#include "object/stdbuf.h"
-#include "object/xdr16stream.h"
-#include "object/xdr16input.h"
+#include "lib/xdr16.h"
 #endif
 
 #include <stdint.h>

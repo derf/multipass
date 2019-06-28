@@ -69,12 +69,12 @@ endif
 
 ifeq (${prototest_xdr}, 1)
 	COMMON_FLAGS += -DPROTOTEST_XDR
-	CXX_TARGETS += src/os/object/xdrstream.cc src/os/object/xdrinput.cc
+	CXX_TARGETS += src/lib/xdr.cc
 endif
 
 ifeq (${prototest_xdr16}, 1)
 	COMMON_FLAGS += -DPROTOTEST_XDR16
-	CXX_TARGETS += src/os/object/xdr16stream.cc src/os/object/xdr16input.cc
+	CXX_TARGETS += src/lib/xdr16.cc
 endif
 
 # Don't try to make .capnp from .capnp.c
