@@ -97,7 +97,7 @@ void XDRWriter::put(char const *data)
 	{
 		*buffer++ = 0;
 	}
-	pos += i;
+	pos += i - 1;
 }
 
 template <uint16_t TSize>
@@ -116,7 +116,7 @@ void XDRWriter::put(char const (&data)[TSize])
 	{
 		*buffer++ = 0;
 	}
-	pos += i;
+	pos += i - 1;
 }
 
 uint16_t XDRReader::get_uint16()
