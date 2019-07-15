@@ -3,6 +3,9 @@
 CPU = 430x
 MCU = msp430fr5994
 
+DEBUG_PORT ?= ttyACM0
+SERIAL_PORT ?= ttyACM1
+
 cpu_freq ?= 8000000
 
 MSP430_FLASHER_DIR ?= /home/derf/var/projects/msp430/MSP430Flasher_1.3.15
@@ -94,6 +97,7 @@ build/system.hex: build/system.elf
 program: build/system.hex
 	${QUIET}LD_LIBRARY_PATH=${MSP430_FLASHER_DIR} \
 	${MSP430_FLASHER_DIR}/MSP430Flasher \
+	-i ${DEBUG_PORT} \
 	-w build/system.hex -v -g -z '[VCC]'
 
 arch_clean:
@@ -101,11 +105,13 @@ arch_clean:
 	${QUIET}rm -f build/system.hex
 
 monitor:
-	${QUIET}screen /dev/ttyACM1 115200
+	${QUIET}screen /dev/${SERIAL_PORT} 115200
 
 arch_help:
 	@echo "msp430fr5994lp specific flags:"
-	@echo "    cpu_freq = 16000000 (desired CPU frequency in Hz)"
+	@echo "    DEBUG_PORT = ${DEBUG_PORT}"
+	@echo "    SERIAL_PORT = ${SERIAL_PORT}"
+	@echo "    cpu_freq = ${cpu_freq} (desired CPU frequency in Hz)"
 	@echo "        supported frequencies: 1 / 4 / 8 / 16 MHz"
 	@echo "    MSP430_FLASHER_DIR = /home/derf/var/projects/msp430/MSP430Flasher_1.3.15"
 	@echo "        (required for flashing, must contain libmsp430.so and MSP430Flasher)"
@@ -115,6 +121,6 @@ arch_info:
 	@echo "Timer Freq: ${timer_freq} Hz -> $(shell src/arch/msp430fr5994lp/model.py f_timer "${cpu_freq}" "${timer_freq}")"
 	@echo "I2C   Freq: ${i2c_freq} Hz"
 	@echo "Counter Overflow: 65536/255"
-	@echo "Monitor: /dev/ttyACM1 115200"
+	@echo "Monitor: /dev/${SERIAL_PORT} 115200"
 
 .PHONY: arch_clean arch_help arch_info monitor program
