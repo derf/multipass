@@ -77,7 +77,41 @@ void Nrf24l01::setup()
 	// PTX should use only 22uA of power
 	writeRegister(NRF_CONFIG, (readRegister(NRF_CONFIG)) & ~(1 << PRIM_RX));
 }
-
+/*
+int Nrf24l01::init(uint8_t addr, uint8_t channel, rf24_datarate_e datarate){
+    
+  if(channel > 125){
+   return -1; 
+  }
+  
+  unsigned char node_addr[5] = {addr, 'x', 'S', 'D', 'P'};
+  
+  setAutoAck(1);
+  enableAckPayload();
+  maskIRQ(true, true, false);
+  enableDynamicPayloads();  
+  setPALevel(RF24_PA_MAX);
+  setChannel(channel);
+  setDataRate(datarate);
+  openWritingPipe((const uint8_t*)GATEWAY_NAME); // GATEWAY_NAME is defined in the MSP430FR5969 RF24_arch_config.h
+  currentWritingPipe = 0;
+  openReadingPipe(1, node_addr);
+#ifdef CONFIG_Apps_SolarDoorplate_PacketHandler
+  node_addr[0] = CONFIG_PACKETHANDLER_BROADCAST_ID;
+  openReadingPipe(2, node_addr);
+#endif  
+  if(getChannel() != channel){
+   return -2; 
+  }
+  
+  if(getDataRate() != datarate){
+   return -3; 
+  }
+  
+  return 0;
+  
+}
+*/
 //Power up now. Radio will not power down unless instructed by MCU for config changes etc.
 void Nrf24l01::powerUp(void)
 {
@@ -172,6 +206,25 @@ void Nrf24l01::toggleFeatures(void)
 	endTransaction();
 }
 
+void Nrf24l01::enableAckPayload(void)
+{
+	//
+	// enable ack payload and dynamic payload features
+	//
+
+	//toggle_features();
+	writeRegister(FEATURE, readRegister(FEATURE) | (1 << EN_ACK_PAY) | (1 << EN_DPL));
+
+	//IF_SERIAL_DEBUG(printf("FEATURE=%i\r\n",read_register(FEATURE)));
+
+	//
+	// Enable dynamic payload on pipes 0 & 1
+	//
+
+	writeRegister(DYNPD, readRegister(DYNPD) | (1 << DPL_P1) | (1 << DPL_P0));
+	dynamic_payloads_enabled = true;
+}
+
 void Nrf24l01::setChannel(uint8_t channel)
 {
 	writeRegister(RF_CH, rf24_min(channel, 125));
@@ -182,16 +235,17 @@ uint8_t Nrf24l01::write(const void *buf, uint8_t len, bool await_ack, bool block
 	writePayload(buf, len, await_ack ? W_TX_PAYLOAD : W_TX_PAYLOAD_NO_ACK);
 
 	gpio.write(NRF24L01_EN_PIN, 1);
-	arch.delay_us(10);
-	gpio.write(NRF24L01_EN_PIN, 0);
 
 	if (!blocking)
 	{
+		arch.delay_us(10);
+		gpio.write(NRF24L01_EN_PIN, 0);
 		return 0;
 	}
 
 	while (!(getStatus() & ((1 << TX_DS) | (1 << MAX_RT))))
 		;
+	gpio.write(NRF24L01_EN_PIN, 1);
 	uint8_t status = writeRegister(NRF_STATUS, ((1 << TX_DS) | (1 << MAX_RT)));
 
 	if (status & (1 << MAX_RT))
@@ -241,6 +295,41 @@ void Nrf24l01::stopListening(void)
 	writeRegister(EN_RXADDR, readRegister(EN_RXADDR) | (1 << child_pipe_enable[0])); // Enable RX on pipe0
 }
 
+bool Nrf24l01::available(void)
+{
+	return available(NULL);
+}
+
+/****************************************************************************/
+
+bool Nrf24l01::available(uint8_t *pipe_num)
+{
+	if (!(readRegister(FIFO_STATUS) & (1 << RX_EMPTY)))
+	{
+
+		// If the caller wants the pipe number, include that
+		if (pipe_num)
+		{
+			uint8_t status = getStatus();
+			*pipe_num = (status >> RX_P_NO) & 0b111;
+		}
+		return 1;
+	}
+	return 0;
+}
+
+bool Nrf24l01::testCarrier(void)
+{
+	return (readRegister(CD) & 1);
+}
+
+/****************************************************************************/
+
+bool Nrf24l01::testRPD(void)
+{
+	return (readRegister(RPD) & 1);
+}
+
 void Nrf24l01::openReadingPipe(uint8_t child, const uint8_t *address)
 {
 	// If this is pipe 0, cache the address.  This is needed because
@@ -279,6 +368,29 @@ void Nrf24l01::openReadingPipe(uint8_t child, const uint8_t *address)
 void Nrf24l01::closeReadingPipe(uint8_t pipe)
 {
 	writeRegister(EN_RXADDR, readRegister(EN_RXADDR) & ~(1 << child_pipe_enable[pipe]));
+}
+
+/****************************************************************************/
+void Nrf24l01::openWritingPipe(const uint8_t *address)
+{
+	// Note that AVR 8-bit uC's store this LSB first, and the NRF24L01(+)
+	// expects it LSB first too, so we're good.
+
+	writeRegister(RX_ADDR_P0, address, addr_width);
+	writeRegister(TX_ADDR, address, addr_width);
+
+	//const uint8_t max_payload_size = 32;
+	//write_register(RX_PW_P0,rf24_min(payload_size,max_payload_size));
+	writeRegister(RX_PW_P0, payload_size);
+}
+
+void Nrf24l01::setAddressWidth(uint8_t a_width)
+{
+	if (a_width -= 2)
+	{
+		writeRegister(SETUP_AW, a_width % 4);
+		addr_width = (a_width % 4) + 2;
+	}
 }
 
 void Nrf24l01::maskIRQ(bool tx, bool fail, bool rx)
@@ -338,6 +450,45 @@ uint8_t Nrf24l01::writeRegister(uint8_t reg, uint8_t value)
 	return rxbuf[0];
 }
 
+uint8_t Nrf24l01::readPayload(void *buf, uint8_t data_len)
+{
+	uint8_t status;
+	uint8_t *current = reinterpret_cast<uint8_t *>(buf);
+
+	if (data_len > payload_size)
+		data_len = payload_size;
+	uint8_t blank_len = dynamic_payloads_enabled ? 0 : payload_size - data_len;
+
+	beginTransaction();
+	txbuf[0] = R_RX_PAYLOAD;
+	spi.xmit(1, txbuf, 1, rxbuf);
+	status = rxbuf[0];
+	txbuf[0] = 0xf;
+	;
+	while (data_len--)
+	{
+		spi.xmit(1, txbuf, 1, rxbuf);
+		*current++ = rxbuf[0];
+	}
+	while (blank_len--)
+	{
+		spi.xmit(1, txbuf, 1, rxbuf);
+	}
+	endTransaction();
+
+	return status;
+}
+
+void Nrf24l01::read(void *buf, uint8_t len)
+{
+
+	// Fetch the payload
+	readPayload(buf, len);
+
+	//Clear the two possible interrupt flags with one command
+	writeRegister(NRF_STATUS, (1 << RX_DR) | (1 << MAX_RT) | (1 << TX_DS));
+}
+
 void Nrf24l01::setDynamicPayloads(const bool enabled)
 {
 	if (enabled)
@@ -368,27 +519,27 @@ void Nrf24l01::setDynamicAck(const bool enabled)
 
 void Nrf24l01::setAutoAck(bool enable)
 {
-  if ( enable )
-    writeRegister(EN_AA, 0b111111);
-  else
-    writeRegister(EN_AA, 0);
+	if (enable)
+		writeRegister(EN_AA, 0b111111);
+	else
+		writeRegister(EN_AA, 0);
 }
 
-void Nrf24l01::setAutoAck( uint8_t pipe, bool enable )
+void Nrf24l01::setAutoAck(uint8_t pipe, bool enable)
 {
-  if ( pipe <= 6 )
-  {
-    uint8_t en_aa = readRegister( EN_AA ) ;
-    if( enable )
-    {
-      en_aa |= (1<<pipe) ;
-    }
-    else
-    {
-      en_aa &= ~(1<<pipe) ;
-    }
-    writeRegister( EN_AA, en_aa ) ;
-  }
+	if (pipe <= 6)
+	{
+		uint8_t en_aa = readRegister(EN_AA);
+		if (enable)
+		{
+			en_aa |= (1 << pipe);
+		}
+		else
+		{
+			en_aa &= ~(1 << pipe);
+		}
+		writeRegister(EN_AA, en_aa);
+	}
 }
 
 uint8_t Nrf24l01::writePayload(const void *buf, uint8_t data_len, const uint8_t writeType)

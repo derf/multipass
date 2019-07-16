@@ -10,6 +10,8 @@
 	counter.stop(); \
 	kout << endl << index << " :: " << dec << counter.value << "/" << counter.overflow << endl;
 
+char buf[32];
+
 void loop(void)
 {
 	gpio.led_toggle(1);
@@ -33,17 +35,22 @@ void loop(void)
 	}
 	kout << endl;
 
+#ifdef MULTIPASS_ARCH_msp430fr5969lp
 	kout << "write: ";
-	nrf24l01.setRetries(0, 0);
-	nrf24l01.setDynamicPayloads(false);
-	nrf24l01.setDynamicAck(false);
-	TIMEIT("blocking write(3)", nrf24l01.write("foo", 3, true, true));
-	TIMEIT("blocking write(10)", nrf24l01.write("123456789", 10, true, true));
-	TIMEIT("blocking write(20)", nrf24l01.write("123456789123456789", 20, true, true));
-	//TIMEIT("blocking write(30)", nrf24l01.write("123456789123456789123456789", 30, true, true));
-	nrf24l01.startListening();
-	arch.delay_ms(10);
+	//kout << nrf24l01.write("foo", 3, true, true) << " ";
+	//kout << nrf24l01.write("123456789", 10, true, true) << " ";
+	kout << nrf24l01.write("123456789123456789", 20, true, true) << endl;
+#else
+	kout << "carrier " << nrf24l01.testCarrier() << " / RPD " << nrf24l01.testRPD();
+	if (nrf24l01.available()) {
+		nrf24l01.read(buf, 32);
+		kout << " / data = " << buf << endl;
+	} else {
+		kout << " / no data" << endl;
+	}
 	nrf24l01.stopListening();
+	nrf24l01.startListening();
+#endif
 }
 
 int main(void)
@@ -54,6 +61,22 @@ int main(void)
 
 	kout << "nrf24l01.setup() ...";
 	nrf24l01.setup();
+	kout << " OK" << endl;
+
+	kout << "nrf24l01 configure ...";
+    unsigned char addr[5] = {0, 'D', 'E', 'R', 'F'};
+	//nrf24l01.setAutoAck(1);
+	//nrf24l01.enableAckPayload();
+	nrf24l01.setDynamicPayloads(true);
+	nrf24l01.setPALevel(Nrf24l01::RF24_PA_MAX);
+	nrf24l01.setChannel(25);
+	nrf24l01.setDataRate(Nrf24l01::RF24_2MBPS);
+#ifdef MULTIPASS_ARCH_msp430fr5994lp
+	nrf24l01.openReadingPipe(1, addr);
+	nrf24l01.startListening();
+#else
+	nrf24l01.openWritingPipe((const uint8_t*)addr);
+#endif
 	kout << " OK" << endl;
 
 	gpio.led_on(0);

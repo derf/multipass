@@ -93,7 +93,7 @@ build/system.hex: build/system.elf
 program: build/system.hex
 	${QUIET}LD_LIBRARY_PATH=${MSP430_FLASHER_DIR} \
 	${MSP430_FLASHER_DIR}/MSP430Flasher \
-	-i ${DEBUG_PORT} \
+	-i /dev/${DEBUG_PORT} \
 	-w build/system.hex -v -g -z '[VCC]'
 
 arch_clean:

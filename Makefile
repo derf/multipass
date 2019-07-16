@@ -60,9 +60,16 @@ endif
 
 ifneq ($(findstring nrf24l01,${drivers}), )
 	CXX_TARGETS += src/driver/nrf24l01.cc
-	nrf24l01_en_pin ?= p4_3
-	nrf24l01_cs_pin ?= p2_4
-	nrf24l01_irq_pin ?= p1_5
+	ifeq (${arch}, msp430fr5994lp)
+	nrf24l01_cs_pin ?= p1_3
+	nrf24l01_en_pin ?= p6_2
+	nrf24l01_irq_pin ?= p8_3
+	endif
+	ifeq (${arch}, msp430fr5969lp)
+		nrf24l01_en_pin ?= p4_3
+		nrf24l01_cs_pin ?= p2_4
+		nrf24l01_irq_pin ?= p1_5
+	endif
 	COMMON_FLAGS += -DDRIVER_NRF24L01
 	COMMON_FLAGS += -DNRF24L01_EN_PIN=GPIO::${nrf24l01_en_pin}
 	COMMON_FLAGS += -DNRF24L01_CS_PIN=GPIO::${nrf24l01_cs_pin}
