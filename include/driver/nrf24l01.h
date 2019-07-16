@@ -60,7 +60,7 @@ private:
    */
    uint8_t writePayload(const void *buf, uint8_t data_len, const uint8_t writeType);
 
-     /**
+   /**
    * Read the receive payload
    *
    * The size of data read is the fixed payload size, see getPayloadSize()
@@ -69,7 +69,7 @@ private:
    * @param len Maximum number of bytes to read
    * @return Current value of status register
    */
-  uint8_t readPayload(void* buf, uint8_t len);
+   uint8_t readPayload(void *buf, uint8_t len);
 
    inline void csnHigh()
    {
@@ -79,6 +79,16 @@ private:
    inline void csnLow()
    {
       gpio.write(NRF24L01_CS_PIN, 0);
+      arch.delay_us(5);
+   }
+   inline void ceHigh()
+   {
+      gpio.write(NRF24L01_EN_PIN, 1);
+      arch.delay_us(5);
+   }
+   inline void ceLow()
+   {
+      gpio.write(NRF24L01_EN_PIN, 0);
       arch.delay_us(5);
    }
    inline void beginTransaction()
@@ -515,7 +525,7 @@ s   *
 
    void openWritingPipe(const uint8_t *address);
 
-     /**
+   /**
    * Test whether there was a carrier on the line for the
    * previous listening period.
    *
@@ -523,9 +533,9 @@ s   *
    *
    * @return true if was carrier, false if not
    */
-  bool testCarrier(void);
+   bool testCarrier(void);
 
-  /**
+   /**
    * Test whether a signal (carrier or otherwise) greater than
    * or equal to -64dBm is present on the channel. Valid only
    * on nRF24L01P (+) hardware. On nRF24L01, use testCarrier().
@@ -542,7 +552,7 @@ s   *
    * @endcode
    * @return true if signal => -64dBm, false if not
    */
-  bool testRPD(void);
+   bool testRPD(void);
 
    uint8_t getStatus();
 };

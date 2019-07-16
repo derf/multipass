@@ -33,6 +33,9 @@ void loop(void)
 	if (status & 0x01) {
 		kout << " TX_FULL";
 	}
+	if ((status & 0x0e) < 0x0d) {
+		kout << " @" << (status & 0x0e)/2;
+	}
 	kout << endl;
 
 #ifdef MULTIPASS_ARCH_msp430fr5969lp
@@ -65,11 +68,11 @@ int main(void)
 
 	kout << "nrf24l01 configure ...";
     unsigned char addr[5] = {0, 'D', 'E', 'R', 'F'};
-	//nrf24l01.setAutoAck(1);
+	nrf24l01.setAutoAck(1);
 	//nrf24l01.enableAckPayload();
-	nrf24l01.setDynamicPayloads(true);
+	nrf24l01.setDynamicPayloads(false);
 	nrf24l01.setPALevel(Nrf24l01::RF24_PA_MAX);
-	nrf24l01.setChannel(25);
+	nrf24l01.setChannel(110);
 	nrf24l01.setDataRate(Nrf24l01::RF24_2MBPS);
 #ifdef MULTIPASS_ARCH_msp430fr5994lp
 	nrf24l01.openReadingPipe(1, addr);

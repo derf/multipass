@@ -131,7 +131,7 @@ void Nrf24l01::powerUp(void)
 
 void Nrf24l01::powerDown(void)
 {
-	gpio.write(NRF24L01_EN_PIN, 0);
+	ceLow();
 	writeRegister(NRF_CONFIG, readRegister(NRF_CONFIG) & ~(1 << PWR_UP));
 }
 
@@ -234,18 +234,18 @@ uint8_t Nrf24l01::write(const void *buf, uint8_t len, bool await_ack, bool block
 {
 	writePayload(buf, len, await_ack ? W_TX_PAYLOAD : W_TX_PAYLOAD_NO_ACK);
 
-	gpio.write(NRF24L01_EN_PIN, 1);
+	ceHigh();
 
 	if (!blocking)
 	{
 		arch.delay_us(10);
-		gpio.write(NRF24L01_EN_PIN, 0);
+		ceLow();
 		return 0;
 	}
 
 	while (!(getStatus() & ((1 << TX_DS) | (1 << MAX_RT))))
 		;
-	gpio.write(NRF24L01_EN_PIN, 1);
+	ceLow();
 	uint8_t status = writeRegister(NRF_STATUS, ((1 << TX_DS) | (1 << MAX_RT)));
 
 	if (status & (1 << MAX_RT))
@@ -260,7 +260,7 @@ void Nrf24l01::startListening(void)
 {
 	writeRegister(NRF_CONFIG, readRegister(NRF_CONFIG) | (1 << PRIM_RX));
 	writeRegister(NRF_STATUS, (1 << RX_DR) | (1 << TX_DS) | (1 << MAX_RT));
-	gpio.write(NRF24L01_EN_PIN, 1);
+	ceHigh();
 
 	// Restore the pipe0 adddress, if exists
 	if (pipe0_reading_address[0] > 0)
@@ -280,7 +280,7 @@ void Nrf24l01::startListening(void)
 
 void Nrf24l01::stopListening(void)
 {
-	gpio.write(NRF24L01_EN_PIN, 0);
+	ceLow();
 
 	arch.delay_us(txRxDelay);
 
