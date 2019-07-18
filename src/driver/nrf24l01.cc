@@ -135,6 +135,11 @@ void Nrf24l01::powerDown(void)
 	writeRegister(NRF_CONFIG, readRegister(NRF_CONFIG) & ~(1 << PWR_UP));
 }
 
+uint8_t Nrf24l01::getObserveTx(void)
+{
+	return readRegister(OBSERVE_TX);
+}
+
 void Nrf24l01::setRetries(uint8_t delay, uint8_t count)
 {
 	writeRegister(SETUP_RETR, (delay & 0xf) << ARD | (count & 0xf) << ARC);

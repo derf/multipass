@@ -193,6 +193,13 @@ public:
    */
    uint8_t flushRx(void);
 
+     /**
+   * Get observe value.
+   *
+   * @return Current Observe TX value. 7:4 counts lost packets since last channel change, 3:0 gives retransmission count of latest packet.
+   */
+  uint8_t getObserveTx(void);
+
    void setup();
    /**
    * Set Power Amplifier (PA) level to one of four levels:
