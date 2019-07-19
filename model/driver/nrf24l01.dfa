@@ -1,0 +1,79 @@
+codegen:
+  instance: nrf24l01
+  includes: ['driver/nrf24l01.h']
+  flags: ['drivers=nrf24l01', 'arch_drivers=spi_b']
+
+parameters:
+  - auto_ack!
+  - payload_size
+  - dynamic_payloads_enabled!
+  - max_retry_count
+  - retry_count
+  - retry_delay
+  - retry_enabled!
+  - tx_power
+  - datarate
+  - channel
+
+states:
+  - UNINITIALIZED
+  - POWEROFF
+  - STANDBY1
+  - TX
+  - RX
+
+transition:
+  setup:
+    src: [UNINITIALIZED, POWEROFF, STANDBY1]
+    dst: STANDBY1
+    set_param:
+      retry_delay: 5
+      retry_count: 10
+      datarate: RF24_1MBPS
+      tx_power: RF24_PA_MAX
+      dynamic_payloads_enabled: 0
+      channel: 76
+  setAutoAck:
+    src: [STANDBY1]
+    dst: STANDBY1
+    arguments:
+      - name: enable
+        values: [0, 1]
+        parameter: auto_ack
+  setPALevel:
+    src: [STANDBY1]
+    dst: STANDBY1
+    arguments:
+      - name: palevel
+        values: ['Nrf24l01::RF24_PA_MIN', 'Nrf24l01::RF24_PA_LOW', 'Nrf24l01::RF24_PA_HIGH', 'Nrf24l01::RF24_PA_MAX']
+        parameter: tx_power
+  startListening:
+    src: [STANDBY1]
+    dst: RX
+  stopListening:
+    src: [RX]
+    dst: STANDBY1
+  setRetries:
+    src: [STANDBY1]
+    dst: STANDBY1
+    arguments:
+      - name: delay
+        values: [0, 5, 10, 15]
+        parameter: retry_delay
+      - name: count
+        values: [0, 5, 10, 15]
+        parameter: max_retry_count
+  write:
+    src: [STANDBY1]
+    dst: STANDBY1
+    arguments:
+      - name: buf
+        values: ['"foo"', '"foo"', '"foofoofoo"', '"foofoofoo"', '"123456789012345678901234567890"', '"123456789012345678901234567890"']
+      - name: len
+        values: [3, 3, 9, 9, 30, 30]
+        parameter: payload_size
+      - name: await_ack
+        values: [0, 1, 0, 1, 0, 1]
+      - name: blocking
+        values: [1, 1, 1, 1, 1, 1]
+    argument_combination: zip
