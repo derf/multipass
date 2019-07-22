@@ -68,7 +68,7 @@ class PTALog {
 
 		void dump(uint16_t trace_id)
 		{
-			kout << "[PTA] trace=" << dec << trace_id << ", count=" << log_index << endl;
+			kout << "[PTA] trace=" << dec << trace_id << " count=" << log_index << endl;
 			for (uint8_t i = 0; i < log_index; i++) {
 #ifdef PTALOG_TIMING
 				kout << "[PTA] transition=" << log[i].transition_id;
