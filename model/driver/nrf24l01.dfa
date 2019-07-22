@@ -10,7 +10,6 @@ parameters:
   - max_retry_count
   - retry_count
   - retry_delay
-  - retry_enabled!
   - tx_power
   - datarate
   - channel
@@ -27,11 +26,12 @@ transition:
     src: [UNINITIALIZED, POWEROFF, STANDBY1]
     dst: STANDBY1
     set_param:
+      'auto_ack!': 1
+      'dynamic_payloads_enabled!': 0
+      max_retry_count: 10
       retry_delay: 5
-      retry_count: 10
-      datarate: RF24_1MBPS
-      tx_power: RF24_PA_MAX
-      dynamic_payloads_enabled: 0
+      datarate: 'Nrf24l01::RF24_1MBPS'
+      tx_power: 'Nrf24l01::RF24_PA_MAX'
       channel: 76
   setAutoAck:
     src: [STANDBY1]
