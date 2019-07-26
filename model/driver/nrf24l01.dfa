@@ -88,6 +88,13 @@ transition:
       - name: count
         values: [0, 5, 10, 15]
         parameter: max_retry_count
+  getObserveTx:
+    src: [STANDBY1]
+    dst: STANDBY1
+    return_value:
+      - parameter: retry_count
+        formula: param & 0x0f
+        apply_from: write
   write:
     src: [STANDBY1]
     dst: STANDBY1
@@ -102,3 +109,5 @@ transition:
       - name: blocking
         values: [1, 1, 1, 1, 1, 1]
     argument_combination: zip
+    return_value:
+      - lol: nope
