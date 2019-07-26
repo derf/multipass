@@ -28,6 +28,9 @@ parameter_normalization:
       Nrf24l01::RF24_1MBPS: 1000
       Nrf24l01::RF24_2MBPS: 2000
       Nrf24l01::RF24_250KBPS: 250
+  retry_delay:
+    unit: us
+    formula: '250 * param + 250'
 
 states:
   - UNINITIALIZED
