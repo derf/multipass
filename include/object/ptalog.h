@@ -20,6 +20,9 @@ class PTALog {
 			counter_value_t timer;
 			counter_overflow_t overflow;
 #endif
+#ifdef PTALOG_WITH_RETURNVALUES
+			uint16_t return_value;
+#endif
 		} log_entry;
 
 		int const max_entry = 15;
@@ -70,12 +73,14 @@ class PTALog {
 		{
 			kout << "[PTA] trace=" << dec << trace_id << " count=" << log_index << endl;
 			for (uint8_t i = 0; i < log_index; i++) {
-#ifdef PTALOG_TIMING
 				kout << "[PTA] transition=" << log[i].transition_id;
-				kout << " cycles=" << log[i].timer << "/" << log[i].overflow << endl;
-#else
-				kout << "[PTA] transition=" << log[i].transition_id << endl;
+#ifdef PTALOG_TIMING
+				kout << " cycles=" << log[i].timer << "/" << log[i].overflow;
 #endif
+#ifdef PTALOG_WITH_RETURNVALUES
+				kout << " return=" << log[i].return_value;
+#endif
+				kout << endl;
 			}
 		}
 
@@ -83,6 +88,13 @@ class PTALog {
 		{
 			gpio.write(sync_pin, 1);
 		}
+
+#ifdef PTALOG_WITH_RETURNVALUES
+		inline void logReturn(uint16_t ret)
+		{
+			log[log_index - 1].return_value = ret;
+		}
+#endif
 
 #ifdef PTALOG_TIMING
 		inline void stopTransition(Counter& counter)
