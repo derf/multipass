@@ -13,7 +13,7 @@ class Counter {
 
 	public:
 		uint16_t value;
-		uint8_t overflow;
+		volatile uint8_t overflow;
 
 		Counter() : overflow(0) {}
 
@@ -21,12 +21,16 @@ class Counter {
 			overflow = 0;
 			TA2CTL = TASSEL__SMCLK | ID__1 | MC__CONTINUOUS;
 			TA2EX0 = 0;
-			TA2CTL |= TACLR;
+			TA2CTL |= TACLR | TAIE;
+			asm volatile("nop");
+			__eint();
+			asm volatile("nop");
 		}
 
 		inline void stop() {
 			TA2CTL = 0;
 			value = TA2R;
+			__dint();
 		}
 };
 
