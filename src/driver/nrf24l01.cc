@@ -51,6 +51,9 @@ void Nrf24l01::setup()
 
 	setDataRate(RF24_1MBPS);
 
+	// Reset value is "enabled on all pipes"
+	setAutoAck(1);
+
 	toggleFeatures();
 	writeRegister(FEATURE, 0);
 	writeRegister(DYNPD, 0);
