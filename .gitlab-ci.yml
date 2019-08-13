@@ -8,6 +8,7 @@ test:
   script:
   - apt-get update -qy
   - apt-get install -y build-essential
+  - mkdir -b build
   - ./mp arch=posix app=ledblink loop=1 timer_s=1
   - ./mp arch=posix app=sysinfo
   - ./mpm arch=posix app=donothing
