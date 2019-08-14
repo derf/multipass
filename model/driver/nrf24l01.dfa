@@ -88,6 +88,10 @@ transition:
       - name: count
         values: [0, 5, 10, 15]
         parameter: max_retry_count
+  flushTx:
+    src: [STANDBY1]
+    dst: STANDBY1
+  # only reports sensible values when auto_ack! == 1
   getObserveTx:
     src: [STANDBY1]
     dst: STANDBY1
