@@ -14,6 +14,20 @@ build_posix:
   - ./mp arch=posix app=ledblink loop=1 timer_s=1
   - ./mp arch=posix app=sysinfo
 
+build_msp430fr5969lp:
+  stage: build
+  before_script:
+  - export PATH="/opt/msp430/ti/gcc/bin:$PATH"
+  script:
+  - dpkg --add-architecture i386
+  - apt-get update -qy
+  - apt-get install -y build-essential curl libc6:i386 libgcc1:i386 libstdc++6:i386
+  - curl -s https://ess.cs.uos.de/static/.gitlab-ci/msp430-gcc-full-linux-4.9.1.tar.xz | tar -C /opt -xJf -
+  - mkdir -p build
+  - make -B arch=msp430fr5969lp app=donothing
+  - make -B arch=msp430fr5969lp app=ledblink loop=1 timer_s=1
+  - make -B arch=msp430fr5969lp app=sysinfo
+
 build_msp430fr5994lp:
   stage: build
   before_script:
