@@ -1,14 +1,37 @@
 image: debian:buster
 
 stages:
+  - build
   - test
 
-test:
+build_posix:
+  stage: build
+  script:
+  - apt-get update -qy
+  - apt-get install -y build-essential
+  - mkdir -p build
+  - ./mp arch=posix app=donothing
+  - ./mp arch=posix app=ledblink loop=1 timer_s=1
+  - ./mp arch=posix app=sysinfo
+
+build_msp430fr5994lp:
+  stage: build
+  before_script:
+  - export PATH="/opt/msp430/ti/msp430-gcc-full-linux-5.0.0.36/bin:$PATH"
+  script:
+  - dpkg --add-architecture i386
+  - apt-get update -qy
+  - apt-get install -y build-essential curl libc6:i386 libgcc1:i386 libstdc++6:i386
+  - curl -s https://ess.cs.uos.de/static/.gitlab-ci/msp430-gcc-full-linux-5.0.0.36.tar.xz | tar -C /opt -xJf -
+  - mkdir -p build
+  - make -B arch=msp430fr5994lp app=donothing
+  - make -B arch=msp430fr5994lp app=ledblink loop=1 timer_s=1
+  - make -B arch=msp430fr5994lp app=sysinfo
+
+test_posix:
   stage: test
   script:
   - apt-get update -qy
   - apt-get install -y build-essential
   - mkdir -p build
-  - ./mp arch=posix app=ledblink loop=1 timer_s=1
-  - ./mp arch=posix app=sysinfo
   - ./mpm arch=posix app=donothing
