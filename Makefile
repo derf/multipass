@@ -23,6 +23,11 @@ ifneq (${app}, )
 	include src/app/${app}/Makefile.inc
 endif
 
+ifneq ($(findstring dummy,${drivers}), )
+	CXX_TARGETS += src/driver/dummy.cc
+	COMMON_FLAGS += -DDRIVER_DUMMY
+endif
+
 ifneq ($(findstring lm75,${drivers}), )
 	CXX_TARGETS += src/driver/lm75.cc
 	COMMON_FLAGS += -DDRIVER_LM75
