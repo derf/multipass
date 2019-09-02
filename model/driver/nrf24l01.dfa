@@ -3,6 +3,23 @@ codegen:
   includes: ['driver/nrf24l01.h']
   flags: ['drivers=nrf24l01', 'arch_drivers=spi_b']
 
+dummygen:
+  enum:
+    rf24_pa_dbm_e:
+      - RF24_PA_MIN
+      - RF24_PA_LOW
+      - RF24_PA_HIGH
+      - RF24_PA_MAX
+      - RF24_PA_ERROR
+    rf24_datarate_e:
+      - RF24_1MBPS
+      - RF24_2MBPS
+      - RF24_250KBPS
+    rf24_crclength_e:
+      - RF24_CRC_DISABLED
+      - RF24_CRC_8
+      - RF24_CRC_16
+
 parameters:
   - auto_ack!
   - payload_size
