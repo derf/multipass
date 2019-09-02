@@ -39,6 +39,18 @@ class GPIO {
 		inline void setup() {
 			DDRB = _BV(PB5);
 		}
+		inline volatile uint8_t * pinToPort(uint8_t pin) {
+			if (pin <= pb7) {
+				return &PORTB;
+			}
+			if (pin <= pc6) {
+				return &PORTC;
+			}
+			return &PORTD;
+		}
+		inline unsigned char pinToBitmask(uint8_t pin) {
+			return _BV(pin % 8);
+		}
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 		inline void led_on(unsigned char id) {
 			PORTB |= _BV(PB5);
