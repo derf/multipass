@@ -12,3 +12,5 @@
 /src/app/prototest/capnp_c_bench.capnp.h
 /src/app/prototest/prototest_global.cc.inc
 /src/app/prototest/prototest_local.cc.inc
+src/driver/dummy.cc
+include/driver/dummy.h
