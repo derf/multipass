@@ -3,7 +3,7 @@
 TOOLCHAIN_BASE ?= /home/derf/var/projects/esp8266/toolchain/xtensa-lx106-elf/bin
 SDK_BASE ?= /home/derf/var/projects/esp8266/toolchain/xtensa-lx106-elf/xtensa-lx106-elf/sysroot/usr
 ESPTOOL ?= esptool
-PORT ?= /dev/ttyUSB0
+SERIAL_PORT ?= /dev/ttyUSB0
 
 CC = ${TOOLCHAIN_BASE}/xtensa-lx106-elf-gcc
 CXX = ${TOOLCHAIN_BASE}/xtensa-lx106-elf-g++
@@ -82,10 +82,10 @@ arch_help:
 	@echo "    TOOLCHAIN_BASE = /home/derf/var/projects/esp8266/toolchain/xtensa-lx106-elf/bin"
 	@echo "    SDK_BASE = /home/derf/var/projects/esp8266/toolchain/xtensa-lx106-elf/xtensa-lx106-elf/sysroot/usr"
 	@echo "    ESPTOOL = esptool"
-	@echo "    PORT = /dev/ttyUSB0"
+	@echo "    SERIAL_PORT = /dev/ttyUSB0"
 
 arch_info:
 	@echo "Counter Overflow: 4294967296/0"
-	@echo "Monitor: /dev/ttyUSB0 115200"
+	@echo "Monitor: ${SERIAL_PORT} 115200"
 
 .PHONY: arch_clean arch_help arch_info monitor program

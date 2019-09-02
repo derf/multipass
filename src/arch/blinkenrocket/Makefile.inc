@@ -1,7 +1,7 @@
 # vim:ft=make
 
 MCU = attiny88
-PORT = /dev/ttyUSB0
+SERIAL_PORT ?= /dev/ttyUSB0
 
 COMMON_FLAGS += -mmcu=${MCU} -DF_CPU=8000000UL -DMULTIPASS_ARCH_blinkenrocket
 COMMON_FLAGS += -flto
@@ -51,17 +51,17 @@ arch_clean:
 	rm -f ${OBJECTS} build/system.hex
 
 monitor:
-	screen ${PORT} 115200
+	screen ${SERIAL_PORT} 115200
 
 arch_help:
 	@echo "blinkenrocket specific flags:"
-	@echo "    PORT = ${PORT}"
+	@echo "    SERIAL_PORT = ${SERIAL_PORT}"
 
 arch_info:
 	@echo "CPU   Freq: ${cpu_freq} Hz"
 	@echo "Timer Freq: ${timer_freq} Hz"
 	@echo "I2C   Freq: ${i2c_freq} Hz"
 	@echo "Counter Overflow: ?/?"
-	@echo "Monitor: ${PORT} 115200"
+	@echo "Monitor: ${SERIAL_PORT} 115200"
 
 .PHONY: arch_clean arch_help arch_info monitor program

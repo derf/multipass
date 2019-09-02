@@ -1,7 +1,7 @@
 # vim:ft=make
 
 MCU = atmega168
-PORT = /dev/ttyUSB0
+SERIAL_PORT ?= /dev/ttyUSB0
 BAUD = 19200
 
 cpu_freq ?= 16000000
@@ -90,24 +90,24 @@ build/system.hex: build/system.elf
 	${QUIET}${OBJCOPY} -O ihex ${@:.hex=.elf} $@
 
 program: build/system.hex
-	${QUIET}avrdude -p ${MCU} -c arduino -P ${PORT} -b ${BAUD} -U flash:w:build/system.hex
+	${QUIET}avrdude -p ${MCU} -c arduino -P ${SERIAL_PORT} -b ${BAUD} -U flash:w:build/system.hex
 
 arch_clean:
 	${QUIET}rm -f ${OBJECTS} build/system.hex
 
 monitor:
-	${QUIET}screen ${PORT} ${uart_baud}
+	${QUIET}screen ${SERIAL_PORT} ${uart_baud}
 
 arch_help:
 	@echo "arduino-nano specific flags:"
-	@echo "    PORT = ${PORT}"
-	@echo "    BAUD = ${BAUD} (only used for programming)"
+	@echo " SERIAL_PORT = ${SERIAL_PORT}"
+	@echo "        BAUD = ${BAUD} (only used for programming)"
 
 arch_info:
 	@echo "CPU   Freq: ${cpu_freq} Hz"
 	@echo "Timer Freq: ${timer_freq} Hz"
 	@echo "I2C   Freq: ${i2c_freq} Hz"
 	@echo "Counter Overflow: 65536/255"
-	@echo "Monitor: ${PORT} ${uart_baud}"
+	@echo "Monitor: ${SERIAL_PORT} ${uart_baud}"
 
 .PHONY: arch_clean arch_help arch_info monitor program
