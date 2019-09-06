@@ -1,10 +1,12 @@
 #include "arch.h"
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include <avr/wdt.h>
 #include <util/delay.h>
 
 void Arch::setup(void)
 {
+	wdt_disable();
 
 #if F_CPU == 16000000UL
 	/* default */

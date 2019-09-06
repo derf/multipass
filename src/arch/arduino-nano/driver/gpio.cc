@@ -13,7 +13,9 @@ ISR(PCINT1_vect)
 {
 }
 
+/*
 ISR(PCINT2_vect)
 {
 }
+*/
 #endif

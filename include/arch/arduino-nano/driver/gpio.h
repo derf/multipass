@@ -148,10 +148,13 @@ class GPIO {
 			if (pin < 8) {
 			} else if (pin < 16) {
 				PCMSK0 |= _BV(pin - 8);
+				PCICR |= _BV(PCIE0);
 			} else if (pin < 24) {
 				PCMSK1 |= _BV(pin - 16);
+				PCICR |= _BV(PCIE1);
 			} else if (pin < 32) {
 				PCMSK2 |= _BV(pin - 24);
+				PCICR |= _BV(PCIE2);
 			}
 		}
 		inline void disable_int(unsigned char const pin) {
