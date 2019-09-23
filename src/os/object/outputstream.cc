@@ -178,18 +178,18 @@ void OutputStream::printf_float(float num)
 		num *= -1;
 	}
 	if (num > 1000) {
-		put('0' + (((int)num % 10000) / 1000));
+		put('0' + (((unsigned int)num % 10000) / 1000));
 	}
 	if (num > 100) {
-		put('0' + (((int)num % 1000) / 100));
+		put('0' + (((unsigned int)num % 1000) / 100));
 	}
 	if (num > 10) {
-		put('0' + (((int)num % 100) / 10));
+		put('0' + (((unsigned int)num % 100) / 10));
 	}
-	put('0' + ((int)num % 10));
+	put('0' + ((unsigned int)num % 10));
 	put('.');
-	put('0' + ((int)(num * 10) % 10));
-	put('0' + ((int)(num * 100) % 10));
+	put('0' + ((unsigned int)(num * 10) % 10));
+	put('0' + ((unsigned int)(num * 100) % 10));
 }
 
 // FLUSH
