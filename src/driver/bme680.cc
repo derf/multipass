@@ -1036,18 +1036,18 @@ int8_t BME680::setMemPage(uint8_t reg_addr)
 {
 	int8_t rslt;
 	uint8_t reg;
-	uint8_t mem_page;
+	uint8_t new_mem_page;
 
 	/* Check for null pointers in the device structure*/
 	rslt = nullPtrCheck();
 	if (rslt == BME680_OK) {
 		if (reg_addr > 0x7f)
-			mem_page = BME680_MEM_PAGE1;
+			new_mem_page = BME680_MEM_PAGE1;
 		else
-			mem_page = BME680_MEM_PAGE0;
+			new_mem_page = BME680_MEM_PAGE0;
 
-		if (mem_page != mem_page) {
-			mem_page = mem_page;
+		if (new_mem_page != mem_page) {
+			mem_page = new_mem_page;
 
 			com_rslt = read(dev_id, BME680_MEM_PAGE_ADDR | BME680_SPI_RD_MSK, &reg, 1);
 			if (com_rslt != 0)
