@@ -1,0 +1,135 @@
+codegen:
+  instance: bme680
+  includes: ['driver/bme680.h']
+  flags: ['drivers=bme680', 'arch_drivers=i2c']
+
+dummygen:
+  enum:
+    rf24_pa_dbm_e:
+      - RF24_PA_MIN
+      - RF24_PA_LOW
+      - RF24_PA_HIGH
+      - RF24_PA_MAX
+      - RF24_PA_ERROR
+    rf24_datarate_e:
+      - RF24_1MBPS
+      - RF24_2MBPS
+      - RF24_250KBPS
+    rf24_crclength_e:
+      - RF24_CRC_DISABLED
+      - RF24_CRC_8
+      - RF24_CRC_16
+
+parameters:
+- power_mode
+- humidity_oversampling
+- pressure_oversampling
+- temperature_oversampling
+- gas_enabled
+- heater_duration_ms
+- heater_temperature_degc
+
+parameter_normalization:
+  humidity_oversampling:
+    enum:
+      BME680_OS_NONE: 0
+      BME680_OS_1X: 1
+      BME680_OS_2X: 2
+      BME680_OS_4X: 4
+      BME680_OS_8X: 8
+      BME680_OS_16X: 16
+  pressure_oversampling:
+    enum:
+      BME680_OS_NONE: 0
+      BME680_OS_1X: 1
+      BME680_OS_2X: 2
+      BME680_OS_4X: 4
+      BME680_OS_8X: 8
+      BME680_OS_16X: 16
+  temperature_oversampling:
+    enum:
+      BME680_OS_NONE: 0
+      BME680_OS_1X: 1
+      BME680_OS_2X: 2
+      BME680_OS_4X: 4
+      BME680_OS_8X: 8
+      BME680_OS_16X: 16
+
+states:
+  - UNINITIALIZED
+  - SLEEP
+  - SLEEP_PENDING_ATTR
+  - FORCED
+
+transition:
+  init:
+    src: [UNINITIALIZED, SLEEP, FORCED]
+    dst: SLEEP
+  setPowerMode:
+    src: [SLEEP]
+    dst: SLEEP
+    arguments:
+    - name: mode
+      values: ['BME680_SLEEP_MODE', 'BME680_FORCED_MODE']
+      parameter: power_mode
+  setPowerMode:
+    src: [SLEEP_PENDING_ATTR]
+    dst: SLEEP_PENDING_ATTR
+    arguments:
+    - name: mode
+      values: ['BME680_SLEEP_MODE', 'BME680_FORCED_MODE']
+      parameter: power_mode
+  setHumidityOversampling:
+    src: [SLEEP, SLEEP_PENDING_ATTR]
+    dst: SLEEP_PENDING_ATTR
+    arguments:
+    - name: os
+      values: ['BME680_OS_NONE', 'BME680_OS_1X', 'BME680_OS_2X', 'BME680_OS_4X', 'BME680_OS_8X', 'BME680_OS_16X']
+      parameter: humidity_oversampling
+  setPressureOversampling:
+    src: [SLEEP, SLEEP_PENDING_ATTR]
+    dst: SLEEP_PENDING_ATTR
+    arguments:
+    - name: os
+      values: ['BME680_OS_NONE', 'BME680_OS_1X', 'BME680_OS_2X', 'BME680_OS_4X', 'BME680_OS_8X', 'BME680_OS_16X']
+      parameter: pressure_oversampling
+  setTemperatureOversampling:
+    src: [SLEEP, SLEEP_PENDING_ATTR]
+    dst: SLEEP_PENDING_ATTR
+    arguments:
+    - name: os
+      values: ['BME680_OS_NONE', 'BME680_OS_1X', 'BME680_OS_2X', 'BME680_OS_4X', 'BME680_OS_8X', 'BME680_OS_16X']
+      parameter: temperature_oversampling
+  setRunGas:
+    src: [SLEEP, SLEEP_PENDING_ATTR]
+    dst: SLEEP_PENDING_ATTR
+    arguments:
+    - name: enabled
+      values: ['BME680_DISABLE_GAS_MEAS', 'BME680_ENABLE_GAS_MEAS']
+      parameter: gas_enabled
+  setHeaterDuration:
+    src: [SLEEP, SLEEP_PENDING_ATTR]
+    dst: SLEEP_PENDING_ATTR
+    arguments:
+    - name: ms
+      values: [10, 30, 60, 100, 150]
+      parameter: heater_duration_ms
+  setHeaterTemp:
+    src: [SLEEP, SLEEP_PENDING_ATTR]
+    dst: SLEEP_PENDING_ATTR
+    arguments:
+    - name: degc
+      values: [100, 150, 200, 250, 300]
+      parameter: heater_temperature_degc
+  setSensorSettings:
+    src: [SLEEP_PENDING_ATTR]
+    dst: SLEEP
+    arguments:
+    - name: desired_settings
+      values: ['BME680_OST_SEL | BME680_OSP_SEL | BME680_OSH_SEL | BME680_GAS_SENSOR_SEL']
+  setSensorMode:
+    src: [SLEEP]
+    dst: FORCED
+  getSensorData:
+    src: [FORCED]
+    dst: SLEEP
