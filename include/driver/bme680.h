@@ -450,6 +450,34 @@ class BME680 {
 		* @retval zero -> Success / +ve value -> Warning / -ve value -> Error.
 		*/
 		int8_t getSensorSettings(uint16_t desired_settings);
+
+		inline void setHumidityOversampling(uint8_t os) {
+			tph_sett.os_hum = os;
+		}
+
+		inline void setPressureOversampling(uint8_t os) {
+			tph_sett.os_pres = os;
+		}
+
+		inline void setTemperatureOversampling(uint8_t os) {
+			tph_sett.os_temp = os;
+		}
+
+		inline void setRunGas(uint8_t enabled) {
+			gas_sett.run_gas = enabled;
+		}
+
+		inline void setHeaterDuration(uint16_t ms) {
+			gas_sett.heatr_dur = ms;
+		}
+
+		inline void setHeaterTemp(uint16_t degc) {
+			gas_sett.heatr_temp = degc;
+		}
+
+		inline void setPowerMode(uint8_t mode) {
+			power_mode = mode;
+		}
 };
 
 extern BME680 bme680;
