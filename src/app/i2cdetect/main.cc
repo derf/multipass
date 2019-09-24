@@ -47,35 +47,32 @@ void loop(void)
 	}
 #endif
 #ifdef DRIVER_BME680
-	struct bme680_dev gas_sensor;
-
-	gas_sensor.dev_id = BME680_I2C_ADDR_SECONDARY;
-	gas_sensor.intf = BME680_I2C_INTF;
-	gas_sensor.read = bme680_i2c_read;
-	gas_sensor.write = bme680_i2c_write;
-	gas_sensor.delay_ms = bme680_delay_ms;
+	bme680.intf = BME680_I2C_INTF;
+	bme680.read = bme680_i2c_read;
+	bme680.write = bme680_i2c_write;
+	bme680.delay_ms = bme680_delay_ms;
 	/* amb_temp can be set to 25 prior to configuring the gas sensor 
 	* or by performing a few temperature readings without operating the gas sensor.
 	*/
-	gas_sensor.amb_temp = 25;
+	bme680.amb_temp = 25;
 
 	int8_t rslt = BME680_OK;
-	rslt = bme680_init(&gas_sensor);
+	rslt = bme680.init();
 	kout << "BME680 init " << rslt << endl;
 
-	gas_sensor.power_mode = BME680_FORCED_MODE;
-	gas_sensor.tph_sett.os_hum = BME680_OS_1X;
-	gas_sensor.tph_sett.os_pres = BME680_OS_16X;
-	gas_sensor.tph_sett.os_temp = BME680_OS_2X;
+	bme680.power_mode = BME680_FORCED_MODE;
+	bme680.tph_sett.os_hum = BME680_OS_1X;
+	bme680.tph_sett.os_pres = BME680_OS_16X;
+	bme680.tph_sett.os_temp = BME680_OS_2X;
 
-	gas_sensor.gas_sett.run_gas = BME680_ENABLE_GAS_MEAS;
-	gas_sensor.gas_sett.heatr_dur = 150;
-	gas_sensor.gas_sett.heatr_temp = 300;
-	bme680_set_sensor_settings(BME680_OST_SEL | BME680_OSP_SEL | BME680_OSH_SEL | BME680_GAS_SENSOR_SEL, &gas_sensor);
-	bme680_set_sensor_mode(&gas_sensor);
-	arch.delay_ms(500);
+	bme680.gas_sett.run_gas = BME680_ENABLE_GAS_MEAS;
+	bme680.gas_sett.heatr_dur = 30;
+	bme680.gas_sett.heatr_temp = 300;
+	bme680.setSensorSettings(BME680_OST_SEL | BME680_OSP_SEL | BME680_OSH_SEL | BME680_GAS_SENSOR_SEL);
+	bme680.setSensorMode();
+	arch.delay_ms(200);
 	struct bme680_field_data data;
-	bme680_get_sensor_data(&data, &gas_sensor);
+	bme680.getSensorData(&data);
 	kout << "BME680 temperature " << (float)data.temperature / 100 << " degC" << endl;
 	kout << "BME680 humidity " << (float)data.humidity / 1000  << " %" << endl;
 	kout << "BME680 pressure " << (float)data.pressure / 100 << " hPa" << endl;

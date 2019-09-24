@@ -502,42 +502,6 @@ struct	bme680_gas_sett {
 	uint16_t heatr_dur;
 };
 
-/*!
- * @brief BME680 device structure
- */
-struct	bme680_dev {
-	/*! Chip Id */
-	uint8_t chip_id;
-	/*! Device Id */
-	uint8_t dev_id;
-	/*! SPI/I2C interface */
-	enum bme680_intf intf;
-	/*! Memory page used */
-	uint8_t mem_page;
-	/*! Ambient temperature in Degree C */
-	int8_t amb_temp;
-	/*! Sensor calibration data */
-	struct bme680_calib_data calib;
-	/*! Sensor settings */
-	struct bme680_tph_sett tph_sett;
-	/*! Gas Sensor settings */
-	struct bme680_gas_sett gas_sett;
-	/*! Sensor power modes */
-	uint8_t power_mode;
-	/*! New sensor fields */
-	uint8_t new_fields;
-	/*! Store the info messages */
-	uint8_t info_msg;
-	/*! Bus read function pointer */
-	bme680_com_fptr_t read;
-	/*! Bus write function pointer */
-	bme680_com_fptr_t write;
-	/*! delay function pointer */
-	bme680_delay_fptr_t delay_ms;
-	/*! Communication function result */
-	int8_t com_rslt;
-};
-
 
 
 #endif /* BME680_DEFS_H_ */
