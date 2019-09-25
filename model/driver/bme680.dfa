@@ -136,6 +136,28 @@ transition:
     - name: degc
       values: [100, 150, 200, 250, 300]
       parameter: heater_temperature_degc
+  configure:
+    src: [SLEEP, SLEEP_PENDING_ATTR]
+    dst: SLEEP_PENDING_ATTR
+    arguments:
+    - name: os_hum
+      values: ['BME680_OS_NONE', 'BME680_OS_1X', 'BME680_OS_2X', 'BME680_OS_4X', 'BME680_OS_8X', 'BME680_OS_16X']
+      parameter: humidity_oversampling
+    - name: os_pres
+      values: ['BME680_OS_NONE', 'BME680_OS_1X', 'BME680_OS_2X', 'BME680_OS_4X', 'BME680_OS_8X', 'BME680_OS_16X']
+      parameter: pressure_oversampling
+    - name: os_temp
+      values: ['BME680_OS_NONE', 'BME680_OS_1X', 'BME680_OS_2X', 'BME680_OS_4X', 'BME680_OS_8X', 'BME680_OS_16X']
+      parameter: temperature_oversampling
+    - name: run_gas
+      values: ['BME680_DISABLE_GAS_MEAS', 'BME680_ENABLE_GAS_MEAS']
+      parameter: gas_enabled
+    - name: heatr_dur
+      values: [10, 30, 60, 100, 150, 200]
+      parameter: heater_duration_ms
+    - name: heatr_temp
+      values: [100, 150, 200, 250, 300]
+      parameter: heater_temperature_degc
   setSensorSettings:
     src: [SLEEP_PENDING_ATTR]
     dst: SLEEP
@@ -145,6 +167,8 @@ transition:
   setSensorMode:
     src: [SLEEP]
     dst: FORCED
+    codegen:
+      delay_after_ms: 500
   getSensorData:
     src: [FORCED]
     dst: SLEEP

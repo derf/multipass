@@ -451,6 +451,15 @@ class BME680 {
 		*/
 		int8_t getSensorSettings(uint16_t desired_settings);
 
+		inline void configure(uint8_t os_hum, uint8_t os_pres, uint8_t os_temp, uint8_t run_gas, uint16_t heatr_dur, uint16_t heatr_temp) {
+			tph_sett.os_hum = os_hum;
+			tph_sett.os_pres = os_pres;
+			tph_sett.os_temp = os_temp;
+			gas_sett.run_gas = run_gas;
+			gas_sett.heatr_dur = heatr_dur;
+			gas_sett.heatr_temp = heatr_temp;
+		}
+
 		inline void setHumidityOversampling(uint8_t os) {
 			tph_sett.os_hum = os;
 		}
