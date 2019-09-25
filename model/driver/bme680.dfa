@@ -2,6 +2,8 @@ codegen:
   instance: bme680
   includes: ['driver/bme680.h']
   flags: ['drivers=bme680', 'arch_drivers=i2c']
+  setup:
+  - struct bme680_field_data sensordata;
 
 dummygen:
   enum:
@@ -28,6 +30,7 @@ parameters:
 - gas_enabled
 - heater_duration_ms
 - heater_temperature_degc
+- iir_filter
 
 parameter_normalization:
   humidity_oversampling:
@@ -65,16 +68,15 @@ transition:
   init:
     src: [UNINITIALIZED, SLEEP, FORCED]
     dst: SLEEP
+    set_param:
+      power_mode: BME680_SLEEP_MODE
+      humidity_oversampling: BME680_OS_NONE
+      pressure_oversampling: BME680_OS_NONE
+      temperature_oversampling: BME680_OS_NONE
+      gas_enabled: BME680_RUN_GAS_DISABLE
+      heater_duration_ms: 0
   setPowerMode:
-    src: [SLEEP]
-    dst: SLEEP
-    arguments:
-    - name: mode
-      values: ['BME680_SLEEP_MODE', 'BME680_FORCED_MODE']
-      parameter: power_mode
-  setPowerMode:
-    src: [SLEEP_PENDING_ATTR]
-    dst: SLEEP_PENDING_ATTR
+    loop: [SLEEP, SLEEP_PENDING_ATTR]
     arguments:
     - name: mode
       values: ['BME680_SLEEP_MODE', 'BME680_FORCED_MODE']
@@ -100,6 +102,13 @@ transition:
     - name: os
       values: ['BME680_OS_NONE', 'BME680_OS_1X', 'BME680_OS_2X', 'BME680_OS_4X', 'BME680_OS_8X', 'BME680_OS_16X']
       parameter: temperature_oversampling
+  setFilter:
+    src: [SLEEP, SLEEP_PENDING_ATTR]
+    dst: SLEEP_PENDING_ATTR
+    arguments:
+    - name: filter
+      values: ['BME680_FILTER_SIZE_0', 'BME680_FILTER_SIZE_1', 'BME680_FILTER_SIZE_3', 'BME680_FILTER_SIZE_7', 'BME680_FILTER_SIZE_15', 'BME680_FILTER_SIZE_31', 'BME680_FILTER_SIZE_63', 'BME680_FILTER_SIZE_127']
+      parameter: iir_filter
   setRunGas:
     src: [SLEEP, SLEEP_PENDING_ATTR]
     dst: SLEEP_PENDING_ATTR
@@ -112,7 +121,7 @@ transition:
     dst: SLEEP_PENDING_ATTR
     arguments:
     - name: ms
-      values: [10, 30, 60, 100, 150]
+      values: [10, 30, 60, 100, 150, 200]
       parameter: heater_duration_ms
   setHeaterTemp:
     src: [SLEEP, SLEEP_PENDING_ATTR]
@@ -133,3 +142,6 @@ transition:
   getSensorData:
     src: [FORCED]
     dst: SLEEP
+    arguments:
+      - name: data
+        values: ['&sensordata']

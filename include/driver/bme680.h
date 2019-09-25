@@ -475,6 +475,10 @@ class BME680 {
 			gas_sett.heatr_temp = degc;
 		}
 
+		inline void setFilter(uint8_t filter) {
+			tph_sett.filter = filter;
+		}
+
 		inline void setPowerMode(uint8_t mode) {
 			power_mode = mode;
 		}
