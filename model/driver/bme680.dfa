@@ -1,9 +1,15 @@
 codegen:
   instance: bme680
-  includes: ['driver/bme680.h']
+  includes: ['driver/i2c.h', 'driver/bme680.h', 'driver/bme680_util.h']
   flags: ['drivers=bme680', 'arch_drivers=i2c']
   setup:
+  - i2c.setup();
   - struct bme680_field_data sensordata;
+  - bme680.intf = BME680_I2C_INTF;
+  - bme680.read = bme680_i2c_read;
+  - bme680.write = bme680_i2c_write;
+  - bme680.delay_ms = bme680_delay_ms;
+  - bme680.amb_temp = 25;
 
 dummygen:
   enum:
