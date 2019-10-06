@@ -21,8 +21,11 @@ class Blinkencat {
 			RGBWHEEL_SLOW,
 			RGBFADE_FAST,
 			RGBFADE_SLOW,
+			BRIGHTRGBWHEEL_FAST,
+			BRIGHTRGBWHEEL_SLOW,
+			BRIGHTRGBFADE_FAST,
+			BRIGHTRGBFADE_SLOW,
 			COLD_WHITE,
-			BEEDOO,
 			STROBE,
 			COLOR_STROBE,
 			MODE_ENUM_MAX
@@ -139,7 +142,6 @@ void Blinkencat::loop(void)
 {
 	static uint16_t rgbwheel_offset = 0;
 	static uint16_t rgbfade_hsv = 0;
-	static uint8_t beedoo_pos = 0;
 	static uint8_t strobe_on = 0;
 
 	/*
@@ -168,7 +170,7 @@ void Blinkencat::loop(void)
 		case RGBWHEEL_SLOW:
 			for (uint16_t i = 0; i < NUM_PIXELS; i++) {
 				uint16_t hsv = (i * 252 + rgbwheel_offset) % 6553;
-				np.setPixelColor(i, np.gamma32(np.ColorHSV(hsv * 10)));
+				np.setPixelColor(i, np.gamma32(np.ColorHSV(hsv * 10, 255, 127)));
 			}
 			rgbwheel_offset = (rgbwheel_offset + 10) % 6553;
 			np.show();
@@ -180,12 +182,37 @@ void Blinkencat::loop(void)
 		case RGBFADE_FAST:
 		case RGBFADE_SLOW:
 			for (uint16_t i = 0; i < NUM_PIXELS; i++) {
-				np.setPixelColor(i, np.ColorHSV(rgbfade_hsv * 10));
+				np.setPixelColor(i, np.ColorHSV(rgbfade_hsv * 10, 255, 63));
 			}
 			rgbfade_hsv = (rgbfade_hsv + 10) % 6553;
 			np.show();
 			_delay_ms(1);
 			if (mode == RGBFADE_SLOW) {
+				_delay_ms(99);
+			}
+			break;
+		case BRIGHTRGBWHEEL_FAST:
+		case BRIGHTRGBWHEEL_SLOW:
+			for (uint16_t i = 0; i < NUM_PIXELS; i++) {
+				uint16_t hsv = (i * 252 + rgbwheel_offset) % 6553;
+				np.setPixelColor(i, np.gamma32(np.ColorHSV(hsv * 10)));
+			}
+			rgbwheel_offset = (rgbwheel_offset + 10) % 6553;
+			np.show();
+			_delay_ms(1);
+			if (mode == BRIGHTRGBWHEEL_SLOW) {
+				_delay_ms(9);
+			}
+			break;
+		case BRIGHTRGBFADE_FAST:
+		case BRIGHTRGBFADE_SLOW:
+			for (uint16_t i = 0; i < NUM_PIXELS; i++) {
+				np.setPixelColor(i, np.ColorHSV(rgbfade_hsv * 10));
+			}
+			rgbfade_hsv = (rgbfade_hsv + 10) % 6553;
+			np.show();
+			_delay_ms(1);
+			if (mode == BRIGHTRGBFADE_SLOW) {
 				_delay_ms(99);
 			}
 			break;
@@ -195,14 +222,6 @@ void Blinkencat::loop(void)
 			}
 			np.show();
 			sleep();
-			break;
-		case BEEDOO:
-			for (uint16_t i = 0; i < NUM_PIXELS; i++) {
-				np.setPixelColor(i, np.Color(0, 0, (i+2 - beedoo_pos <= 2) * 255));
-			}
-			np.show();
-			beedoo_pos = (beedoo_pos + 1) % NUM_PIXELS;
-			_delay_ms(20);
 			break;
 		case STROBE:
 			for (uint16_t i = 0; i < NUM_PIXELS; i++) {
