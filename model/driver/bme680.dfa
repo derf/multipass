@@ -120,7 +120,7 @@ transition:
     dst: SLEEP_PENDING_ATTR
     arguments:
     - name: enabled
-      values: ['BME680_DISABLE_GAS_MEAS', 'BME680_ENABLE_GAS_MEAS']
+      values: ['BME680_RUN_GAS_DISABLE', 'BME680_RUN_GAS_ENABLE']
       parameter: gas_enabled
   setHeaterDuration:
     src: [SLEEP, SLEEP_PENDING_ATTR]
