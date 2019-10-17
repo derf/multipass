@@ -115,8 +115,8 @@ void Blinkencat::check_battery(void)
 		ADCSRA |= _BV(ADIF);
 
 		//kout << "VCC is " << vcc << endl;
-		// 3 V under load ~~ 3.5 V idle
-		if (vcc < 3000) {
+		// 3.1 V under load ~~ 3.5 V idle
+		if (vcc < 3100) {
 			for (uint8_t i = 0; i < 5; i++) {
 				for (uint8_t i = 0; i < NUM_PIXELS; i++) {
 					np.setPixelColor(i, np.Color(0, 0, 0));
@@ -170,7 +170,7 @@ void Blinkencat::loop(void)
 		case RGBWHEEL_SLOW:
 			for (uint16_t i = 0; i < NUM_PIXELS; i++) {
 				uint16_t hsv = (i * 252 + rgbwheel_offset) % 6553;
-				np.setPixelColor(i, np.gamma32(np.ColorHSV(hsv * 10, 255, 127)));
+				np.setPixelColor((NUM_PIXELS-1) - i, np.gamma32(np.ColorHSV(hsv * 10, 255, 127)));
 			}
 			rgbwheel_offset = (rgbwheel_offset + 10) % 6553;
 			np.show();
@@ -195,7 +195,7 @@ void Blinkencat::loop(void)
 		case BRIGHTRGBWHEEL_SLOW:
 			for (uint16_t i = 0; i < NUM_PIXELS; i++) {
 				uint16_t hsv = (i * 252 + rgbwheel_offset) % 6553;
-				np.setPixelColor(i, np.gamma32(np.ColorHSV(hsv * 10)));
+				np.setPixelColor((NUM_PIXELS-1) - i, np.gamma32(np.ColorHSV(hsv * 10)));
 			}
 			rgbwheel_offset = (rgbwheel_offset + 10) % 6553;
 			np.show();
