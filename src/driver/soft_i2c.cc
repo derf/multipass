@@ -127,7 +127,15 @@ bool SoftI2C::tx(unsigned char byte)
 		i2c_wait();
 		SCL_HIGH;
 		i2c_wait();
-		while (!gpio.read(scl)) ;
+
+		// Avoid hanging indefinitely if the bus / device is stuck
+		for (unsigned char i = 0; i < 200 && !gpio.read(scl); i++) {
+			i2c_wait();
+		}
+		if (!gpio.read(scl)) {
+			return false;
+		}
+
 		if (i == 8) {
 			if (!gpio.read(sda)) {
 				got_ack = 1;
@@ -146,7 +154,15 @@ unsigned char SoftI2C::rx(bool send_ack)
 		i2c_wait();
 		SCL_HIGH;
 		i2c_wait();
-		while (!gpio.read(scl)) ;
+
+		// Avoid hanging indefinitely if the bus / device is stuck
+		for (unsigned char i = 0; i < 200 && !gpio.read(scl); i++) {
+			i2c_wait();
+		}
+		if (!gpio.read(scl)) {
+			return false;
+		}
+
 		if ((i < 8) && gpio.read(sda)) {
 			byte |= 1 << (7 - i);
 		}
