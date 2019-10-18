@@ -63,6 +63,11 @@ ifneq ($(findstring max44009,${drivers}), )
 	COMMON_FLAGS += -DDRIVER_MAX44009
 endif
 
+ifneq ($(findstring hdc1080,${drivers}), )
+	CXX_TARGETS += src/driver/hdc1080.cc
+	COMMON_FLAGS += -DDRIVER_HDC1080
+endif
+
 ifneq ($(findstring mmsimple,${drivers}), )
 	CXX_TARGETS += src/driver/mmsimple.cc
 	COMMON_FLAGS += -DDRIVER_MMSIMPLE

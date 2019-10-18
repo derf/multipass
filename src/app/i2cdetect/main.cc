@@ -25,6 +25,9 @@
 #ifdef DRIVER_MAX44009
 #include "driver/max44009.h"
 #endif
+#ifdef DRIVER_HDC1080
+#include "driver/hdc1080.h"
+#endif
 #ifdef DRIVER_MMSIMPLE
 #include "driver/mmsimple.h"
 #endif
@@ -81,6 +84,10 @@ void loop(void)
 #ifdef DRIVER_CCS811
 	kout << "CCS811 status is " << ccs811.check() << endl;
 #endif
+#ifdef DRIVER_HDC1080
+	kout << "HDC1080 temperature " << hdc1080.getTemp() << " degC" << endl;
+	kout << "HDC1080 humidity " << hdc1080.getRH() << " %H" << endl;
+#endif
 #ifdef DRIVER_MAX44009
 	kout.printf_float(max44009.getLux());
 	kout << endl;
@@ -117,6 +124,12 @@ int main(void)
 
 #ifdef DRIVER_CCS811
 	ccs811.init();
+#endif
+#ifdef DRIVER_HDC1080
+	hdc1080.init();
+	if (hdc1080.getManufacturerID() != 0x5449) {
+		kout << "[!] invalid HDC1080 manufacturer ID: " << hex << hdc1080.getManufacturerID() << endl;
+	}
 #endif
 
 	for (unsigned char i = 0; i < sizeof(i2c_status)/sizeof(unsigned int); i++) {
