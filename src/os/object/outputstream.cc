@@ -107,7 +107,7 @@ OutputStream & OutputStream::operator<<(double number)
 
 OutputStream & OutputStream::operator<<(float number)
 {
-	this->printf_float(number);
+	printf_float(number);
 	return *this;
 }
 
