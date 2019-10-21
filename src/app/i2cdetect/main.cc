@@ -28,6 +28,9 @@
 #ifdef DRIVER_HDC1080
 #include "driver/hdc1080.h"
 #endif
+#ifdef DRIVER_MPU9250
+#include "driver/mpu9250.h"
+#endif
 #ifdef DRIVER_MMSIMPLE
 #include "driver/mmsimple.h"
 #endif
@@ -88,6 +91,20 @@ void loop(void)
 	kout << "HDC1080 temperature " << hdc1080.getTemp() << " degC" << endl;
 	kout << "HDC1080 humidity " << hdc1080.getRH() << " %H" << endl;
 #endif
+#ifdef DRIVER_MPU9250
+	int mx, my, mz;
+	kout << "Temperature: " << mpu9250.getTemperature() << endl;
+	kout << "Accel X " << mpu9250.getAccelX() << endl;
+	kout << "Accel Y " << mpu9250.getAccelX() << endl;
+	kout << "Accel Z " << mpu9250.getAccelX() << endl;
+	kout << "Gyro X " << mpu9250.getGyroX() << endl;
+	kout << "Gyro Y " << mpu9250.getGyroX() << endl;
+	kout << "Gyro Z " << mpu9250.getGyroX() << endl;
+	mpu9250.getMagnet(&mx, &my, &mz);
+	kout << "Magnet X " << mx << endl;
+	kout << "Magnet Y " << mx << endl;
+	kout << "Magnet Z " << mx << endl;
+#endif
 #ifdef DRIVER_MAX44009
 	kout.printf_float(max44009.getLux());
 	kout << endl;
@@ -130,6 +147,9 @@ int main(void)
 	if (hdc1080.getManufacturerID() != 0x5449) {
 		kout << "[!] invalid HDC1080 manufacturer ID: " << hex << hdc1080.getManufacturerID() << endl;
 	}
+#endif
+#ifdef DRIVER_MPU9250
+	mpu9250.init();
 #endif
 
 	for (unsigned char i = 0; i < sizeof(i2c_status)/sizeof(unsigned int); i++) {
