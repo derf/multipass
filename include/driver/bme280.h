@@ -530,22 +530,39 @@ class BME280 {
 
 		inline void setHumidityOversampling(uint8_t os) {
 			settings.osr_h = os;
+			setSensorSettings(BME280_OSR_HUM_SEL);
 		}
 
 		inline void setPressureOversampling(uint8_t os) {
 			settings.osr_p = os;
+			setSensorSettings(BME280_OSR_PRESS_SEL);
 		}
 
 		inline void setTemperatureOversampling(uint8_t os) {
 			settings.osr_t = os;
+			setSensorSettings(BME280_OSR_TEMP_SEL);
 		}
 
 		inline void setStandbyTime(uint8_t standby_time) {
 			settings.standby_time = standby_time;
+			setSensorSettings(BME280_STANDBY_SEL);
 		}
 
 		inline void setFilter(uint8_t filter) {
 			settings.filter = filter;
+			setSensorSettings(BME280_FILTER_SEL);
+		}
+
+		inline void enterSleepMode() {
+			setSensorMode(BME280_SLEEP_MODE);
+		}
+
+		inline void enterNormalMode() {
+			setSensorMode(BME280_NORMAL_MODE);
+		}
+
+		inline void enterForcedMode() {
+			setSensorMode(BME280_FORCED_MODE);
 		}
 
 };

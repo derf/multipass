@@ -1,0 +1,114 @@
+codegen:
+  instance: bme280
+  includes: ['driver/i2c.h', 'driver/bme280.h', 'driver/bme680_util.h']
+  flags: ['drivers=bme280', 'arch_drivers=i2c']
+  setup:
+  - i2c.setup();
+  - struct bme280_data sensordata;
+  - bme280.intf = BME280_I2C_INTF;
+  - bme280.read = bme680_i2c_read;
+  - bme280.write = bme680_i2c_write;
+  - bme280.delay_ms = bme680_delay_ms;
+
+parameters:
+- humidity_oversampling
+- pressure_oversampling
+- temperature_oversampling
+- iir_filter
+
+parameter_normalization:
+  humidity_oversampling:
+    enum:
+      BME280_NO_OVERSAMPLING: 0
+      BME280_OVERSAMPLING_1X: 1
+      BME280_OVERSAMPLING_2X: 2
+      BME280_OVERSAMPLING_4X: 4
+      BME280_OVERSAMPLING_8X: 8
+      BME280_OVERSAMPLING_16X: 16
+  pressure_oversampling:
+    enum:
+      BME280_NO_OVERSAMPLING: 0
+      BME280_OVERSAMPLING_1X: 1
+      BME280_OVERSAMPLING_2X: 2
+      BME280_OVERSAMPLING_4X: 4
+      BME280_OVERSAMPLING_8X: 8
+      BME280_OVERSAMPLING_16X: 16
+  temperature_oversampling:
+    enum:
+      BME280_NO_OVERSAMPLING: 0
+      BME280_OVERSAMPLING_1X: 1
+      BME280_OVERSAMPLING_2X: 2
+      BME280_OVERSAMPLING_4X: 4
+      BME280_OVERSAMPLING_8X: 8
+      BME280_OVERSAMPLING_16X: 16
+  iir_filter:
+    enum:
+      BME280_FILTER_COEFF_OFF: 0
+      BME280_FILTER_COEFF_2: 2
+      BME280_FILTER_COEFF_4: 4
+      BME280_FILTER_COEFF_8: 8
+      BME280_FILTER_COEFF_16: 16
+  standby_time:
+    enum:
+      BME280_STANDBY_TIME_0_5_MS: 0.5
+      BME280_STANDBY_TIME_62_5_MS: 62.5
+      BME280_STANDBY_TIME_125_MS: 125
+      BME280_STANDBY_TIME_250_MS: 250
+      BME280_STANDBY_TIME_500_MS: 500
+      BME280_STANDBY_TIME_1000_MS: 1000
+      BME280_STANDBY_TIME_10_MS: 10
+      BME280_STANDBY_TIME_20_MS: 20
+
+states:
+  - UNINITIALIZED
+  - SLEEP
+  - NORMAL
+
+transition:
+  init:
+    src: [UNINITIALIZED]
+    dst: SLEEP
+    set_param:
+      humidity_oversampling: BME280_NO_OVERSAMPLING
+      pressure_oversampling: BME280_NO_OVERSAMPLING
+      temperature_oversampling: BME280_NO_OVERSAMPLING
+      iir_filter: BME280_FILTER_COEFF_OFF
+      standby_time: BME280_STANDBY_TIME_0_5_MS
+  enterSleepMode:
+    src: [NORMAL]
+    dst: SLEEP
+  enterNormalMode:
+    src: [SLEEP]
+    dst: NORMAL
+  setHumidityOversampling:
+    loop: [SLEEP, NORMAL]
+    arguments:
+    - name: os
+      values: ['BME280_NO_OVERSAMPLING', 'BME280_OVERSAMPLING_1X', 'BME280_OVERSAMPLING_2X', 'BME280_OVERSAMPLING_4X', 'BME280_OVERSAMPLING_8X', 'BME280_OVERSAMPLING_16X']
+      parameter: humidity_oversampling
+  setPressureOversampling:
+    loop: [SLEEP, NORMAL]
+    arguments:
+    - name: os
+      values: ['BME280_NO_OVERSAMPLING', 'BME280_OVERSAMPLING_1X', 'BME280_OVERSAMPLING_2X', 'BME280_OVERSAMPLING_4X', 'BME280_OVERSAMPLING_8X', 'BME280_OVERSAMPLING_16X']
+      parameter: pressure_oversampling
+  setTemperatureOversampling:
+    loop: [SLEEP, NORMAL]
+    arguments:
+    - name: os
+      values: ['BME280_NO_OVERSAMPLING', 'BME280_OVERSAMPLING_1X', 'BME280_OVERSAMPLING_2X', 'BME280_OVERSAMPLING_4X', 'BME280_OVERSAMPLING_8X', 'BME280_OVERSAMPLING_16X']
+      parameter: temperature_oversampling
+  setFilter:
+    loop: [SLEEP, NORMAL]
+    arguments:
+    - name: filter
+      values: ['BME280_FILTER_COEFF_OFF', 'BME280_FILTER_COEFF_2', 'BME280_FILTER_COEFF_4', 'BME280_FILTER_COEFF_8', 'BME280_FILTER_COEFF_16']
+      parameter: iir_filter
+  getSensorData:
+    src: [NORMAL]
+    dst: NORMAL
+    arguments:
+      - name: what
+        values: ['BME280_ALL']
+      - name: data
+        values: ['&sensordata']

@@ -72,7 +72,7 @@ void loop(void)
 	bme280.settings.filter = BME280_FILTER_COEFF_OFF;
 	bme280.settings.standby_time = BME280_STANDBY_TIME_500_MS;
 	bme280.setSensorSettings(BME280_OSR_PRESS_SEL | BME280_OSR_TEMP_SEL | BME280_OSR_HUM_SEL | BME280_FILTER_SEL | BME280_STANDBY_SEL);
-	bme280.setSensorMode(BME280_NORMAL_MODE);
+	bme280.enterNormalMode();
 	arch.delay_ms(100);
 	rslt = bme280.getSensorData(BME280_ALL, &comp_data);
 	kout << "BME280 read " << rslt << endl;
