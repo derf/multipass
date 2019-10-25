@@ -382,7 +382,7 @@ class BME280 {
 		* @return Result of API execution status
 		* @retval zero -> Success / +ve value -> Warning / -ve value -> Error
 		*/
-		int8_t set_regs(uint8_t *reg_addr, const uint8_t *reg_data, uint8_t len);
+		int8_t setRegs(uint8_t *reg_addr, const uint8_t *reg_data, uint8_t len);
 
 		/*!
 		* @brief This API reads the data from the given register address of the sensor.
@@ -394,7 +394,7 @@ class BME280 {
 		* @return Result of API execution status
 		* @retval zero -> Success / +ve value -> Warning / -ve value -> Error
 		*/
-		int8_t get_regs(uint8_t reg_addr, uint8_t *reg_data, uint16_t len);
+		int8_t getRegs(uint8_t reg_addr, uint8_t *reg_data, uint16_t len);
 
 		/*!
 		* @brief This API sets the oversampling, filter and standby duration
@@ -418,7 +418,7 @@ class BME280 {
 		* @return Result of API execution status
 		* @retval zero -> Success / +ve value -> Warning / -ve value -> Error.
 		*/
-		int8_t set_sensor_settings(uint8_t desired_settings);
+		int8_t setSensorSettings(uint8_t desired_settings);
 
 		/*!
 		* @brief This API gets the oversampling, filter and standby duration
@@ -427,7 +427,7 @@ class BME280 {
 		* @return Result of API execution status
 		* @retval zero -> Success / +ve value -> Warning / -ve value -> Error.
 		*/
-		int8_t get_sensor_settings();
+		int8_t getSensorSettings();
 
 		/*!
 		* @brief This API sets the power mode of the sensor.
@@ -443,7 +443,7 @@ class BME280 {
 		* @return Result of API execution status
 		* @retval zero -> Success / +ve value -> Warning / -ve value -> Error
 		*/
-		int8_t set_sensor_mode(uint8_t sensor_mode);
+		int8_t setSensorMode(uint8_t sensor_mode);
 
 		/*!
 		* @brief This API gets the power mode of the sensor.
@@ -459,7 +459,7 @@ class BME280 {
 		* @return Result of API execution status
 		* @retval zero -> Success / +ve value -> Warning / -ve value -> Error
 		*/
-		int8_t get_sensor_mode(uint8_t *sensor_mode);
+		int8_t getSensorMode(uint8_t *sensor_mode);
 
 		/*!
 		* @brief This API performs the soft reset of the sensor.
@@ -467,7 +467,7 @@ class BME280 {
 		* @return Result of API execution status
 		* @retval zero -> Success / +ve value -> Warning / -ve value -> Error.
 		*/
-		int8_t soft_reset();
+		int8_t softReset();
 
 		/*!
 		* @brief This API reads the pressure, temperature and humidity data from the
@@ -489,7 +489,7 @@ class BME280 {
 		* @return Result of API execution status
 		* @retval zero -> Success / +ve value -> Warning / -ve value -> Error
 		*/
-		int8_t get_sensor_data(uint8_t sensor_comp, struct bme280_data *comp_data);
+		int8_t getSensorData(uint8_t sensor_comp, struct bme280_data *comp_data);
 
 		/*!
 		*  @brief This API is used to parse the pressure, temperature and
@@ -499,7 +499,7 @@ class BME280 {
 		*  @param[out] uncomp_data : Contains the uncompensated pressure, temperature
 		*  and humidity data.
 		*/
-		void parse_sensor_data(const uint8_t *reg_data, struct bme280_uncomp_data *uncomp_data);
+		void parseSensorData(const uint8_t *reg_data, struct bme280_uncomp_data *uncomp_data);
 
 		/*!
 		* @brief This API is used to compensate the pressure and/or
@@ -517,10 +517,36 @@ class BME280 {
 		* @return Result of API execution status.
 		* @retval zero -> Success / -ve value -> Error
 		*/
-		int8_t compensate_data(uint8_t sensor_comp,
+		int8_t compensateSensorData(uint8_t sensor_comp,
 												const struct bme280_uncomp_data *uncomp_data,
 												struct bme280_data *comp_data,
 												struct bme280_calib_data *calib_data);
+
+		inline void configure(uint8_t os_hum, uint8_t os_pres, uint8_t os_temp) {
+			settings.osr_h = os_hum;
+			settings.osr_p = os_pres;
+			settings.osr_t = os_temp;
+		}
+
+		inline void setHumidityOversampling(uint8_t os) {
+			settings.osr_h = os;
+		}
+
+		inline void setPressureOversampling(uint8_t os) {
+			settings.osr_p = os;
+		}
+
+		inline void setTemperatureOversampling(uint8_t os) {
+			settings.osr_t = os;
+		}
+
+		inline void setStandbyTime(uint8_t standby_time) {
+			settings.standby_time = standby_time;
+		}
+
+		inline void setFilter(uint8_t filter) {
+			settings.filter = filter;
+		}
 
 };
 

@@ -12,6 +12,10 @@
 #ifdef DRIVER_AM2320
 #include "driver/am2320.h"
 #endif
+#ifdef DRIVER_BME280
+#include "driver/bme280.h"
+#include "driver/bme680_util.h"
+#endif
 #ifdef DRIVER_BME680
 #include "driver/bme680.h"
 #include "driver/bme680_util.h"
@@ -51,6 +55,30 @@ void loop(void)
 	} else {
 		kout << "AM2320 error " << dec << am2320.getStatus() << endl;
 	}
+#endif
+#ifdef DRIVER_BME280
+	bme280.intf = BME280_I2C_INTF;
+	bme280.read = bme680_i2c_read;
+	bme280.write = bme680_i2c_write;
+	bme280.delay_ms = bme680_delay_ms;
+
+	int8_t rslt = BME280_OK;
+	struct bme280_data comp_data;
+	rslt = bme280.init();
+	kout << "BME280 init " << rslt << endl;
+	bme280.settings.osr_p = BME280_OVERSAMPLING_16X;
+	bme280.settings.osr_t = BME280_OVERSAMPLING_16X;
+	bme280.settings.osr_h = BME280_OVERSAMPLING_16X;
+	bme280.settings.filter = BME280_FILTER_COEFF_OFF;
+	bme280.settings.standby_time = BME280_STANDBY_TIME_500_MS;
+	bme280.setSensorSettings(BME280_OSR_PRESS_SEL | BME280_OSR_TEMP_SEL | BME280_OSR_HUM_SEL | BME280_FILTER_SEL | BME280_STANDBY_SEL);
+	bme280.setSensorMode(BME280_NORMAL_MODE);
+	arch.delay_ms(100);
+	rslt = bme280.getSensorData(BME280_ALL, &comp_data);
+	kout << "BME280 read " << rslt << endl;
+	kout << "BME280 temperature " << (float)comp_data.temperature / 100 << " degC" << endl;
+	kout << "BME280 humidity " << (float)comp_data.humidity / 1024 << " %" << endl;
+	kout << "BME280 pressure " << (float)comp_data.pressure / 100 << " Pa" << endl;
 #endif
 #ifdef DRIVER_BME680
 	bme680.intf = BME680_I2C_INTF;
