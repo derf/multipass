@@ -38,6 +38,11 @@ ifneq ($(findstring am2320,${drivers}), )
 	COMMON_FLAGS += -DDRIVER_AM2320
 endif
 
+ifneq ($(findstring bme280,${drivers}), )
+	CXX_TARGETS += src/driver/bme280.cc src/driver/bme680_util.cc
+	COMMON_FLAGS += -DDRIVER_BME280
+endif
+
 ifneq ($(findstring bme680,${drivers}), )
 	CXX_TARGETS += src/driver/bme680.cc src/driver/bme680_util.cc
 	COMMON_FLAGS += -DDRIVER_BME680
