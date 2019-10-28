@@ -127,26 +127,30 @@ void Arch::delay_ms(unsigned int const ms)
 
 volatile bool sleep_done = false;
 
-// max delay: 2621 ms
+// max delay: 262 ms @ 16 MHz
+// max delay: 524 ms @  8 MHz
 void Arch::sleep_ms(unsigned int const ms)
 {
 	sleep_done = false;
 #if F_CPU == 16000000UL
 	TA3CTL = TASSEL__SMCLK | ID__8; // /8
 	TA3EX0 = 7; // /8 -> /64 (250 kHz)
+	TA3CCR0 = ms * 250;
 #elif F_CPU == 8000000UL
 	TA3CTL = TASSEL__SMCLK | ID__8; // /8
-	TA3EX0 = 3; // /4 -> /32 (250 kHz)
+	TA3EX0 = 7; // /8 -> /64 (125 kHz)
+	TA3CCR0 = ms * 125;
 #elif F_CPU == 4000000UL
-	TA3CTL = TASSEL__SMCLK | ID__4; // /4
-	TA3EX0 = 3; // /4 -> /16 (250 kHz)
+	TA3CTL = TASSEL__SMCLK | ID__8; // /8
+	TA3EX0 = 3; // /4 -> /32 (125 kHz)
+	TA3CCR0 = ms * 125;
 #elif F_CPU == 1000000UL
-	TA3CTL = TASSEL__SMCLK | ID__1; // /1
-	TA3EX0 = 3; // /4 -> /4 (250 kHz)
+	TA3CTL = TASSEL__SMCLK | ID__8; // /8
+	TA3EX0 = 0; // /1 -> /8 (125 kHz)
+	TA3CCR0 = ms * 125;
 #else
 #error Unsupported F_CPU
 #endif /* F_CPU */
-	TA3CCR0 = ms * 250;
 	TA3CCTL0 = CCIE;
 	TA3CTL |= MC__UP | TACLR;
 	while (!sleep_done) {
