@@ -125,6 +125,39 @@ void Arch::delay_ms(unsigned int const ms)
 	}
 }
 
+volatile bool sleep_done = false;
+
+// max delay: 2621 ms
+void Arch::sleep_ms(unsigned int const ms)
+{
+	sleep_done = false;
+#if F_CPU == 16000000UL
+	TA3CTL = TASSEL__SMCLK | ID__8; // /8
+	TA3EX0 = 7; // /8 -> /64 (250 kHz)
+#elif F_CPU == 8000000UL
+	TA3CTL = TASSEL__SMCLK | ID__8; // /8
+	TA3EX0 = 3; // /4 -> /32 (250 kHz)
+#elif F_CPU == 4000000UL
+	TA3CTL = TASSEL__SMCLK | ID__4; // /4
+	TA3EX0 = 3; // /4 -> /16 (250 kHz)
+#elif F_CPU == 1000000UL
+	TA3CTL = TASSEL__SMCLK | ID__1; // /1
+	TA3EX0 = 3; // /4 -> /4 (250 kHz)
+#else
+#error Unsupported F_CPU
+#endif /* F_CPU */
+	TA3CCR0 = ms * 250;
+	TA3CCTL0 = CCIE;
+	TA3CTL |= MC__UP | TACLR;
+	while (!sleep_done) {
+		asm volatile("nop");
+		__bis_SR_register(GIE | LPM2_bits);
+		asm volatile("nop");
+		__dint();
+	}
+	TA3CTL = TASSEL__SMCLK;
+}
+
 void Arch::idle_loop(void)
 {
 	while (1) {
@@ -162,6 +195,7 @@ Arch arch;
 #include "driver/uptime.h"
 
 #ifndef __acweaving
+// overflow interrupts end up in A1 (joint interrupt for CCR1 ... CCR6 and overflow)
 __attribute__((interrupt(TIMER1_A1_VECTOR))) __attribute__((wakeup)) void handle_timer1_overflow()
 {
 	if (TA1IV == 0x0e) {
@@ -176,3 +210,11 @@ __attribute__((interrupt(TIMER1_A1_VECTOR))) __attribute__((wakeup)) void handle
 #endif
 
 #endif /* defined(WITH_LOOP) || defined(TIMER_S) */
+
+#ifndef __acweaving
+// CCR0 interrupts are exclusive to A0
+__attribute__((interrupt(TIMER3_A0_VECTOR))) __attribute__((wakeup)) void handle_timer3_ccr0()
+{
+	sleep_done = true;
+}
+#endif /* __acweaving */
