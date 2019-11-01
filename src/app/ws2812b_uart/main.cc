@@ -26,17 +26,20 @@ class Blinkencat {
 			COLD_WHITE,
 			STROBE,
 			COLOR_STROBE,
+			COLOR_RGB,
 			MODE_ENUM_MAX
 		};
 
 		Mode mode;
+
+		uint8_t red, green, blue;
 
 		void setup(void);
 		void next_mode(void);
 		void idle(void);
 		void loop(void);
 
-		Blinkencat() : mode(RGBWHEEL_SLOW) {}
+		Blinkencat() : mode(OFF) {}
 };
 
 void Blinkencat::setup(void)
@@ -174,6 +177,13 @@ void Blinkencat::loop(void)
 			strobe_on = 127 - strobe_on;
 			_delay_ms(40);
 			break;
+		case COLOR_RGB:
+			for (uint16_t i = 0; i < NUM_PIXELS; i++) {
+				np.setPixelColor(i, np.Color(red, green, blue));
+			}
+			np.show();
+			idle();
+			break;
 	}
 }
 
@@ -181,6 +191,10 @@ Blinkencat blinkencat;
 
 int main(void)
 {
+	char buf[3];
+	unsigned char buf_pos = sizeof(buf);
+	Blinkencat::Mode target_mode = blinkencat.OFF;
+
 	arch.setup();
 	gpio.setup();
 	kout.setup();
@@ -189,11 +203,27 @@ int main(void)
 	blinkencat.setup();
 
 	while (1) {
+		kout << "loop - mode is " << blinkencat.mode << endl;
 		blinkencat.loop();
 		while (kin.hasKey()) {
 			char key = kin.getKey();
-			if ((key >= '0') && (key < '0' + blinkencat.MODE_ENUM_MAX)) {
+
+			if (buf_pos < sizeof(buf)) {
+				buf[buf_pos] = key;
+				buf_pos++;
+				if (buf_pos == sizeof(buf)) {
+					blinkencat.red = buf[0];
+					blinkencat.green = buf[1];
+					blinkencat.blue = buf[2];
+					blinkencat.mode = target_mode;
+				}
+			}
+			else if ((key >= '0') && (key < '0' + blinkencat.MODE_ENUM_MAX)) {
 				blinkencat.mode = (Blinkencat::Mode)(key - '0');
+			}
+			else if (key == 'c') {
+				buf_pos = 0;
+				target_mode = blinkencat.COLOR_RGB;
 			}
 		}
 	}
