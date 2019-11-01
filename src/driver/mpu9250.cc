@@ -6,13 +6,24 @@
 #include "driver/soft_i2c.h"
 #endif
 
+/*
+Copyright (c) 2016 SparkFun Electronics, Inc.
+Copyright (c) 2019 Daniel Friesel
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
+
 void MPU9250::init()
 {
 	// reset to default
 	txbuf[0] = 107;
 	txbuf[1] = 0x80;
 	i2c.xmit(address, 2, txbuf, 0, rxbuf);
-	arch.delay_ms(1);
+	arch.delay_ms(100);
 
 	// enable I2C passthrough to magnetometer
 	txbuf[0] = 55;
@@ -23,7 +34,7 @@ void MPU9250::init()
 	txbuf[0] = 0x0b;
 	txbuf[1] = 1;
 	i2c.xmit(0x0c, 2, txbuf, 0, rxbuf);
-	arch.delay_ms(1);
+	arch.delay_ms(100);
 
 	// put magnetometer into continuous measurement mode
 	txbuf[0] = 0x0a;
@@ -71,13 +82,53 @@ void MPU9250::setAccelEnable(bool x, bool y, bool z)
 	i2c.xmit(address, 2, txbuf, 0, rxbuf);
 }
 
-void MPU9250::setPower(bool sleep, bool gyroStandby)
+void MPU9250::setGyroFSR(MPU9250::gyro_fsr_e fsr)
+{
+	txbuf[0] = MPU9250_GYRO_CONFIG;
+	txbuf[1] = fsr << GYRO_CONFIG_GYRO_FS_SEL;
+	i2c.xmit(address, 2, txbuf, 0, rxbuf);
+}
+
+void MPU9250::setAccelFSR(MPU9250::accel_fsr_e fsr)
+{
+	txbuf[0] = MPU9250_ACCEL_CONFIG;
+	txbuf[1] = fsr << ACCEL_CONFIG_ACCEL_FS_SEL;
+	i2c.xmit(address, 2, txbuf, 0, rxbuf);
+}
+
+void MPU9250::AGSleep()
 {
 	txbuf[0] = 107;
-	if (sleep) {
-		txbuf[1] = 1<<6;
-	}
-	else if (gyroStandby) {
+	txbuf[1] = 1 << 6;
+	i2c.xmit(address, 2, txbuf, 0, rxbuf);
+}
+
+void MPU9250::MagSleep()
+{
+	txbuf[0] = 0x0a;
+	txbuf[1] = 0;
+	i2c.xmit(0x0c, 2, txbuf, 0, rxbuf);
+}
+
+void MPU9250::AGWakeup()
+{
+	txbuf[0] = 107;
+	txbuf[1] = gyroStandby << 4;
+	i2c.xmit(address, 2, txbuf, 0, rxbuf);
+}
+
+void MPU9250::MagWakeup()
+{
+	txbuf[0] = 0x0a;
+	txbuf[1] = 2;
+	i2c.xmit(0x0c, 2, txbuf, 0, rxbuf);
+}
+
+void MPU9250::setGyroStandby(bool gyroStandby)
+{
+	this->gyroStandby = gyroStandby;
+	txbuf[0] = 107;
+	if (gyroStandby) {
 		txbuf[1] = 1<<4;
 	}
 	i2c.xmit(address, 2, txbuf, 0, rxbuf);
@@ -96,10 +147,64 @@ float MPU9250::getTemperature()
 	return (float)getWordReg(65) / 333.87 + 21;
 }
 
-void MPU9250::getMagnet(int *x, int *y, int *z)
+void MPU9250::getRawGyro(int *x, int *y, int *z)
+{
+	txbuf[0] = 67;
+	i2c.xmit(address, 1, txbuf, 6, rxbuf);
+
+	*x = ((signed int) rxbuf[0] << 8) + rxbuf[1];
+	*y = ((signed int) rxbuf[2] << 8) + rxbuf[3];
+	*z = ((signed int) rxbuf[4] << 8) + rxbuf[5];
+}
+
+void MPU9250::getRawAccel(int *x, int *y, int *z)
+{
+	txbuf[0] = 59;
+	i2c.xmit(address, 1, txbuf, 6, rxbuf);
+
+	*x = ((signed int) rxbuf[0] << 8) + rxbuf[1];
+	*y = ((signed int) rxbuf[2] << 8) + rxbuf[3];
+	*z = ((signed int) rxbuf[4] << 8) + rxbuf[5];
+}
+
+void MPU9250::getAccel(float *g_x, float *g_y, float *g_z)
+{
+	int x, y, z;
+	unsigned char g_factor = 2;
+	for (unsigned char i = 0; i < accel_fsr; i++) {
+		g_factor *= 2;
+	}
+
+	getRawAccel(&x, &y, &z);
+
+	float fsr_factor = g_factor / 32768.;
+
+	*g_x = x * fsr_factor;
+	*g_y = y * fsr_factor;
+	*g_z = z * fsr_factor;
+}
+
+void MPU9250::getGyro(float *dps_x, float *dps_y, float *dps_z)
+{
+	int x, y, z;
+	unsigned short dps_factor = 250;
+	for (unsigned char i = 0; i < gyro_fsr; i++) {
+		dps_factor *= 2;
+	}
+
+	getRawGyro(&x, &y, &z);
+
+	float fsr_factor = dps_factor / 32768.;
+
+	*dps_x = x * fsr_factor;
+	*dps_y = y * fsr_factor;
+	*dps_z = z * fsr_factor;
+}
+
+void MPU9250::getRawMagnet(int *x, int *y, int *z)
 {
 	txbuf[0] = 0x02;
-	i2c.xmit(0x0c, 0, txbuf, 8, rxbuf);
+	i2c.xmit(0x0c, 1, txbuf, 8, rxbuf);
 
 	if ((rxbuf[0] & 0x01) && !(rxbuf[7] & 0x08)) {
 		*x = ((signed int)rxbuf[2] << 8) + rxbuf[1];
