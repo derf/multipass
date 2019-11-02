@@ -20,7 +20,7 @@ int main(void)
 	INIT0(gx);
 	INIT0(gy);
 	INIT0(gz);
-	unsigned char i = 0;
+	unsigned short i = 0;
 
 	arch.setup();
 	gpio.setup();
@@ -52,16 +52,16 @@ int main(void)
 		UPDATE_MAX(max_gy, gy);
 		UPDATE_MAX(max_gz, gz);
 
-		if (i++ == 200) {
+		if (i++ == 2000) {
 			kout << "Min Accel: " << min_ax << " / " << min_ay << " / " << min_az << endl;
 			kout << "Max Accel: " << max_ax << " / " << max_ay << " / " << max_az << endl;
 			kout << "Min Gyro: " << min_gx << " / " << min_gy << " / " << min_gz << endl;
 			kout << "Max Gyro: " << max_gx << " / " << max_gy << " / " << max_gz << endl;
 			kout << "Temp: " << mpu9250.getTemperature() << endl;
-			min_ax = min_ay = min_az = 0;
-			min_gx = min_gy = min_gz = 0;
-			max_ax = max_ay = max_az = 0;
-			max_gx = max_gy = max_gz = 0;
+			min_ax = min_ay = min_az = 30000;
+			min_gx = min_gy = min_gz = 30000;
+			max_ax = max_ay = max_az = -30000;
+			max_gx = max_gy = max_gz = -30000;
 			i = 0;
 		}
 		arch.delay_ms(1);
