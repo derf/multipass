@@ -62,14 +62,14 @@ build/0x40000.bin: build/0x00000.bin
 	# also created by commandline for 0x00000.bin
 
 program: build/0x00000.bin build/0x40000.bin
-	${ESPTOOL} write_flash 0x00000 build/0x00000.bin 0x40000 build/0x40000.bin -fm dout
+	${ESPTOOL} -p ${SERIAL_PORT} write_flash 0x00000 build/0x00000.bin 0x40000 build/0x40000.bin -fm dout
 
 arch_clean:
 	rm -f ${OBJECTS}
 	rm -f build/system.ar
 
 monitor:
-	screen /dev/ttyUSB0 115200
+	screen ${SERIAL_PORT} 115200
 
 arch_help:
 	@echo "esp8266 coding advice:"
