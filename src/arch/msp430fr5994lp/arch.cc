@@ -131,6 +131,9 @@ volatile bool sleep_done = false;
 // max delay: 524 ms @  8 MHz
 void Arch::sleep_ms(unsigned int const ms)
 {
+	if (ms == 0) {
+		return;
+	}
 	sleep_done = false;
 #if F_CPU == 16000000UL
 	TA3CTL = TASSEL__SMCLK | ID__8; // /8
