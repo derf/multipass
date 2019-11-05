@@ -6,6 +6,9 @@
 
 #ifdef PTALOG_GPIO
 #include "driver/gpio.h"
+#ifdef PTALOG_GPIO_BEFORE
+#include "arch.h"
+#endif
 #endif
 
 #ifdef PTALOG_TIMING
@@ -13,6 +16,13 @@
 #endif
 
 class PTALog {
+
+	private:
+		PTALog(const PTALog& copy);
+#ifdef PTALOG_GPIO
+		uint8_t sync_pin;
+#endif
+
 	public:
 		typedef struct {
 			uint8_t transition_id;
@@ -31,12 +41,12 @@ class PTALog {
 		uint8_t log_index;
 
 #ifdef PTALOG_GPIO
-		PTALog(uint8_t pin_number) : log_index(0), sync_pin(pin_number) {}
+		PTALog(uint8_t pin_number) : sync_pin(pin_number), log_index(0) {}
 #else
 		PTALog() : log_index(0) {}
 #endif
 
-		inline void passTransition(uint8_t transition_id)
+		void passTransition(uint8_t transition_id)
 		{
 			log[log_index].transition_id = transition_id;
 			if (log_index < max_entry) {
@@ -45,18 +55,18 @@ class PTALog {
 		}
 
 #ifdef PTALOG_TIMING
-		inline void passNop(Counter& counter)
+		void passNop(Counter& counter)
 		{
 			kout << "[PTA] nop=" << counter.value << "/" << counter.overflow << endl;
 		}
 #endif
 
-		inline void reset()
+		void reset()
 		{
 			log_index = 0;
 		}
 
-		inline void startBenchmark(uint8_t id)
+		void startBenchmark(uint8_t id)
 		{
 			kout << "[PTA] benchmark start, id=" << dec << id << endl;
 #ifdef PTALOG_GPIO
@@ -64,7 +74,7 @@ class PTALog {
 #endif
 		}
 
-		inline void stopBenchmark()
+		void stopBenchmark()
 		{
 			kout << "[PTA] benchmark stop" << endl;
 		}
@@ -86,7 +96,14 @@ class PTALog {
 
 		inline void startTransition()
 		{
+#ifdef PTALOG_GPIO_BEFORE
 			gpio.write(sync_pin, 1);
+			arch.sleep_ms(10);
+			gpio.write(sync_pin, 0);
+			arch.sleep_ms(10);
+#else
+			gpio.write(sync_pin, 1);
+#endif
 		}
 
 #ifdef PTALOG_WITH_RETURNVALUES
@@ -103,19 +120,15 @@ class PTALog {
 #endif
 		{
 #ifdef PTALOG_GPIO
+#ifndef PTALOG_GPIO_BEFORE
 			gpio.write(sync_pin, 0);
+#endif
 #endif
 #ifdef PTALOG_TIMING
 			log[log_index - 1].timer = counter.value;
 			log[log_index - 1].overflow = counter.overflow;
 #endif
 		}
-
-	private:
-		PTALog(const PTALog& copy);
-#ifdef PTALOG_GPIO
-		uint8_t sync_pin;
-#endif
 };
 
 #endif
