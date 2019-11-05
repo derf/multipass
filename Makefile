@@ -145,7 +145,7 @@ ifeq (${i2c_pullup}, gpio)
 endif
 
 ifeq (${softi2c_timer}, 1)
-	arch_drivers += ,timer
+	override arch_drivers += ,timer
 	COMMON_FLAGS += -DSOFTI2C_TIMER
 endif
 

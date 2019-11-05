@@ -1,3 +1,3 @@
-arch_drivers += ,i2c
-drivers += ,ccs811
+override arch_drivers += ,i2c
+override drivers += ,ccs811
 loop ?= 1

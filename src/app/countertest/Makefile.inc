@@ -1,2 +1,2 @@
 loop ?= 1
-arch_drivers += ,counter
+override arch_drivers += ,counter

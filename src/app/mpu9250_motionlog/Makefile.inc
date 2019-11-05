@@ -1,2 +1,2 @@
 arch_drivers += ,i2c
-drivers += ,mpu9250
+override drivers += ,mpu9250
