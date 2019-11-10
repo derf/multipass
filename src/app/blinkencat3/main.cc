@@ -48,8 +48,8 @@ class Blinkencat {
 void Blinkencat::setup(void)
 {
 	np.setup();
-	gpio.input(GPIO::pb1, 0);
-	gpio.input(GPIO::pd3, 1);
+	gpio.input(GPIO::pb1, 0); // LED GND (LED has no resistor, do not set to output!)
+	gpio.input(GPIO::pd3, 1); // Button A
 	gpio.enable_int(GPIO::pd3);
 
 	// One ADC conversion per four seconds
@@ -135,6 +135,40 @@ void Blinkencat::check_battery(void)
 			np.show();
 			sleep();
 		}
+
+		/*
+		 * Both battery and Arduino Nano are connected to the output of the
+		 * TP4056 LiIon charge controller, so it decides on the battery charge
+		 * status based on their cumulative current draw. A sufficiently high
+		 * Arduino Nano (WS2812B) current will cause it to charge indefinitely,
+		 * shortening the LiIon battery's life span and increasing fire risk.
+		 *
+		 * To avoid this, we disable all LEDs when a charger is connected.
+		 * This is preceeded by a 5x green flash to indicate that it is
+		 * intended behaviour.
+		 *
+		 * VCC > 4.22 V indicates that the battery is charging.
+		 * (float voltage without charger rarely exceeds 4.2 V)
+		 */
+		if (vcc > 4220) {
+			for (uint8_t i = 0; i < 5; i++) {
+				for (uint8_t i = 0; i < NUM_PIXELS; i++) {
+					np.setPixelColor(i, np.Color(0, 0, 0));
+				}
+				np.show();
+				_delay_ms(400);
+				for (uint8_t i = 0; i < NUM_PIXELS; i++) {
+					np.setPixelColor(i, np.Color(0, 200 * ((i % 7) == 0), 0));
+				}
+				np.show();
+				_delay_ms(400);
+			}
+			for (uint8_t i = 0; i < NUM_PIXELS; i++) {
+				np.setPixelColor(i, np.Color(0, 0, 0));
+			}
+			np.show();
+			sleep();
+		}
 	}
 }
 
@@ -143,16 +177,6 @@ void Blinkencat::loop(void)
 	static uint16_t rgbwheel_offset = 0;
 	static uint16_t rgbfade_hsv = 0;
 	static uint8_t strobe_on = 0;
-
-	/*
-	// not working due to bad logic levels
-	if (gpio.read(GPIO::pb1)) {
-		// Arduino and WS2812 strip are connected in parallel with the battery,
-		// which will significantly confuse the charging circuit when the
-		// strip is active while charging. So we make sure that it isn't.
-		mode = OFF;
-	}
-	*/
 
 	switch (mode) {
 		case OFF:
