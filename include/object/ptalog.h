@@ -6,7 +6,7 @@
 
 #ifdef PTALOG_GPIO
 #include "driver/gpio.h"
-#ifdef PTALOG_GPIO_BEFORE
+#if defined(PTALOG_GPIO_BEFORE) || defined(PTALOG_GPIO_BAR)
 #include "arch.h"
 #endif
 #endif
@@ -94,6 +94,20 @@ class PTALog {
 			}
 		}
 
+#ifdef PTALOG_GPIO_BAR
+		void startTransition(char const *code, uint8_t code_length)
+		{
+			arch.sleep_ms(10);
+			for (uint8_t byte = 0; byte < code_length; byte++) {
+				for (uint16_t mask = 0x01; mask <= 0x80; mask <<= 1) {
+					gpio.write(sync_pin, code[byte] & mask ? 1 : 0);
+					arch.sleep_ms(10);
+				}
+			}
+			gpio.write(sync_pin, 0);
+			arch.sleep_ms(10);
+		}
+#else
 		inline void startTransition()
 		{
 #ifdef PTALOG_GPIO_BEFORE
@@ -105,6 +119,7 @@ class PTALog {
 			gpio.write(sync_pin, 1);
 #endif
 		}
+#endif
 
 #ifdef PTALOG_WITH_RETURNVALUES
 		inline void logReturn(uint16_t ret)
@@ -120,7 +135,7 @@ class PTALog {
 #endif
 		{
 #ifdef PTALOG_GPIO
-#ifndef PTALOG_GPIO_BEFORE
+#if !defined(PTALOG_GPIO_BEFORE) && !defined(PTALOG_GPIO_BAR)
 			gpio.write(sync_pin, 0);
 #endif
 #endif
