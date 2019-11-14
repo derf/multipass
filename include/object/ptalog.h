@@ -97,7 +97,7 @@ class PTALog {
 #ifdef PTALOG_GPIO_BAR
 		void startTransition(char const *code, uint8_t code_length)
 		{
-			arch.sleep_ms(10);
+			arch.sleep_ms(20);
 			for (uint8_t byte = 0; byte < code_length; byte++) {
 				for (uint16_t mask = 0x01; mask <= 0x80; mask <<= 1) {
 					gpio.write(sync_pin, code[byte] & mask ? 1 : 0);
@@ -105,7 +105,7 @@ class PTALog {
 				}
 			}
 			gpio.write(sync_pin, 0);
-			arch.sleep_ms(10);
+			arch.sleep_ms(20);
 		}
 #else
 		inline void startTransition()
