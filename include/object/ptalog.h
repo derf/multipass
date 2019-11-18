@@ -97,18 +97,18 @@ class PTALog {
 #ifdef PTALOG_GPIO_BAR
 		void startTransition(char const *code, uint8_t code_length)
 		{
-			// TODO increase sleep duration: quiet zone must be at least 10x long
-			// (100ms for 10ms per bar, oder 50ms for 5ms per bar)
-			arch.sleep_ms(20);
+			// Quiet zone (must last at least 10x longer than a module)
+			arch.sleep_ms(60);
 			for (uint8_t byte = 0; byte < code_length; byte++) {
 				for (uint16_t mask = 0x01; mask <= 0x80; mask <<= 1) {
+					// a single module, which is part of a bar
 					gpio.write(sync_pin, code[byte] & mask ? 1 : 0);
-					arch.sleep_ms(10);
+					arch.sleep_ms(5);
 				}
 			}
 			gpio.write(sync_pin, 0);
-			// TODO increase sleep duration (see above)
-			arch.sleep_ms(20);
+			// Quiet zone
+			arch.sleep_ms(60);
 		}
 #else
 		inline void startTransition()
