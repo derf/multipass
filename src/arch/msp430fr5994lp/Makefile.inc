@@ -10,7 +10,7 @@ cpu_freq ?= 8000000
 
 MSP430_FLASHER_DIR ?= /home/derf/var/projects/msp430/MSP430Flasher_1.3.15
 
-INCLUDES += -I/opt/msp430/ti/msp430-gcc-full-linux-5.0.0.36/include
+INCLUDES += -I/opt/msp430/ti/msp430-gcc-full-linux-5.1.2.0/include
 COMMON_FLAGS += -mcpu=${CPU} -mmcu=${MCU} -DMULTIPASS_ARCH_msp430fr5994lp
 COMMON_FLAGS += -DMULTIPASS_ARCH_HAS_I2C
 
@@ -20,17 +20,17 @@ endif
 
 # LTO seems to be broken.
 
-CC = /opt/msp430/ti/msp430-gcc-full-linux-5.0.0.36/bin/msp430-elf-gcc
-CXX = /opt/msp430/ti/msp430-gcc-full-linux-5.0.0.36/bin/msp430-elf-g++
-OBJCOPY = /opt/msp430/ti/msp430-gcc-full-linux-5.0.0.36/bin/msp430-elf-objcopy
-OBJDUMP = /opt/msp430/ti/msp430-gcc-full-linux-5.0.0.36/bin/msp430-elf-objdump
+CC = /opt/msp430/ti/msp430-gcc-full-linux-5.1.2.0/bin/msp430-elf-gcc
+CXX = /opt/msp430/ti/msp430-gcc-full-linux-5.1.2.0/bin/msp430-elf-g++
+OBJCOPY = /opt/msp430/ti/msp430-gcc-full-linux-5.1.2.0/bin/msp430-elf-objcopy
+OBJDUMP = /opt/msp430/ti/msp430-gcc-full-linux-5.1.2.0/bin/msp430-elf-objdump
 
 ARCH_SHORTNAME = msp430
 
 CXX_TARGETS += src/arch/msp430fr5994lp/arch.cc
 
 ifeq (${aspectc}, 1)
-	CXX = ag++ -r build/repo.acp -v 0 --c_compiler /opt/msp430/ti/msp430-gcc-full-linux-5.0.0.36/bin/msp430-elf-g++ -p . --Xcompiler
+	CXX = ag++ -r build/repo.acp -v 0 --c_compiler /opt/msp430/ti/msp430-gcc-full-linux-5.1.2.0/bin/msp430-elf-g++ -p . --Xcompiler
 endif
 
 ifneq ($(findstring adc,${arch_drivers}), )
@@ -87,7 +87,7 @@ OBJECTS = ${CXX_TARGETS:.cc=.o} ${C_TARGETS:.c=.o} ${ASM_TARGETS:.S=.o}
 
 build/system.elf: ${OBJECTS}
 	${QUIET}${CXX} ${INCLUDES} ${COMMON_FLAGS} ${CXXFLAGS} \
-		-Wl,--library-path=/opt/msp430/ti/msp430-gcc-full-linux-5.0.0.36/include/ \
+		-Wl,--library-path=/opt/msp430/ti/msp430-gcc-full-linux-5.1.2.0/include/ \
 		-Wl,--gc-sections \
 		-o $@ ${OBJECTS}
 
