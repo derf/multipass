@@ -1,0 +1,48 @@
+codegen:
+  instance: mpu9250
+  includes: ['driver/i2c.h', 'driver/mpu9250.h']
+  flags: ['drivers=mpu9250', 'arch_drivers=i2c']
+  setup:
+  - i2c.setup();
+
+parameters:
+- accel_odr
+
+states:
+- UNINITIALIZED
+- SLEEP
+- STANDBY
+- LP_ACCEL
+- ACCEL
+- GYRO
+- MAGNET
+- NINEAXIS
+
+transition:
+  init:
+    src: [UNINITIALIZED, SLEEP, STANDBY, LP_ACCEL, ACCEL, GYRO, MAGNET, NINEAXIS]
+    dst: NINEAXIS
+    set_param:
+      accel_odr: 0
+  sleep:
+    src: [STANDBY, LP_ACCEL, ACCEL, GYRO, MAGNET, NINEAXIS]
+    dst: SLEEP
+  standby:
+    src: [STANDBY, LP_ACCEL, ACCEL, GYRO, MAGNET, NINEAXIS]
+    dst: SLEEP
+  lowPowerAccelOnly:
+    src: [SLEEP, STANDBY, NINEAXIS, ACCEL, GYRO, MAGNET]
+    dst: LP_ACCEL
+    arguments:
+    - name: rate
+      values: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+      parameter: accel_odr
+  accelOnly:
+    src: [SLEEP, STANDBY, LP_ACCEL, GYRO, MAGNET, NINEAXIS]
+    dst: ACCEL
+  gyroOnly:
+    src: [SLEEP, STANDBY, LP_ACCEL, ACCEL, MAGNET, NINEAXIS]
+    dst: GYRO
+  magnetOnly:
+    src: [SLEEP, STANDBY, LP_ACCEL, ACCEL, GYRO, NINEAXIS]
+    dst: MAGNET

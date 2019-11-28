@@ -273,6 +273,7 @@ class MPU9250 {
 		void getAccel(float *g_x, float *g_y, float *g_z);
 		void getGyro(float *dps_x, float *dps_y, float *dps_z);
 		void getMagnet(int *x, int *y, int *z);
+		float getTemperature();
 		void setAccelEnable(bool x, bool y, bool z);
 		void setGyroEnable(bool x, bool y, bool z);
 		void setGyroStandby(bool gyroStandby);
@@ -282,7 +283,14 @@ class MPU9250 {
 		void AGWakeup();
 		void MagSleep();
 		void MagWakeup();
-		float getTemperature();
+
+		// mpu9250.dfa
+		void sleep();
+		void standby();
+		void lowPowerAccelOnly(unsigned char rate);
+		void accelOnly();
+		void gyroOnly();
+		void magnetOnly();
 };
 
 extern MPU9250 mpu9250;
