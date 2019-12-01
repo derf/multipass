@@ -17,9 +17,6 @@ int main(void)
 	INIT0(ax);
 	INIT0(ay);
 	INIT0(az);
-	INIT0(gx);
-	INIT0(gy);
-	INIT0(gz);
 	unsigned short i = 0;
 
 	arch.setup();
@@ -34,34 +31,24 @@ int main(void)
 	kout << "I2C setup OK" << endl;
 
 	mpu9250.init();
+	mpu9250.accelOnly();
 
 	while (1) {
 		mpu9250.getRawAccel(&ax, &ay, &az);
-		mpu9250.getRawGyro(&gx, &gy, &gz);
 
 		UPDATE_MIN(min_ax, ax);
 		UPDATE_MIN(min_ay, ay);
 		UPDATE_MIN(min_az, az);
-		UPDATE_MIN(min_gx, gx);
-		UPDATE_MIN(min_gy, gy);
-		UPDATE_MIN(min_gz, gz);
 		UPDATE_MAX(max_ax, ax);
 		UPDATE_MAX(max_ay, ay);
 		UPDATE_MAX(max_az, az);
-		UPDATE_MAX(max_gx, gx);
-		UPDATE_MAX(max_gy, gy);
-		UPDATE_MAX(max_gz, gz);
 
 		if (i++ == 2000) {
 			kout << "Min Accel: " << min_ax << " / " << min_ay << " / " << min_az << endl;
 			kout << "Max Accel: " << max_ax << " / " << max_ay << " / " << max_az << endl;
-			kout << "Min Gyro: " << min_gx << " / " << min_gy << " / " << min_gz << endl;
-			kout << "Max Gyro: " << max_gx << " / " << max_gy << " / " << max_gz << endl;
 			kout << "Temp: " << mpu9250.getTemperature() << endl;
 			min_ax = min_ay = min_az = 30000;
-			min_gx = min_gy = min_gz = 30000;
 			max_ax = max_ay = max_az = -30000;
-			max_gx = max_gy = max_gz = -30000;
 			i = 0;
 		}
 		arch.delay_ms(1);
