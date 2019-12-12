@@ -218,6 +218,15 @@ void MPU9250::getRawMagnet(int *x, int *y, int *z)
 
 // mpu9250.dfa
 
+void MPU9250::nineAxis()
+{
+	gyroStandby = false;
+	AGWakeup();
+	MagWakeup();
+	setAccelEnable(true, true, true);
+	setGyroEnable(true, true, true);
+}
+
 void MPU9250::sleep()
 {
 	AGSleep();
@@ -229,6 +238,7 @@ void MPU9250::standby()
 	setGyroStandby(true);
 	MagSleep();
 	setAccelEnable(false, false, false);
+	// TODO setGyroEnable false/true?
 }
 
 void MPU9250::lowPowerAccelOnly(unsigned char rate)
@@ -241,6 +251,7 @@ void MPU9250::lowPowerAccelOnly(unsigned char rate)
 	txbuf[1] = 1<<5;
 	i2c.xmit(address, 2, txbuf, 0, rxbuf);
 	setGyroEnable(false, false, false);
+	// TODO setAccelEnable true?
 }
 
 void MPU9250::accelOnly()
@@ -249,6 +260,7 @@ void MPU9250::accelOnly()
 	AGWakeup();
 	MagSleep();
 	setGyroEnable(false, false, false);
+	// TODO setAccelEnable true?
 }
 
 void MPU9250::gyroOnly()
@@ -257,6 +269,7 @@ void MPU9250::gyroOnly()
 	AGWakeup();
 	MagSleep();
 	setAccelEnable(false, false, false);
+	// TODO setGyroEnable true?
 }
 
 void MPU9250::magnetOnly()

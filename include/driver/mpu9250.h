@@ -291,6 +291,7 @@ class MPU9250 {
 		void accelOnly();
 		void gyroOnly();
 		void magnetOnly();
+		void nineAxis();
 };
 
 extern MPU9250 mpu9250;

@@ -46,3 +46,6 @@ transition:
   magnetOnly:
     src: [SLEEP, STANDBY, LP_ACCEL, ACCEL, GYRO, NINEAXIS]
     dst: MAGNET
+  nineAxis:
+    src: [SLEEP, STANDBY, LP_ACCEL, ACCEL, GYRO, MAGNET]
+    dst: NINEAXIS
