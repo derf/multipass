@@ -31,7 +31,7 @@ transition:
     src: [STANDBY, LP_ACCEL, ACCEL, GYRO, MAGNET, NINEAXIS]
     dst: SLEEP
   lowPowerAccelOnly:
-    src: [SLEEP, STANDBY, NINEAXIS, ACCEL, GYRO, MAGNET]
+    src: [SLEEP, STANDBY, NINEAXIS, LP_ACCEL, ACCEL, GYRO, MAGNET]
     dst: LP_ACCEL
     arguments:
     - name: rate
