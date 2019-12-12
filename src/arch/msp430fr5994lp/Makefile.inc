@@ -6,7 +6,7 @@ MCU = msp430fr5994
 DEBUG_PORT ?= ttyACM0
 SERIAL_PORT ?= ttyACM1
 
-cpu_freq ?= 8000000
+cpu_freq ?= 16000000
 
 MSP430_FLASHER_DIR ?= /home/derf/var/projects/msp430/MSP430Flasher_1.3.15
 
