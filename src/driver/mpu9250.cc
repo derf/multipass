@@ -47,7 +47,7 @@ void MPU9250::setGyroEnable(bool x, bool y, bool z)
 	txbuf[0] = 108;
 	i2c.xmit(address, 1, txbuf, 1, txbuf + 1); // not a typo
 
-	txbuf[1] &= 0x07;
+	txbuf[1] &= ~0x07;
 
 	if (!x) {
 		txbuf[1] |= 4;
@@ -67,7 +67,7 @@ void MPU9250::setAccelEnable(bool x, bool y, bool z)
 	txbuf[0] = 108;
 	i2c.xmit(address, 1, txbuf, 1, txbuf + 1); // not a typo
 
-	txbuf[1] &= 0xf8;
+	txbuf[1] &= ~0x38;
 
 	if (!x) {
 		txbuf[1] |= 1<<5;
@@ -238,7 +238,7 @@ void MPU9250::standby()
 	setGyroStandby(true);
 	MagSleep();
 	setAccelEnable(false, false, false);
-	// TODO setGyroEnable false/true?
+	setGyroEnable(true, true, true);
 }
 
 void MPU9250::lowPowerAccelOnly(unsigned char rate)
@@ -251,7 +251,7 @@ void MPU9250::lowPowerAccelOnly(unsigned char rate)
 	txbuf[1] = 1<<5;
 	i2c.xmit(address, 2, txbuf, 0, rxbuf);
 	setGyroEnable(false, false, false);
-	// TODO setAccelEnable true?
+	setAccelEnable(true, true, true);
 }
 
 void MPU9250::accelOnly()
@@ -260,7 +260,7 @@ void MPU9250::accelOnly()
 	AGWakeup();
 	MagSleep();
 	setGyroEnable(false, false, false);
-	// TODO setAccelEnable true?
+	setAccelEnable(true, true, true);
 }
 
 void MPU9250::gyroOnly()
@@ -269,7 +269,7 @@ void MPU9250::gyroOnly()
 	AGWakeup();
 	MagSleep();
 	setAccelEnable(false, false, false);
-	// TODO setGyroEnable true?
+	setGyroEnable(true, true, true);
 }
 
 void MPU9250::magnetOnly()
