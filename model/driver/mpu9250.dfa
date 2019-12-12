@@ -28,8 +28,8 @@ transition:
     src: [STANDBY, LP_ACCEL, ACCEL, GYRO, MAGNET, NINEAXIS]
     dst: SLEEP
   standby:
-    src: [STANDBY, LP_ACCEL, ACCEL, GYRO, MAGNET, NINEAXIS]
-    dst: SLEEP
+    src: [SLEEP, LP_ACCEL, ACCEL, GYRO, MAGNET, NINEAXIS]
+    dst: STANDBY
   lowPowerAccelOnly:
     src: [SLEEP, STANDBY, NINEAXIS, LP_ACCEL, ACCEL, GYRO, MAGNET]
     dst: LP_ACCEL
