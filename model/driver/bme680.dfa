@@ -150,7 +150,7 @@ transition:
       values: ['BME680_OS_NONE', 'BME680_OS_1X', 'BME680_OS_2X', 'BME680_OS_4X', 'BME680_OS_8X', 'BME680_OS_16X']
       parameter: temperature_oversampling
     - name: run_gas
-      values: ['BME680_DISABLE_GAS_MEAS', 'BME680_ENABLE_GAS_MEAS']
+      values: ['BME680_RUN_GAS_DISABLE', 'BME680_RUN_GAS_ENABLE']
       parameter: gas_enabled
     - name: heatr_dur
       values: [10, 30, 60, 100, 150, 200]
@@ -168,7 +168,7 @@ transition:
     src: [SLEEP]
     dst: FORCED
     codegen:
-      delay_after_ms: 500
+      delay_after_ms: 300
   getSensorData:
     src: [FORCED]
     dst: SLEEP

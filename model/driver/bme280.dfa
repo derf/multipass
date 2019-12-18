@@ -15,6 +15,7 @@ parameters:
 - pressure_oversampling
 - temperature_oversampling
 - iir_filter
+- standby_time
 
 parameter_normalization:
   humidity_oversampling:
@@ -104,6 +105,13 @@ transition:
     - name: filter
       values: ['BME280_FILTER_COEFF_OFF', 'BME280_FILTER_COEFF_2', 'BME280_FILTER_COEFF_4', 'BME280_FILTER_COEFF_8', 'BME280_FILTER_COEFF_16']
       parameter: iir_filter
+
+  setStandbyTime:
+    loop: [SLEEP, NORMAL]
+    arguments:
+    - name: standby_time
+      values: ['BME280_STANDBY_TIME_0_5_MS', 'BME280_STANDBY_TIME_62_5_MS', 'BME280_STANDBY_TIME_125_MS', 'BME280_STANDBY_TIME_250_MS', 'BME280_STANDBY_TIME_500_MS', 'BME280_STANDBY_TIME_1000_MS', 'BME280_STANDBY_TIME_10_MS', 'BME280_STANDBY_TIME_20_MS']
+      parameter: standby_time
   getSensorData:
     src: [NORMAL]
     dst: NORMAL
