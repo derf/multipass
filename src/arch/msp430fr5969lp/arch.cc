@@ -106,6 +106,46 @@ extern void loop();
 volatile char run_loop = 0;
 #endif
 
+volatile bool sleep_done = false;
+
+// max delay: 262 ms @ 16 MHz
+// max delay: 524 ms @  8 MHz
+void Arch::sleep_ms(unsigned int const ms)
+{
+	if (ms == 0) {
+		return;
+	}
+	sleep_done = false;
+#if F_CPU == 16000000UL
+	TA3CTL = TASSEL__SMCLK | ID__8; // /8
+	TA3EX0 = 7; // /8 -> /64 (250 kHz)
+	TA3CCR0 = ms * 250;
+#elif F_CPU == 8000000UL
+	TA3CTL = TASSEL__SMCLK | ID__8; // /8
+	TA3EX0 = 7; // /8 -> /64 (125 kHz)
+	TA3CCR0 = ms * 125;
+#elif F_CPU == 4000000UL
+	TA3CTL = TASSEL__SMCLK | ID__8; // /8
+	TA3EX0 = 3; // /4 -> /32 (125 kHz)
+	TA3CCR0 = ms * 125;
+#elif F_CPU == 1000000UL
+	TA3CTL = TASSEL__SMCLK | ID__8; // /8
+	TA3EX0 = 0; // /1 -> /8 (125 kHz)
+	TA3CCR0 = ms * 125;
+#else
+#error Unsupported F_CPU
+#endif /* F_CPU */
+	TA3CCTL0 = CCIE;
+	TA3CTL |= MC__UP | TACLR;
+	while (!sleep_done) {
+		asm volatile("nop");
+		__bis_SR_register(GIE | LPM2_bits);
+		asm volatile("nop");
+		__dint();
+	}
+	TA3CTL = TASSEL__SMCLK;
+}
+
 void Arch::delay_us(unsigned int const us)
 {
 	if (us < 10) {
@@ -162,6 +202,7 @@ Arch arch;
 #include "driver/uptime.h"
 
 #ifndef __acweaving
+// overflow interrupts end up in A1 (joint interrupt for CCR1 ... CCR6 and overflow)
 __attribute__((interrupt(TIMER1_A1_VECTOR))) __attribute__((wakeup)) void handle_timer1_overflow()
 {
 	if (TA1IV == 0x0e) {
@@ -176,3 +217,11 @@ __attribute__((interrupt(TIMER1_A1_VECTOR))) __attribute__((wakeup)) void handle
 #endif
 
 #endif /* defined(WITH_LOOP) || defined(TIMER_S) */
+
+#ifndef __acweaving
+// CCR0 interrupts are exclusive to A0
+__attribute__((interrupt(TIMER3_A0_VECTOR))) __attribute__((wakeup)) void handle_timer3_ccr0()
+{
+	sleep_done = true;
+}
+#endif /* __acweaving */
