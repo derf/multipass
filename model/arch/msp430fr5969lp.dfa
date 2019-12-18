@@ -1,0 +1,79 @@
+# static power @ 3.6V 16 MHz
+# function power @ 3.6V
+# ACTIVE function taken from datasheet section 5.5 (I(AM,75%))
+# LPM functions fitted from datasheet sections 5.6 to 5.8 (3V, corrected to 3.6V)
+state:
+  UNINITIALIZED:
+  ACTIVE:
+    power:
+      static: 5112
+      function:
+        raw: regression_arg(0) * parameter(cpufreq_mhz) + regression_arg(1)
+        regression_args: [370.8, 244.8]
+  LPM0:
+    power:
+      static: 270
+      function:
+        raw: regression_arg(0) * parameter(cpufreq_mhz) + regression_arg(1)
+        regression_args: [252, 36]
+  LPM1:
+    power:
+      static: 648
+      function:
+        raw: regression_arg(0) + regression_arg(1) * parameter(cpufreq_mhz)
+        regression_args: [36, 10.8]
+  LPM2:
+    power:
+      static: 3.3
+  LPM3:
+    power:
+      static: 2.5
+  LPM3.5:
+    power:
+      static: 1.3
+  LPM4:
+    power:
+      static: 1.7
+  LPM4.5:
+    power:
+      static: 0.7
+
+parameters:
+- cpufreq_mhz
+- voltage_v
+
+transition:
+  init:
+    src: [UNINITIALIZED]
+    dst: ACTIVE
+    set_param:
+      voltage_v: 3.6
+      cpufreq_mhz: 16
+  cpufreq:
+    src: [ACTIVE]
+    dst: ACTIVE
+    arguments:
+    - name: cpufreq
+      values: [1, 4, 8, 16]
+      parameter: cpufreq_mhz
+  active:
+    src: [ACTIVE, LPM0, LPM1, LPM2, LPM3.5, LPM3, LPM4, LPM4.5]
+    dst: ACTIVE
+  lpm0:
+    src: [ACTIVE]
+    dst: LPM0
+  lpm1:
+    src: [ACTIVE]
+    dst: LPM1
+  lpm2:
+    src: [ACTIVE]
+    dst: LPM2
+  lpm3:
+    src: [ACTIVE]
+    dst: LPM3
+  lpm4:
+    src: [ACTIVE]
+    dst: LPM4
+  lpm4.5:
+    src: [ACTIVE]
+    dst: LPM4.5
