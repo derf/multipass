@@ -1,4 +1,5 @@
 codegen:
+  class: Nrf24l01
   instance: nrf24l01
   includes: ['driver/nrf24l01.h']
   flags: ['drivers=nrf24l01', 'arch_drivers=spi_b']
@@ -82,6 +83,13 @@ transition:
       - name: palevel
         values: ['Nrf24l01::RF24_PA_MIN', 'Nrf24l01::RF24_PA_LOW', 'Nrf24l01::RF24_PA_HIGH', 'Nrf24l01::RF24_PA_MAX']
         parameter: tx_power
+  setDataRate:
+    src: [STANDBY1]
+    dst: STANDBY1
+    arguments:
+      - name: datarate
+        values: ['Nrf24l01::RF24_1MBPS', 'Nrf24l01::RF24_2MBPS', 'Nrf24l01::RF24_250KBPS']
+        parameter: datarate
   startListening:
     src: [STANDBY1]
     dst: RX
