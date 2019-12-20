@@ -37,6 +37,10 @@ else ifneq ($(findstring i2c,${arch_drivers}), )
 	CXX_TARGETS += src/arch/arduino-nano/driver/i2c.cc
 endif
 
+ifneq ($(findstring spi,${arch_drivers}), )
+	CXX_TARGETS += src/arch/arduino-nano/driver/spi.cc
+endif
+
 ifneq ($(findstring stdin,${arch_drivers}), )
 	CXX_TARGETS += src/arch/arduino-nano/driver/stdin.cc
 endif
