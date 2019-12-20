@@ -46,15 +46,14 @@ void loop(void)
 	}
 	kout << endl;
 
-#ifdef MULTIPASS_ARCH_msp430fr5994lp
+#ifdef NRF24L01TEST_TX
 	//kout << nrf24l01.write("foo", 3, true, true) << " ";
 	//kout << nrf24l01.write("123456789", 10, true, true) << " ";
 	if (do_send++ % 2)
 	{
 		// TODO .write(...) ist wenn der Empfänger verschwindet trotzdem noch ein paar mal erfolgreich. Das sieht komisch aus.
 		nrf24l01.flushTx();
-		TIMEIT(0, arch.delay_ms(10));
-		TIMEIT(1, status = nrf24l01.write("123456789123456789", 20, true, true));
+		status = nrf24l01.write("123456789123456789", 20, true, false);
 		kout << "write: " << status << endl;
 		kout << "Observe TX = " << hex << nrf24l01.getObserveTx() << endl;
 	}
@@ -84,7 +83,7 @@ int main(void)
 
 	kout << "nrf24l01.setup() ...";
 	nrf24l01.setup();
-	kout << " OK" << endl;
+	kout << " complete" << endl;
 
 	kout << "nrf24l01 configure ...";
 	unsigned char addr[5] = {0, 'D', 'E', 'R', 'F'};
@@ -92,16 +91,16 @@ int main(void)
 	//nrf24l01.enableAckPayload();
 	nrf24l01.setDynamicPayloads(true);
 	nrf24l01.setPALevel(Nrf24l01::RF24_PA_HIGH);
-	nrf24l01.setChannel(110);
+	nrf24l01.setChannel(23);
 	nrf24l01.setDataRate(Nrf24l01::RF24_2MBPS);
 	nrf24l01.setRetries(15, 15);
-#ifdef MULTIPASS_ARCH_msp430fr5969lp
+#ifdef NRF24L01TEST_TX
+	nrf24l01.openWritingPipe((const uint8_t *)addr);
+#else
 	nrf24l01.openReadingPipe(1, addr);
 	nrf24l01.startListening();
-#else
-	nrf24l01.openWritingPipe((const uint8_t *)addr);
 #endif
-	kout << " OK" << endl;
+	kout << " complete" << endl;
 
 	gpio.led_on(0);
 	arch.idle_loop();
