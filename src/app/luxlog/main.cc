@@ -20,9 +20,11 @@ uint8_t loop_count = 0;
 void loop(void)
 {
 	if ((log_offset == 0) && (loop_count < 2)) {
+		gpio.led_on(1);
 		for (uint16_t i = 0; i < 4096; i++) {
 			kout << i << " = " << log[i] << endl;
 		}
+		gpio.led_off(1);
 	}
 
 	if ( (loop_count % 10) == 0) {
