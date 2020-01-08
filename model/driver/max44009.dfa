@@ -1,0 +1,22 @@
+state:
+  UNINITIALIZED:
+  ACTIVE:
+    power:
+      static: 4
+      function:
+        raw: parameter(voltage_v) * regression_arg(0)
+        regression_args: [1.2]
+
+parameters:
+# acceptable voltage range: 1.7 .. 3.6 V
+- voltage_v
+
+transition:
+  setup:
+    src: [UNINITIALIZED]
+    dst: ACTIVE
+    set_param:
+      voltage_v: 3.3
+  # TODO I2C pull-up cost
+  getLux:
+    loop: [ACTIVE]
