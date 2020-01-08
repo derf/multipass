@@ -1,0 +1,39 @@
+# ! LED values are estimates at the moment
+state:
+  UNINITIALIZED:
+  INITIALIZED:
+    power:
+      static: 0
+      function:
+        raw: (regression_arg(0) * parameter(led0) + regression_arg(1) * parameter(led1)) * parameter(voltage_v)
+        regression_args: [2778, 2778]
+
+parameters:
+- led0
+- led1
+- voltage_v
+
+transition:
+  setup:
+    src: [UNINITIALIZED]
+    dst: INITIALIZED
+    set_param:
+      led0: 0
+      led1: 0
+      voltage_v: 3.3
+  led_on0:
+    loop: [INITIALIZED]
+    set_param:
+      led0: 1
+  led_on1:
+    loop: [INITIALIZED]
+    set_param:
+      led1: 1
+  led_off0:
+    loop: [INITIALIZED]
+    set_param:
+      led0: 0
+  led_off1:
+    loop: [INITIALIZED]
+    set_param:
+      led1: 0
