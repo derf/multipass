@@ -24,6 +24,7 @@ CC = /opt/msp430/ti/msp430-gcc-full-linux-5.1.2.0/bin/msp430-elf-gcc
 CXX = /opt/msp430/ti/msp430-gcc-full-linux-5.1.2.0/bin/msp430-elf-g++
 OBJCOPY = /opt/msp430/ti/msp430-gcc-full-linux-5.1.2.0/bin/msp430-elf-objcopy
 OBJDUMP = /opt/msp430/ti/msp430-gcc-full-linux-5.1.2.0/bin/msp430-elf-objdump
+SIZE = /opt/msp430/ti/msp430-gcc-full-linux-5.1.2.0/bin/msp430-elf-size
 
 ARCH_SHORTNAME = msp430
 
@@ -90,6 +91,7 @@ build/system.elf: ${OBJECTS}
 		-Wl,--library-path=/opt/msp430/ti/msp430-gcc-full-linux-5.1.2.0/include/ \
 		-Wl,--gc-sections \
 		-o $@ ${OBJECTS}
+	${QUIET}${SIZE} build/system.elf | tail -n1 | awk '{ print "  ROM: " int(($$1+$$2)*100/49152) "%     RAM: " int(($$2+$$3)*100/4096) "%" }'
 
 build/system.hex: build/system.elf
 	${QUIET}${OBJCOPY} -O ihex ${@:.hex=.elf} $@
