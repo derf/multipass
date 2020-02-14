@@ -9,9 +9,8 @@
 #endif
 #include "driver/max44009.h"
 
-// Alle 10 Minuten ein Messwert -> 144 Werte pro Tag -> 28,4 Tage für 4096 Werte
-// Alle 4 Minuten ein Messwert -> 360 Werte pro Tag -> 11,37 Tage für 4096 Werte
-__attribute__ ((section(".text"))) uint32_t log[4096];
+// Alle 4 Minuten ein Messwert -> 360 Werte pro Tag -> 22,2 Tage für 8192 Werte
+__attribute__ ((section(".text"))) uint32_t log[8000];
 
 uint16_t log_offset = 0;
 float val = 0;
@@ -21,13 +20,13 @@ void loop(void)
 {
 	if ((log_offset == 0) && (loop_count < 2)) {
 		gpio.led_on(1);
-		for (uint16_t i = 0; i < 4096; i++) {
+		for (uint16_t i = 0; i < 8000; i++) {
 			kout << i << " = " << log[i] << endl;
 		}
 		gpio.led_off(1);
 	}
 
-	if ( (loop_count % 10) == 0) {
+	if ( (loop_count % 5) == 0) {
 		gpio.led_on(0);
 		arch.sleep_ms(1);
 		gpio.led_off(0);
