@@ -128,10 +128,10 @@ void loop(void)
 	kout << "Gyro X " << mpu9250.getGyroX() << endl;
 	kout << "Gyro Y " << mpu9250.getGyroX() << endl;
 	kout << "Gyro Z " << mpu9250.getGyroX() << endl;
-	mpu9250.getMagnet(&mx, &my, &mz);
+	mpu9250.getRawMagnet(&mx, &my, &mz);
 	kout << "Magnet X " << mx << endl;
-	kout << "Magnet Y " << mx << endl;
-	kout << "Magnet Z " << mx << endl;
+	kout << "Magnet Y " << my << endl;
+	kout << "Magnet Z " << mz << endl;
 #endif
 #ifdef DRIVER_MAX44009
 	kout.printf_float(max44009.getLux());
