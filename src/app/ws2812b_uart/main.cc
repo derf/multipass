@@ -226,6 +226,17 @@ int main(void)
 				target_mode = blinkencat.COLOR_RGB;
 			}
 		}
+		if (ADCSRA & _BV(ADIF)) {
+			uint8_t adcr_l = ADCL;
+			uint8_t adcr_h = ADCH;
+			uint16_t adcr = adcr_l + (adcr_h << 8);
+			uint16_t vcc = 1100L * 1023 / adcr;
+
+			TIFR1 |= _BV(TOV1);
+			ADCSRA |= _BV(ADIF);
+
+			kout << "VCC = " << vcc << endl;
+		}
 	}
 
 	return 0;
