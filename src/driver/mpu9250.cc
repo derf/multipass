@@ -201,7 +201,7 @@ void MPU9250::getGyro(float *dps_x, float *dps_y, float *dps_z)
 	*dps_z = z * fsr_factor;
 }
 
-void MPU9250::getRawMagnet(int *x, int *y, int *z)
+bool MPU9250::getRawMagnet(int *x, int *y, int *z)
 {
 	txbuf[0] = 0x02;
 	i2c.xmit(0x0c, 1, txbuf, 8, rxbuf);
@@ -210,9 +210,10 @@ void MPU9250::getRawMagnet(int *x, int *y, int *z)
 		*x = ((signed int)rxbuf[2] << 8) + rxbuf[1];
 		*y = ((signed int)rxbuf[4] << 8) + rxbuf[3];
 		*z = ((signed int)rxbuf[6] << 8) + rxbuf[5];
+		return true;
 	}
 	else {
-		*x = *y = *z = 0;
+		return false;
 	}
 }
 

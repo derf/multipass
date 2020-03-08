@@ -269,7 +269,7 @@ class MPU9250 {
 		inline int getGyroZ() { return getWordReg(71); }
 		void getRawAccel(int *x, int *y, int *z);
 		void getRawGyro(int *x, int *y, int *z);
-		void getRawMagnet(int *x, int *y, int *z);
+		bool getRawMagnet(int *x, int *y, int *z);
 		void getAccel(float *g_x, float *g_y, float *g_z);
 		void getGyro(float *dps_x, float *dps_y, float *dps_z);
 		void getMagnet(int *x, int *y, int *z);
