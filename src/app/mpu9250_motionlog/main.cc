@@ -17,6 +17,9 @@ int main(void)
 	INIT0(ax);
 	INIT0(ay);
 	INIT0(az);
+	INIT0(mx);
+	INIT0(my);
+	INIT0(mz);
 	unsigned short i = 0;
 
 	arch.setup();
@@ -40,7 +43,8 @@ int main(void)
 	kout << "I2C setup OK" << endl;
 
 	mpu9250.init();
-	mpu9250.accelOnly();
+	mpu9250.nineAxis();
+	mpu9250.setGyroEnable(false, false, false);
 
 	while (1) {
 		mpu9250.getRawAccel(&ax, &ay, &az);
@@ -52,12 +56,25 @@ int main(void)
 		UPDATE_MAX(max_ay, ay);
 		UPDATE_MAX(max_az, az);
 
+		if (mpu9250.getRawMagnet(&mx, &my, &mz)) {
+			UPDATE_MIN(min_mx, mx);
+			UPDATE_MIN(min_my, my);
+			UPDATE_MIN(min_mz, mz);
+			UPDATE_MAX(max_mx, mx);
+			UPDATE_MAX(max_my, my);
+			UPDATE_MAX(max_mz, mz);
+		}
+
 		if (i++ == 2000) {
 			kout << "Min Accel: " << min_ax << " / " << min_ay << " / " << min_az << endl;
 			kout << "Max Accel: " << max_ax << " / " << max_ay << " / " << max_az << endl;
+			kout << "Min Magnet: " << min_mx << " / " << min_my << " / " << min_mz << endl;
+			kout << "Max Magnet: " << max_mx << " / " << max_my << " / " << max_mz << endl;
 			kout << "Temp: " << mpu9250.getTemperature() << endl;
 			min_ax = min_ay = min_az = 30000;
 			max_ax = max_ay = max_az = -30000;
+			min_mx = min_my = min_mz = 30000;
+			max_mx = max_my = max_mz = -30000;
 			i = 0;
 			if (ADCSRA & _BV(ADIF)) {
 				uint8_t adcr_l = ADCL;
