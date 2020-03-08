@@ -15,6 +15,7 @@ class HDC1080 {
 		float getRH();
 		unsigned int getManufacturerID();
 		void init();
+		void heater(bool on);
 };
 
 extern HDC1080 hdc1080;

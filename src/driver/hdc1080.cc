@@ -39,10 +39,22 @@ unsigned int HDC1080::getManufacturerID()
 	return (unsigned int)rxbuf[0] << 8 | rxbuf[1];
 }
 
+void HDC1080::heater(bool on)
+{
+	txbuf[0] = 0x02;
+	i2c.xmit(address, 1, txbuf, 2, rxbuf);
+	if (on) {
+		txbuf[1] = rxbuf[0] | (1<<5);
+	} else {
+		txbuf[1] = rxbuf[0] & ~(1<<5);
+	}
+	i2c.xmit(address, 2, txbuf, 0, rxbuf);
+}
+
 void HDC1080::init()
 {
 	txbuf[0] = 0x02;
-	txbuf[1] = 0x08;
+	txbuf[1] = 0x00;
 	txbuf[2] = 0x00;
 	i2c.xmit(address, 3, txbuf, 0, rxbuf);
 	arch.delay_ms(15);
