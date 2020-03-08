@@ -23,6 +23,15 @@ int main(void)
 	gpio.setup();
 	kout.setup();
 
+	// One ADC conversion per four seconds
+	TCCR1A = 0;
+	TCCR1B = _BV(CS12) | _BV(CS10);
+
+	// Measure internal 1.1V bandgap using VCC as reference on each Timer 1 overflow
+	ADMUX = _BV(REFS0) | 0x0e;
+	ADCSRB = _BV(ADTS2) | _BV(ADTS1);
+	ADCSRA = _BV(ADEN) | _BV(ADATE) | _BV(ADPS2) | _BV(ADPS1);
+
 	if (i2c.setup() != 0) {
 		kout << "I2C setup failed" << endl;
 		return 1;
@@ -50,6 +59,17 @@ int main(void)
 			min_ax = min_ay = min_az = 30000;
 			max_ax = max_ay = max_az = -30000;
 			i = 0;
+			if (ADCSRA & _BV(ADIF)) {
+				uint8_t adcr_l = ADCL;
+				uint8_t adcr_h = ADCH;
+				uint16_t adcr = adcr_l + (adcr_h << 8);
+				uint16_t vcc = 1100L * 1023 / adcr;
+
+				TIFR1 |= _BV(TOV1);
+				ADCSRA |= _BV(ADIF);
+
+				kout << "VCC: " << vcc << endl;
+			}
 		}
 		arch.delay_ms(1);
 	}
