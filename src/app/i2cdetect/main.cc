@@ -9,6 +9,9 @@
 #ifdef DRIVER_LM75
 #include "driver/lm75.h"
 #endif
+#ifdef DRIVER_S5851A
+#include "driver/s5851a.h"
+#endif
 #ifdef DRIVER_AM2320
 #include "driver/am2320.h"
 #endif
@@ -43,6 +46,10 @@ void loop(void)
 {
 #ifdef DRIVER_LM75
 	kout.printf_float(lm75.getTemp());
+	kout << endl;
+#endif
+#ifdef DRIVER_S5851A
+	kout.printf_float(s5851a.getTemp());
 	kout << endl;
 #endif
 #ifdef DRIVER_AM2320
@@ -116,6 +123,12 @@ void loop(void)
 	kout << "CCS811 status is " << ccs811.check() << endl;
 #endif
 #ifdef DRIVER_HDC1080
+	/*
+	hdc1080.heater(1);
+	for (unsigned char i = 0; i < 50; i++) {
+		hdc1080.getTemp();
+	}
+	*/
 	kout << "HDC1080 temperature " << hdc1080.getTemp() << " degC" << endl;
 	kout << "HDC1080 humidity " << hdc1080.getRH() << " %H" << endl;
 #endif
