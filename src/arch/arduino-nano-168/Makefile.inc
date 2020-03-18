@@ -37,6 +37,10 @@ else ifneq ($(findstring i2c,${arch_drivers}), )
 	CXX_TARGETS += src/arch/arduino-nano/driver/i2c.cc
 endif
 
+ifneq ($(findstring adc,${arch_drivers}), )
+	CXX_TARGETS += src/arch/arduino-nano/driver/adc.cc
+endif
+
 ifneq ($(findstring spi,${arch_drivers}), )
 	CXX_TARGETS += src/arch/arduino-nano/driver/spi.cc
 endif
@@ -51,6 +55,10 @@ endif
 
 ifneq ($(findstring counter,${arch_drivers}), )
 	CXX_TARGETS += src/arch/arduino-nano/driver/counter.cc
+endif
+
+ifneq ($(findstring neopixel,${arch_drivers}), )
+	CXX_TARGETS += src/arch/arduino-nano/driver/neopixel.cc
 endif
 
 ifeq (${cpu_freq}, 16000000)
