@@ -17,6 +17,7 @@ class Blinkencat {
 	public:
 		enum Mode : uint8_t {
 			OFF = 0,
+			CHARGE_LEVEL,
 			RGBWHEEL_FAST,
 			RGBWHEEL_SLOW,
 			RGBFADE_FAST,
@@ -32,6 +33,7 @@ class Blinkencat {
 		};
 
 		Mode mode;
+		uint16_t vcc;
 
 		void setup(void);
 		void next_mode(void);
@@ -42,7 +44,7 @@ class Blinkencat {
 		void idle(void);
 		void loop(void);
 
-		Blinkencat() : btn_debounce(0), mode(OFF) {}
+		Blinkencat() : btn_debounce(0), mode(OFF), vcc(0) {}
 };
 
 void Blinkencat::setup(void)
@@ -109,14 +111,14 @@ void Blinkencat::check_battery(void)
 		uint8_t adcr_l = ADCL;
 		uint8_t adcr_h = ADCH;
 		uint16_t adcr = adcr_l + (adcr_h << 8);
-		uint16_t vcc = 1100L * 1023 / adcr;
+		vcc = 1100L * 1023 / adcr;
 
 		TIFR1 |= _BV(TOV1);
 		ADCSRA |= _BV(ADIF);
 
 		//kout << "VCC is " << vcc << endl;
 		// 3.1 V under load ~~ 3.5 V idle
-		if (vcc < 3100) {
+		if (vcc < 3000) {
 			for (uint8_t i = 0; i < 5; i++) {
 				for (uint8_t i = 0; i < NUM_PIXELS; i++) {
 					np.setPixelColor(i, np.Color(0, 0, 0));
@@ -190,6 +192,16 @@ void Blinkencat::loop(void)
 			np.show();
 			sleep();
 			break;
+		case CHARGE_LEVEL:
+			for (uint8_t i = 0; i < NUM_PIXELS; i++) {
+				if (i < ((vcc - 3400) * NUM_PIXELS / 700)) {
+					np.setPixelColor(i, np.Color((vcc < 3850) * 200, (vcc > 3700) * 200, 0));
+				}
+			}
+			np.show();
+			_delay_ms(2000);
+			mode = RGBWHEEL_FAST;
+			// fall-through
 		case RGBWHEEL_FAST:
 		case RGBWHEEL_SLOW:
 			for (uint16_t i = 0; i < NUM_PIXELS; i++) {
