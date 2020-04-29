@@ -47,6 +47,7 @@ endif
 	${QUIET}${OBJCOPY} --rename-section .text=.irom0.text --rename-section .literal=.irom0.literal $@
 
 build/system.ar: ${OBJECTS}
+	${QUIET}mkdir -p build
 	${AR} cru $@ ${OBJECTS}
 
 build/system.elf: build/system.ar

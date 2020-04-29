@@ -83,6 +83,7 @@ OBJECTS = ${CXX_TARGETS:.cc=.o} ${C_TARGETS:.c=.o} ${ASM_TARGETS:.S=.o}
 	${QUIET}${CC} ${INCLUDES} ${COMMON_FLAGS} -Wa,-gstabs,-ggdb -x assembler-with-cpp -c -o $@ ${@:.o=.S}
 
 build/system.elf: ${OBJECTS}
+	${QUIET}mkdir -p build
 	${QUIET}${CXX} ${INCLUDES} ${COMMON_FLAGS} ${CXXFLAGS} \
 		-Wl,--library-path=/opt/msp430/ti/gcc/include/ \
 		-Wl,--gc-sections \
