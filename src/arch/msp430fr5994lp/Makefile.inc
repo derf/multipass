@@ -8,7 +8,7 @@ SERIAL_PORT ?= ttyACM1
 
 cpu_freq ?= 16000000
 
-MSP430_FLASHER_DIR ?= /home/derf/var/projects/msp430/MSP430Flasher_1.3.15
+MSP430_FLASHER_DIR ?= /opt/msp430/MSP430Flasher_1.3.15
 
 INCLUDES += -I/opt/msp430/ti/msp430-gcc-full-linux-5.1.2.0/include
 COMMON_FLAGS += -mcpu=${CPU} -mmcu=${MCU} -DMULTIPASS_ARCH_msp430fr5994lp
