@@ -26,7 +26,7 @@ class GPIO {
 		 * short-circuit other peripherals.
 		 */
 		inline void setup() {
-			PIDIR = BIT0; // green led
+			P1DIR = BIT0; // green led
 			P2DIR = 0;
 			P3DIR = 0;
 			P4DIR = BIT6; // red LED
