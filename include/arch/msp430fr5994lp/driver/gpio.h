@@ -23,7 +23,22 @@ class GPIO {
 			PIN_INVALID
 		};
 
+		/*
+		 * Set all non-standard GPIOs to input with pull-down.
+		 * This avoids excessive current draw due to floating inputs.
+		 * Note that we do not set GPIOs to output low, as that might
+		 * short-circuit other peripherals.
+		 */
 		inline void setup() {
+			P1DIR = BIT0 | BIT1; // red LED, green LED
+			P2DIR = 0;
+			P3DIR = 0;
+			P4DIR = 0;
+			P5DIR = 0;
+			P6DIR = 0;
+			P7DIR = 0;
+			P8DIR = 0;
+			PJDIR = 0;
 			P1OUT = 0;
 			P2OUT = 0;
 			P3OUT = 0;
@@ -33,15 +48,15 @@ class GPIO {
 			P7OUT = 0;
 			P8OUT = 0;
 			PJOUT = 0;
-			P1DIR = BIT0 | BIT1 | 0xff; // red LED, green LED
-			P2DIR = 0xff ^ (BIT0 | BIT1); // UART
-			P3DIR = 0xff;
-			P4DIR = 0xff;
-			P5DIR = 0xff;
-			P6DIR = 0xff;
-			P7DIR = 0xff;
-			P8DIR = 0x0f;
-			PJDIR = BIT6 | BIT7; // HFXT (not populated)
+			P1REN = 0xff & ~(BIT0 | BIT1); // red LED, green LED
+			P2REN = 0xff & ~(BIT0 | BIT1); // UART
+			P3REN = 0xff;
+			P4REN = 0xff;
+			P5REN = 0xff;
+			P6REN = 0xff;
+			P7REN = 0xff;
+			P8REN = 0xff;
+			PJREN = BIT6 | BIT7; // HFXT (not populated)
 		}
 		inline void led_on(unsigned char id) {
 			if (id == 0) {
