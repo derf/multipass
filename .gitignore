@@ -1,6 +1,7 @@
 *.o
 *.su
 /build
+/src/app/aemr/main.cc
 /src/app/prototest/nanopb.pb.h
 /src/app/prototest/nanopb.pb.cc
 /src/app/prototest/nanopb.proto
