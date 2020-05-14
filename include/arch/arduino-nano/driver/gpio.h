@@ -132,15 +132,15 @@ class GPIO {
 				}
 			} else if (pin < 24) {
 				if (value) {
-					PORTB |= _BV(pin - 16);
+					PORTC |= _BV(pin - 16);
 				} else {
-					PORTB &= ~_BV(pin - 16);
+					PORTC &= ~_BV(pin - 16);
 				}
 			} else if (pin < 32) {
 				if (value) {
-					PORTB |= _BV(pin - 24);
+					PORTD |= _BV(pin - 24);
 				} else {
-					PORTB &= ~_BV(pin - 24);
+					PORTD &= ~_BV(pin - 24);
 				}
 			}
 		}
