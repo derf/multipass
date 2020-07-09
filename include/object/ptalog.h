@@ -29,6 +29,8 @@ class PTALog {
 #ifdef PTALOG_TIMING
 			counter_value_t timer;
 			counter_overflow_t overflow;
+			counter_value_t prev_state_timer;
+			counter_overflow_t prev_state_overflow;
 #endif
 #ifdef PTALOG_WITH_RETURNVALUES
 			uint16_t return_value;
@@ -55,9 +57,19 @@ class PTALog {
 		}
 
 #ifdef PTALOG_TIMING
-		void passNop(Counter& counter)
+		/*
+		 * This function is meant to estimate the overhead of counter.start()
+		 * and counter.stop(). It immediately restarts the counter to ensure that
+		 * state durations are captured accurately.
+		 * This means that the overflow value is unusable. We assume that there
+		 * are no overflows in this short time span.
+		 */
+		inline void passNop()
 		{
-			kout << "[PTA] nop=" << counter.value << "/" << counter.overflow << endl;
+			counter.start();
+			counter.stop();
+			counter.start(); // .value is kept until .stop
+			kout << "[PTA] nop=" << counter.value << "/" << 0 << endl;
 		}
 #endif
 
@@ -76,7 +88,12 @@ class PTALog {
 
 		void stopBenchmark()
 		{
+#ifdef PTALOG_TIMING
+			counter.stop();
+			kout << "[PTA] benchmark stop, cycles=" << counter.value << "/" << counter.overflow << endl;
+#else
 			kout << "[PTA] benchmark stop" << endl;
+#endif
 		}
 
 		void dump(uint16_t trace_id)
@@ -85,6 +102,7 @@ class PTALog {
 			for (uint8_t i = 0; i < log_index; i++) {
 				kout << "[PTA] transition=" << log[i].transition_id;
 #ifdef PTALOG_TIMING
+				kout << " prevcycles=" << log[i].prev_state_timer << "/" << log[i].prev_state_overflow;
 				kout << " cycles=" << log[i].timer << "/" << log[i].overflow;
 #endif
 #ifdef PTALOG_WITH_RETURNVALUES
@@ -97,6 +115,9 @@ class PTALog {
 #ifdef PTALOG_GPIO_BAR
 		void startTransition(char const *code, uint8_t code_length)
 		{
+			counter.stop();
+			log[log_index - 1].prev_state_timer = counter.value;
+			log[log_index - 1].prev_state_overflow = counter.overflow;
 			// Quiet zone (must last at least 10x longer than a module)
 			arch.sleep_ms(60);
 			for (uint8_t byte = 0; byte < code_length; byte++) {
@@ -109,6 +130,7 @@ class PTALog {
 			gpio.write(sync_pin, 0);
 			// Quiet zone
 			arch.sleep_ms(60);
+			counter.start();
 		}
 #else
 		inline void startTransition()
@@ -118,7 +140,14 @@ class PTALog {
 			arch.sleep_ms(10);
 			gpio.write(sync_pin, 0);
 			arch.sleep_ms(10);
-#else
+#endif
+#ifdef PTALOG_TIMING
+			counter.stop();
+			log[log_index - 1].prev_state_timer = counter.value;
+			log[log_index - 1].prev_state_overflow = counter.overflow;
+			counter.start();
+#endif
+#ifndef PTALOG_GPIO_BEFORE
 			gpio.write(sync_pin, 1);
 #endif
 		}
@@ -131,11 +160,7 @@ class PTALog {
 		}
 #endif
 
-#ifdef PTALOG_TIMING
-		inline void stopTransition(Counter& counter)
-#else
 		inline void stopTransition()
-#endif
 		{
 #ifdef PTALOG_GPIO
 #if !defined(PTALOG_GPIO_BEFORE) && !defined(PTALOG_GPIO_BAR)
@@ -143,8 +168,10 @@ class PTALog {
 #endif
 #endif
 #ifdef PTALOG_TIMING
+			counter.stop();
 			log[log_index - 1].timer = counter.value;
 			log[log_index - 1].overflow = counter.overflow;
+			counter.start();
 #endif
 		}
 };
