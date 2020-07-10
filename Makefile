@@ -130,6 +130,19 @@ ifneq ($(findstring sharp96,${drivers}), )
 	COMMON_FLAGS += -DSHARP96_CS_PIN=GPIO::${sharp96_cs_pin}
 endif
 
+ifneq ($(findstring resistive_load,${drivers}), )
+	CXX_TARGETS += src/driver/resistive_load.cc
+	resistor1_pin ?= p3_0
+	resistor2_pin ?= p3_1
+	resistor3_pin ?= p3_2
+	resistor4_pin ?= p3_4
+	COMMON_FLAGS += -DDRIVER_RESISTIVE_LOAD
+	COMMON_FLAGS += -DRESISTIVE_LOAD_PIN1=GPIO::${resistor1_pin}
+	COMMON_FLAGS += -DRESISTIVE_LOAD_PIN2=GPIO::${resistor2_pin}
+	COMMON_FLAGS += -DRESISTIVE_LOAD_PIN3=GPIO::${resistor3_pin}
+	COMMON_FLAGS += -DRESISTIVE_LOAD_PIN4=GPIO::${resistor4_pin}
+endif
+
 ifneq ($(findstring softi2c,${drivers}), )
 	CXX_TARGETS += src/driver/soft_i2c.cc
 	COMMON_FLAGS += -DDRIVER_SOFTI2C

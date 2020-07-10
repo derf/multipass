@@ -1,0 +1,44 @@
+codegen:
+  instance: resistiveLoad
+  includes:
+    - driver/resistive_load.h
+  flags:
+    - drivers=resistive_load
+  setup:
+    - resistiveLoad.setup();
+
+states:
+  - UNINITIALIZED
+  - SLEEP
+  - P14MW
+  - P11MW
+  - P4_4MW
+  - P3_4MW
+  - P1_1MW
+  - P235UW
+
+transition:
+  setup:
+    src: [UNINITIALIZED]
+    dst: SLEEP
+  switchToNone:
+    src: [UNINITIALIZED, SLEEP, P14MW, P11MW, P4_4MW, P3_4MW, P1_1MW, P235UW]
+    dst: SLEEP
+  switchTo750:
+    src: [UNINITIALIZED, SLEEP, P14MW, P11MW, P4_4MW, P3_4MW, P1_1MW, P235UW]
+    dst: P14MW
+  switchTo1K0:
+    src: [UNINITIALIZED, SLEEP, P14MW, P11MW, P4_4MW, P3_4MW, P1_1MW, P235UW]
+    dst: P11MW
+  switchTo2K4:
+    src: [UNINITIALIZED, SLEEP, P14MW, P11MW, P4_4MW, P3_4MW, P1_1MW, P235UW]
+    dst: P4_4MW
+  switchTo3K3:
+    src: [UNINITIALIZED, SLEEP, P14MW, P11MW, P4_4MW, P3_4MW, P1_1MW, P235UW]
+    dst: P3_4MW
+  switchTo10K:
+    src: [UNINITIALIZED, SLEEP, P14MW, P11MW, P4_4MW, P3_4MW, P1_1MW, P235UW]
+    dst: P1_1MW
+  switchTo47K:
+    src: [UNINITIALIZED, SLEEP, P14MW, P11MW, P4_4MW, P3_4MW, P1_1MW, P235UW]
+    dst: P235UW
