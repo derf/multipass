@@ -135,7 +135,7 @@ ifneq ($(findstring resistive_load,${drivers}), )
 	resistor1_pin ?= p3_0
 	resistor2_pin ?= p3_1
 	resistor3_pin ?= p3_2
-	resistor4_pin ?= p3_4
+	resistor4_pin ?= p3_3
 	COMMON_FLAGS += -DDRIVER_RESISTIVE_LOAD
 	COMMON_FLAGS += -DRESISTIVE_LOAD_PIN1=GPIO::${resistor1_pin}
 	COMMON_FLAGS += -DRESISTIVE_LOAD_PIN2=GPIO::${resistor2_pin}
