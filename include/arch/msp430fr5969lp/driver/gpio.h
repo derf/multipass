@@ -66,14 +66,19 @@ class GPIO {
 		inline void input(unsigned char const pin) {
 			if (pin < p2_0) {
 				P1DIR &= ~(1 << pin);
+				P1REN &= ~(1 << pin);
 			} else if (pin < p3_0) {
 				P2DIR &= ~(1 << (pin - p2_0));
+				P2REN &= ~(1 << (pin - p2_0));
 			} else if (pin < p4_0) {
 				P3DIR &= ~(1 << (pin - p3_0));
+				P3REN &= ~(1 << (pin - p3_0));
 			} else if (pin < pj_0) {
 				P4DIR &= ~(1 << (pin - p4_0));
+				P4REN &= ~(1 << (pin - p4_0));
 			} else if (pin < PIN_INVALID) {
 				PJDIR &= ~(1 << (pin - pj_0));
+				PJREN &= ~(1 << (pin - pj_0));
 			}
 		}
 		inline void input(unsigned char const pin, unsigned char const pull) {
