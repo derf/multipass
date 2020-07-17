@@ -1,0 +1,85 @@
+codegen:
+  instance: moody
+  includes:
+    - driver/i2c.h
+    - driver/mmsubstate.h
+  flags:
+    - arch_drivers=i2c
+    - drivers=mmsubstate
+  setup:
+    i2c.setup();
+
+parameters:
+  - substate_count
+  - substate_duration
+  - substate_power
+  - static_p1
+  - static_p2
+
+states:
+  - UNINITIALIZED
+  - SLEEP
+  - STATIC
+  - SUB2
+  - SUB8
+  - SUBVAR
+
+transition:
+  sleep:
+    src: [UNINITIALIZED, STATIC, SUB2, SUB8, SUBVAR]
+    dst: SLEEP
+    set_param:
+      substate_count: 0
+      substate_duration: 0
+      substate_power: 0
+  noSubstates:
+    src: [SLEEP, STATIC, SUB2, SUB8, SUBVAR]
+    dst: STATIC
+    arguments:
+    - name: power1
+      values: [30, 50, 80]
+      parameter: static_p1
+    - name: power2
+      values: [30, 50, 80]
+      parameter: static_p2
+    set_param:
+      substate_count: 0
+      substate_duration: 0
+      substate_power: 0
+  twoSubstates:
+    src: [SLEEP, STATIC, SUB2, SUB8, SUBVAR]
+    dst: SUB2
+    set_param:
+      substate_count: 2
+    arguments:
+    - name: switchDuration
+      values: [5, 10, 15, 20]
+      parameter: substate_duration
+    - name: power
+      values: [50, 100, 150]
+      parameter: substate_power
+  eightSubstates:
+    src: [SLEEP, STATIC, SUB2, SUB8, SUBVAR]
+    dst: SUB8
+    set_param:
+      substate_count: 8
+    arguments:
+    - name: switchDuration
+      values: [5, 10, 15, 20]
+      parameter: substate_duration
+    - name: power
+      values: [50, 100, 150]
+      parameter: substate_power
+  setSubstates:
+    src: [SLEEP, STATIC, SUB2, SUB8, SUBVAR]
+    dst: SUBVAR
+    arguments:
+    - name: substateCount
+      values: [2, 4, 10, 12]
+      parameter: substate_count
+    - name: switchDuration
+      values: [5, 10, 15, 20]
+      parameter: substate_duration
+    - name: power
+      values: [255]
+      parameter: substate_power

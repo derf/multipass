@@ -88,6 +88,11 @@ ifneq ($(findstring mmsimple,${drivers}), )
 	COMMON_FLAGS += -DDRIVER_MMSIMPLE
 endif
 
+ifneq ($(findstring mmsubstate,${drivers}), )
+	CXX_TARGETS += src/driver/mmsubstate.cc
+	COMMON_FLAGS += -DDRIVER_MMSUBSTATE
+endif
+
 ifneq ($(findstring nrf24l01,${drivers}), )
 	CXX_TARGETS += src/driver/nrf24l01.cc
 	ifeq (${arch}, msp430fr5994lp)
