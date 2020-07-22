@@ -1,0 +1,50 @@
+codegen:
+  instance: timedResistiveLoad
+  includes:
+    - driver/timed_resistive_load.h
+  flags:
+    - arch_drivers=timed_resistive_load
+  setup:
+    - timedResistiveLoad.setup();
+
+states:
+  - UNINITIALIZED
+  - SLEEP
+  - P14MW
+  - P3_4MW
+  - P235UW
+
+transition:
+  setup:
+    src: [UNINITIALIZED]
+    dst: SLEEP
+  switchToNone:
+    src: [UNINITIALIZED, SLEEP, P14MW, P3_4MW, P235UW]
+    dst: SLEEP
+  switchTo750:
+    src: [UNINITIALIZED, SLEEP, P14MW, P3_4MW, P235UW]
+    dst: P14MW
+  switchTo3K3:
+    src: [UNINITIALIZED, SLEEP, P14MW, P3_4MW, P235UW]
+    dst: P3_4MW
+  switchTo47K:
+    src: [UNINITIALIZED, SLEEP, P14MW, P3_4MW, P235UW]
+    dst: P235UW
+  nop1K0:
+    src: [SLEEP, P14MW, P3_4MW, P235UW]
+    dst: SLEEP
+    arguments:
+    - name: duration_us
+      values: [50, 200, 700, 1200, 5000, 23000]
+  nop3K3:
+    src: [SLEEP, P14MW, P3_4MW, P235UW]
+    dst: SLEEP
+    arguments:
+    - name: duration_us
+      values: [50, 200, 700, 1200, 5000, 23000]
+  nop10K:
+    src: [SLEEP, P14MW, P3_4MW, P235UW]
+    dst: SLEEP
+    arguments:
+    - name: duration_us
+      values: [50, 200, 700, 1200, 5000, 23000]

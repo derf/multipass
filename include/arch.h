@@ -10,6 +10,8 @@ class Arch {
 		void setup();
 		void idle_loop();
 		void idle();
+
+		// Delay functions are not exact
 		void delay_us(unsigned int const us);
 		void delay_ms(unsigned int const ms);
 		void sleep_ms(unsigned int const ms);

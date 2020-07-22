@@ -72,6 +72,19 @@ ifneq ($(findstring counter,${arch_drivers}), )
 	CXX_TARGETS += src/arch/msp430fr5994lp/driver/counter.cc
 endif
 
+ifneq ($(findstring timed_resistive_load,${arch_drivers}), )
+	CXX_TARGETS += src/arch/msp430fr5994lp/driver/timed_resistive_load.cc
+	resistor1_pin ?= p3_0
+	resistor2_pin ?= p3_1
+	resistor3_pin ?= p3_2
+	resistor4_pin ?= p3_3
+	COMMON_FLAGS += -DDRIVER_TIMED_RESISTIVE_LOAD
+	COMMON_FLAGS += -DTIMED_RESISTIVE_LOAD_PIN1=GPIO::${resistor1_pin}
+	COMMON_FLAGS += -DTIMED_RESISTIVE_LOAD_PIN2=GPIO::${resistor2_pin}
+	COMMON_FLAGS += -DTIMED_RESISTIVE_LOAD_PIN3=GPIO::${resistor3_pin}
+	COMMON_FLAGS += -DTIMED_RESISTIVE_LOAD_PIN4=GPIO::${resistor4_pin}
+endif
+
 ifneq (${cpu_freq}, )
 	COMMON_FLAGS += -DF_CPU=${cpu_freq}UL
 else
@@ -127,7 +140,8 @@ arch_info:
 	@echo "CPU   Freq: ${cpu_freq} Hz"
 	@echo "Timer Freq: ${timer_freq} Hz -> $(shell src/arch/msp430fr5994lp/model.py f_timer "${cpu_freq}" "${timer_freq}")"
 	@echo "I2C   Freq: ${i2c_freq} Hz"
-	@echo "Counter Overflow: 65536/255"
+	@echo "Counter Overflow: 65536/65535"
+	@echo "sleep_ms Overflow: 250 500"
 	@echo "Monitor: /dev/${SERIAL_PORT} 115200"
 
 .PHONY: arch_clean arch_help arch_info monitor program
