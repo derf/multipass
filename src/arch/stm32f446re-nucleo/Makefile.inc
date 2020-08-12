@@ -2,6 +2,8 @@
 
 SERIAL_PORT ?= ttyACM0
 
+cpu_freq ?= 168000000
+
 INCLUDES += -Iext/libopencm3/include
 
 COMMON_FLAGS += --static -nostartfiles -g3 -Os -fno-common

@@ -40,22 +40,52 @@ class GPIO {
 			gpio_toggle(GPIOA, GPIO5);
 		}
 #pragma GCC diagnostic pop
-		/*
 		inline void input(unsigned char const pin) {
+			if (pin < pb_0) {
+				gpio_mode_setup(GPIOA, GPIO_MODE_INPUT, GPIO_PUPD_NONE, 1 << pin);
+			} else if (pin < pc_0) {
+				gpio_mode_setup(GPIOB, GPIO_MODE_INPUT, GPIO_PUPD_NONE, 1 << (pin - pb_0));
+			} else if (pin < PIN_INVALID) {
+				gpio_mode_setup(GPIOC, GPIO_MODE_INPUT, GPIO_PUPD_NONE, 1 << (pin - PIN_INVALID));
+			}
 		}
 		inline void input(unsigned char const pin, unsigned char const pull) {
 		}
 		inline void output(unsigned char const pin) {
+			if (pin < pb_0) {
+				gpio_mode_setup(GPIOA, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, 1 << pin);
+			} else if (pin < pc_0) {
+				gpio_mode_setup(GPIOB, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, 1 << (pin - pb_0));
+			} else if (pin < PIN_INVALID) {
+				gpio_mode_setup(GPIOC, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, 1 << (pin - PIN_INVALID));
+			}
 		}
+		/*
 		inline void output(unsigned char const pin, unsigned char const value) {
 		}
 		inline unsigned char read(unsigned char const pin) {
-		}
+		}*/
 		inline void write(unsigned char const pin, unsigned char value) {
+			if (pin < pb_0) {
+				if (value) {
+					gpio_port_write(GPIOA, gpio_port_read(GPIOA) | (1 << pin));
+				} else {
+					gpio_port_write(GPIOA, gpio_port_read(GPIOA) & ~(1 << pin));
+				}
+			} else if (pin < pc_0) {
+				if (value) {
+					gpio_port_write(GPIOB, gpio_port_read(GPIOB) | (1 << (pin-pc_0)));
+				} else {
+					gpio_port_write(GPIOB, gpio_port_read(GPIOB) & ~(1 << (pin-pc_0)));
+				}
+			} else if (pin < PIN_INVALID) {
+				if (value) {
+					gpio_port_write(GPIOC, gpio_port_read(GPIOC) | (1 << (pin-PIN_INVALID)));
+				} else {
+					gpio_port_write(GPIOC, gpio_port_read(GPIOC) & ~(1 << (pin-PIN_INVALID)));
+				}
+			}
 		}
-		inline void write_mask(unsigned char const pin_base, unsigned char set_mask, unsigned char clear_mask) {
-		}
-		*/
 };
 
 extern GPIO gpio;
