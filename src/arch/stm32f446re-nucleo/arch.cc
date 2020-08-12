@@ -12,24 +12,36 @@ void Arch::setup(void)
 {
 	// NUCLEO-F443RE uses 8MHz STLINK clock as input
 	rcc_clock_setup_pll(&rcc_hse_8mhz_3v3[RCC_CLOCK_3V3_168MHZ]);
-#ifdef WITH_LOOP
+
+	// counter
 	rcc_periph_clock_enable(RCC_TIM2);
 	nvic_enable_irq(NVIC_TIM2_IRQ);
 	rcc_periph_reset_pulse(RST_TIM2);
-
-
 	timer_set_mode(TIM2, TIM_CR1_CKD_CK_INT,
 		TIM_CR1_CMS_EDGE, TIM_CR1_DIR_UP);
-	// 10 kHz timer frequency
-	timer_set_prescaler(TIM2, ((rcc_apb1_frequency * 2) / 10000));
-
-	timer_disable_preload(TIM2); // ?
-	timer_continuous_mode(TIM2); // ?
-
-	timer_set_period(TIM2, 10000);
-
-	timer_enable_counter(TIM2);
+	timer_set_prescaler(TIM2, 0);
+	timer_disable_preload(TIM2);
+	timer_continuous_mode(TIM2);
+	timer_set_period(TIM2, 4294967295);
 	timer_enable_irq(TIM2, TIM_DIER_UIE);
+
+#ifdef WITH_LOOP
+	rcc_periph_clock_enable(RCC_TIM3);
+	nvic_enable_irq(NVIC_TIM3_IRQ);
+	rcc_periph_reset_pulse(RST_TIM3);
+
+
+	timer_set_mode(TIM3, TIM_CR1_CKD_CK_INT,
+		TIM_CR1_CMS_EDGE, TIM_CR1_DIR_UP);
+	// 10 kHz timer frequency
+	timer_set_prescaler(TIM3, ((rcc_apb1_frequency * 2) / 10000));
+
+	timer_continuous_mode(TIM3); // ?
+
+	timer_set_period(TIM3, 10000);
+
+	timer_enable_counter(TIM3);
+	timer_enable_irq(TIM3, TIM_DIER_UIE);
 #endif
 }
 
@@ -42,9 +54,10 @@ extern void loop();
 volatile char run_loop = 0;
 #endif
 
+// for 168 MHz
 void Arch::delay_us(unsigned int const us)
 {
-	volatile int x = us * 2;
+	volatile int x = us * 37;
 	while (x--) {
 		__asm("nop");
 	}
@@ -52,7 +65,7 @@ void Arch::delay_us(unsigned int const us)
 void Arch::delay_ms(unsigned int const ms)
 {
 	for (unsigned int i = 0; i < ms; i++) {
-		volatile int x = 2000;
+		volatile int x = 37325; // delays approx. x*4 cycles
 		while (x--) {
 			__asm("nop");
 		}
@@ -86,10 +99,10 @@ Arch arch;
 
 #include "driver/uptime.h"
 
-void tim2_isr(void)
+void tim3_isr(void)
 {
-	if (timer_get_flag(TIM2, TIM_SR_UIF)) {
-		timer_clear_flag(TIM2, TIM_SR_UIF);
+	if (timer_get_flag(TIM3, TIM_SR_UIF)) {
+		timer_clear_flag(TIM3, TIM_SR_UIF);
 #ifdef WITH_LOOP
 		run_loop = 1;
 #endif
