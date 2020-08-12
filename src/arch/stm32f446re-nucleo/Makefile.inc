@@ -25,7 +25,7 @@ endif
 
 CXX_TARGETS += src/arch/stm32f446re-nucleo/driver/gpio.cc
 CXX_TARGETS += src/arch/stm32f446re-nucleo/driver/stdout.cc
-#CXX_TARGETS += src/arch/stm32f446re-nucleo/driver/uptime.cc
+CXX_TARGETS += src/arch/stm32f446re-nucleo/driver/uptime.cc
 
 ifneq ($(findstring stdin,${arch_drivers}), )
 	CXX_TARGETS += src/arch/stm32f446re-nucleo/driver/stdin.cc
