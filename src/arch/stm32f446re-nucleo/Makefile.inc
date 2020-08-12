@@ -55,6 +55,12 @@ ifneq ($(findstring counter,${arch_drivers}), )
 	CXX_TARGETS += src/arch/stm32f446re-nucleo/driver/counter.cc
 endif
 
+ifneq (${cpu_freq}, )
+	COMMON_FLAGS += -DF_CPU=${cpu_freq}UL
+else
+	COMMON_FLAGS += -DF_CPU=168000000UL
+endif
+
 
 OBJECTS = ${CXX_TARGETS:.cc=.o} ${C_TARGETS:.c=.o} ${ASM_TARGETS:.S=.o}
 

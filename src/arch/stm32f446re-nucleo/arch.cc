@@ -10,8 +10,17 @@
 
 void Arch::setup(void)
 {
-	// NUCLEO-F443RE uses 8MHz STLINK clock as input
+	// NUCLEO-F443RE uses 8MHz STLINK clock (MCO from STLINK MCU) as input
+	// (it is connected to OSC_IN -> HSE OSC)
+#if F_CPU == 180000000UL
+	rcc_clock_setup_pll(&rcc_hse_8mhz_3v3[RCC_CLOCK_3V3_180MHZ]);
+#elif F_CPU == 168000000UL
 	rcc_clock_setup_pll(&rcc_hse_8mhz_3v3[RCC_CLOCK_3V3_168MHZ]);
+#elif F_CPU == 84000000UL
+	rcc_clock_setup_pll(&rcc_hse_8mhz_3v3[RCC_CLOCK_3V3_84MHZ]);
+#else
+#error Unsupported F_CPU
+#endif
 
 	// counter
 	rcc_periph_clock_enable(RCC_TIM2);
