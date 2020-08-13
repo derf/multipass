@@ -76,10 +76,11 @@ OBJECTS = ${CXX_TARGETS:.cc=.o} ${C_TARGETS:.c=.o} ${ASM_TARGETS:.S=.o}
 .s.o:
 	${QUIET}${CC} ${INCLUDES} ${COMMON_FLAGS} -c -o $@ ${@:.o=.S}
 
-# deliberately no ${MAKE} here -- multipass relies on make -B, but we don't
-# want to re-make libopencm3 all the time
-ext/libopencm3/lib/libopencm3_stm32f4.a: ext/libopencm3/Makefile
+ext/libopencm3/Makefile:
 	git submodule update --init
+
+ext/libopencm3/lib/libopencm3_stm32f4.a: ext/libopencm3/Makefile
+	find ext/libopencm3 -type f -exec sed -i 's/python$$/python3/' '{}' ';'
 	${MAKE} -C ext/libopencm3
 
 build/system.elf: ${OBJECTS} ext/libopencm3/lib/libopencm3_stm32f4.a

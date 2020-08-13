@@ -41,6 +41,19 @@ build_msp430fr5994lp:
   - make -B arch=msp430fr5994lp app=ledblink loop=1 timer_s=1
   - make -B arch=msp430fr5994lp app=sysinfo
 
+build_stm32f446re-nucleo:
+  stage: build
+  script:
+  - apt-get update -qy
+  - apt-get install -y build-essential gcc-arm-none-eabi binutils-arm-none-eabi libnewlib-arm-none-eabi libstdc++-arm-none-eabi-newlib git python3
+  - mkdir -p build
+  - make arch=stm32f446re-nucleo ext/libopencm3/lib/libopencm3_stm32f4.a
+  - make arch=stm32f446re-nucleo app=donothing
+  - find src -name '*.o' -delete
+  - make arch=stm32f446re-nucleo app=ledblink loop=1 timer_s=1
+  - find src -name '*.o' -delete
+  - make arch=stm32f446re-nucleo app=sysinfo
+
 test_posix:
   stage: test
   script:
