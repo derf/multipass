@@ -1,4 +1,4 @@
-image: debian:buster
+image: derfnull/multipass-ci:2020.08.13.2
 
 stages:
   - build
@@ -7,8 +7,6 @@ stages:
 build_posix:
   stage: build
   script:
-  - apt-get update -qy
-  - apt-get install -y build-essential
   - mkdir -p build
   - ./mp arch=posix app=donothing
   - ./mp arch=posix app=ledblink loop=1 timer_s=1
@@ -21,7 +19,7 @@ build_msp430fr5969lp:
   script:
   - dpkg --add-architecture i386
   - apt-get update -qy
-  - apt-get install -y build-essential curl libc6:i386 libgcc1:i386 libstdc++6:i386 zlib1g:i386
+  - apt-get install -y --no-install-recommends libc6:i386 libgcc1:i386 libstdc++6:i386 zlib1g:i386
   - curl -s https://ess.cs.uos.de/static/.gitlab-ci/msp430-gcc-full-linux-4.9.1.tar.xz | tar -C /opt -xJf -
   - mkdir -p build
   - make -B arch=msp430fr5969lp app=donothing
@@ -33,8 +31,6 @@ build_msp430fr5994lp:
   before_script:
   - export PATH="/opt/msp430/ti/msp430-gcc-full-linux-5.1.2.0/bin:$PATH"
   script:
-  - apt-get update -qy
-  - apt-get install -y build-essential curl
   - curl -s https://ess.cs.uos.de/static/.gitlab-ci/msp430-gcc-full-linux-5.1.2.0.tar.xz | tar -C /opt -xJf -
   - mkdir -p build
   - make -B arch=msp430fr5994lp app=donothing
@@ -45,7 +41,7 @@ build_stm32f446re-nucleo:
   stage: build
   script:
   - apt-get update -qy
-  - apt-get install -y build-essential gcc-arm-none-eabi binutils-arm-none-eabi libnewlib-arm-none-eabi libstdc++-arm-none-eabi-newlib git python3
+  - apt-get install -y --no-install-recommends gcc-arm-none-eabi binutils-arm-none-eabi libnewlib-arm-none-eabi libstdc++-arm-none-eabi-newlib git python3
   - mkdir -p build
   - make arch=stm32f446re-nucleo ext/libopencm3/lib/libopencm3_stm32f4.a
   - make arch=stm32f446re-nucleo app=donothing
@@ -57,7 +53,5 @@ build_stm32f446re-nucleo:
 test_posix:
   stage: test
   script:
-  - apt-get update -qy
-  - apt-get install -y build-essential
   - mkdir -p build
   - ./mpm arch=posix app=donothing
