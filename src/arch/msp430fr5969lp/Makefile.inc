@@ -8,26 +8,26 @@ SERIAL_PORT ?= ttyACM1
 
 cpu_freq ?= 8000000
 
-MSP430_FLASHER_DIR ?= /home/derf/var/projects/msp430/MSP430Flasher_1.3.7
+MSP430_FLASHER_DIR ?= /opt/msp430/MSP430Flasher_1.3.15
 
-INCLUDES += -I/opt/msp430/ti/gcc/include
+INCLUDES += -I/opt/msp430/ti/msp430-gcc-full-linux-5.1.2.0/include
 COMMON_FLAGS += -mcpu=${CPU} -mmcu=${MCU} -DMULTIPASS_ARCH_msp430fr5969lp
 COMMON_FLAGS += -DMULTIPASS_ARCH_HAS_I2C
 
 # LTO seems to be broken.
 
-CC = /opt/msp430/ti/gcc/bin/msp430-elf-gcc
-CXX = /opt/msp430/ti/gcc/bin/msp430-elf-g++
-OBJCOPY = /opt/msp430/ti/gcc/bin/msp430-elf-objcopy
-OBJDUMP = /opt/msp430/ti/gcc/bin/msp430-elf-objdump
-SIZE = /opt/msp430/ti/gcc/bin/msp430-elf-size
+CC = /opt/msp430/ti/msp430-gcc-full-linux-5.1.2.0/bin/msp430-elf-gcc
+CXX = /opt/msp430/ti/msp430-gcc-full-linux-5.1.2.0/bin/msp430-elf-g++
+OBJCOPY = /opt/msp430/ti/msp430-gcc-full-linux-5.1.2.0/bin/msp430-elf-objcopy
+OBJDUMP = /opt/msp430/ti/msp430-gcc-full-linux-5.1.2.0/bin/msp430-elf-objdump
+SIZE = /opt/msp430/ti/msp430-gcc-full-linux-5.1.2.0/bin/msp430-elf-size
 
 ARCH_SHORTNAME = msp430
 
 CXX_TARGETS += src/arch/msp430fr5969lp/arch.cc
 
 ifeq (${aspectc}, 1)
-	CXX = ag++ -r build/repo.acp -v 0 --c_compiler /opt/msp430/ti/gcc/bin/msp430-elf-g++ -p . --Xcompiler
+	CXX = ag++ -r build/repo.acp -v 0 --c_compiler /opt/msp430/ti/msp430-gcc-full-linux-5.1.2.0/bin/msp430-elf-g++ -p . --Xcompiler
 endif
 
 ifneq ($(findstring adc,${arch_drivers}), )
@@ -85,7 +85,7 @@ OBJECTS = ${CXX_TARGETS:.cc=.o} ${C_TARGETS:.c=.o} ${ASM_TARGETS:.S=.o}
 build/system.elf: ${OBJECTS}
 	${QUIET}mkdir -p build
 	${QUIET}${CXX} ${INCLUDES} ${COMMON_FLAGS} ${CXXFLAGS} \
-		-Wl,--library-path=/opt/msp430/ti/gcc/include/ \
+		-Wl,--library-path=/opt/msp430/ti/msp430-gcc-full-linux-5.1.2.0/include/ \
 		-Wl,--gc-sections \
 		-o $@ ${OBJECTS}
 	${QUIET}${SIZE} build/system.elf | tail -n1 | awk '{ print "  ROM: " int(($$1+$$2)*100/49152) "%     RAM: " int(($$2+$$3)*100/2048) "%" }'
@@ -96,7 +96,7 @@ build/system.hex: build/system.elf
 program: build/system.hex
 	${QUIET}LD_LIBRARY_PATH=${MSP430_FLASHER_DIR} \
 	${MSP430_FLASHER_DIR}/MSP430Flasher \
-	-i /dev/${DEBUG_PORT} \
+	-i ${DEBUG_PORT} \
 	-w build/system.hex -v -g -z '[VCC]'
 
 arch_clean:
@@ -120,6 +120,7 @@ arch_info:
 	@echo "Timer Freq: ${timer_freq} Hz -> $(shell src/arch/msp430fr5969lp/model.py f_timer "${cpu_freq}" "${timer_freq}")"
 	@echo "I2C   Freq: ${i2c_freq} Hz"
 	@echo "Counter Overflow: 65536/255"
+	@echo "sleep_ms Overflow: 250 500"
 	@echo "Monitor: /dev/${SERIAL_PORT} 115200"
 
 .PHONY: arch_clean arch_help arch_info monitor program
