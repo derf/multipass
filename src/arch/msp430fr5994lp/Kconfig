@@ -29,3 +29,6 @@ select meta_driver_timer
 config arch_msp430fr5994lp_driver_uptime
 bool "Uptime Counter"
 select meta_driver_uptime
+
+config arch_msp430fr5994lp_large_mode
+bool "Large Memory Model (20bit pointers, 256kB FRAM)"

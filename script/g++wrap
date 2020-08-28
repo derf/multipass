@@ -1,7 +1,5 @@
 #!/bin/zsh
 
-echo "> $@"
-
 for i in {1..$#}; do
 	if [[ $argv[$i] == *_agxx_* && -f $argv[$i] ]]; then
 		sed -i 's/inline void \* operator new (unsigned int,/inline void * operator new(__int20 unsigned,/' $argv[$i]

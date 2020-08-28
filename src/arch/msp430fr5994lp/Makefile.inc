@@ -14,6 +14,9 @@ INCLUDES += -I/opt/msp430/ti/msp430-gcc-full-linux-5.1.2.0/include
 COMMON_FLAGS += -mcpu=${CPU} -mmcu=${MCU} -DMULTIPASS_ARCH_msp430fr5994lp
 COMMON_FLAGS += -DMULTIPASS_ARCH_HAS_I2C
 
+ifdef CONFIG_arch_msp430fr5994lp_large_mode
+	override msp430_large = 1
+endif
 ifneq (${msp430_large}, )
 	COMMON_FLAGS += -mcode-region=either -mlarge -DADDR_20BIT -include int20.h
 endif
@@ -36,7 +39,7 @@ ifeq (${aspectc}, 1)
 	ifeq (${msp430_large}, )
 		CXX = ag++ -r build/repo.acp -v 0 --c_compiler /opt/msp430/ti/msp430-gcc-full-linux-5.1.2.0/bin/msp430-elf-g++ -p . --Xcompiler
 	else
-		CXX = ag++ -r build/repo.acp -v 0 --c_compiler /home/derf/var/projects/multipass/src/arch/msp430fr5994lp-256k/g++wrap -p . --Xcompiler
+		CXX = ag++ -r build/repo.acp -v 0 --c_compiler script/g++wrap -p . --Xcompiler
 	endif
 endif
 
