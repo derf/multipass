@@ -1,3 +1,5 @@
-loop ?= 1
-timer_s ?= 1
-arch_drivers += ,timer
+ifdef app
+	override loop = 1
+	override timer_s = 1
+	override arch_drivers += ,timer
+endif

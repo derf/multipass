@@ -1,0 +1,2 @@
+prompt "I2C Bus Scanner"
+depends on meta_driver_i2c

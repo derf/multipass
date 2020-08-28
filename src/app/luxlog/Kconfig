@@ -1,0 +1,2 @@
+prompt "Ambient Brightness Logger"
+depends on driver_max44009

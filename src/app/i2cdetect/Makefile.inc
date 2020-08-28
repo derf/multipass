@@ -1,3 +1,4 @@
-arch_drivers += ,i2c
-drivers += ,lm75
-loop ?= 1
+ifdef app
+	override loop = 1
+	override arch_drivers += ,i2c
+endif

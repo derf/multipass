@@ -2,7 +2,6 @@
 #include "driver/gpio.h"
 #include "driver/stdout.h"
 #include "driver/stdin.h"
-#include "driver/uptime.h"
 
 /*
 void check_command(unsigned char argc, char** argv)

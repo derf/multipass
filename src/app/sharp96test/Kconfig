@@ -1,0 +1,2 @@
+prompt "Sharp96 Test"
+depends on driver_sharp96

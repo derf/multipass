@@ -1,0 +1,2 @@
+prompt "Motion Logger"
+depends on driver_mpu9250

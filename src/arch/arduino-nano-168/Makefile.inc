@@ -27,38 +27,78 @@ ifeq (${aspectc}, 1)
 	CXX = ag++ -r build/repo.acp -v 0 --c_compiler avr-g++ -p . --Xcompiler
 endif
 
-CXX_TARGETS += src/arch/arduino-nano/arch.cc
-CXX_TARGETS += src/arch/arduino-nano/driver/gpio.cc
-CXX_TARGETS += src/arch/arduino-nano/driver/stdout.cc
-CXX_TARGETS += src/arch/arduino-nano/driver/uptime.cc
+CXX_TARGETS += src/arch/arduino-nano-168/arch.cc
+CXX_TARGETS += src/arch/arduino-nano-168/driver/gpio.cc
+CXX_TARGETS += src/arch/arduino-nano-168/driver/stdout.cc
+
+# Command-line driver selection
 
 ifneq ($(findstring softi2c,${drivers}), )
 else ifneq ($(findstring i2c,${arch_drivers}), )
-	CXX_TARGETS += src/arch/arduino-nano/driver/i2c.cc
+	CONFIG_arch_arduino_nano_168_driver_i2c = y
 endif
 
 ifneq ($(findstring adc,${arch_drivers}), )
-	CXX_TARGETS += src/arch/arduino-nano/driver/adc.cc
+	CONFIG_arch_arduino_nano_168_driver_adc = y
 endif
 
 ifneq ($(findstring spi,${arch_drivers}), )
-	CXX_TARGETS += src/arch/arduino-nano/driver/spi.cc
+	CONFIG_arch_arduino_nano_168_driver_spi = y
 endif
 
 ifneq ($(findstring stdin,${arch_drivers}), )
-	CXX_TARGETS += src/arch/arduino-nano/driver/stdin.cc
+	CONFIG_arch_arduino_nano_168_driver_stdin = y
 endif
 
 ifneq ($(findstring timer,${arch_drivers}), )
-	CXX_TARGETS += src/arch/arduino-nano/driver/timer.cc
+	CONFIG_arch_arduino_nano_168_driver_timer = y
 endif
 
 ifneq ($(findstring counter,${arch_drivers}), )
-	CXX_TARGETS += src/arch/arduino-nano/driver/counter.cc
+	CONFIG_arch_arduino_nano_168_driver_counter = y
 endif
 
 ifneq ($(findstring neopixel,${arch_drivers}), )
-	CXX_TARGETS += src/arch/arduino-nano/driver/neopixel.cc
+	CONFIG_arch_arduino_nano_168_driver_neopixel = y
+endif
+
+ifeq (${timer_s}, 1)
+	CONFIG_arch_arduino_nano_168_driver_uptime = y
+endif
+
+# Kconfig driver selection
+
+ifdef CONFIG_arch_arduino_nano_168_driver_i2c
+	CXX_TARGETS += src/arch/arduino-nano-168/driver/i2c.cc
+endif
+
+ifdef CONFIG_arch_arduino_nano_168_driver_adc
+	CXX_TARGETS += src/arch/arduino-nano-168/driver/adc.cc
+endif
+
+ifdef CONFIG_arch_arduino_nano_168_driver_spi
+	CXX_TARGETS += src/arch/arduino-nano-168/driver/spi.cc
+endif
+
+ifdef CONFIG_arch_arduino_nano_168_driver_stdin
+	CXX_TARGETS += src/arch/arduino-nano-168/driver/stdin.cc
+endif
+
+ifdef CONFIG_arch_arduino_nano_168_driver_timer
+	CXX_TARGETS += src/arch/arduino-nano-168/driver/timer.cc
+endif
+
+ifdef CONFIG_arch_arduino_nano_168_driver_counter
+	CXX_TARGETS += src/arch/arduino-nano-168/driver/counter.cc
+endif
+
+ifdef CONFIG_arch_arduino_nano_168_driver_neopixel
+	CXX_TARGETS += src/arch/arduino-nano-168/driver/neopixel.cc
+endif
+
+ifdef CONFIG_arch_arduino_nano_168_driver_uptime
+	COMMON_FLAGS += -DTIMER_S
+	CXX_TARGETS += src/arch/arduino-nano-168/driver/uptime.cc
 endif
 
 ifeq (${cpu_freq}, 16000000)

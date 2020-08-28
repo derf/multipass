@@ -1,0 +1,10 @@
+config arch_blinkenrocket_driver_i2c
+bool "I2C"
+select meta_driver_i2c
+
+config arch_blinkenrocket_driver_uptime
+bool "Uptime Counter"
+select meta_driver_uptime
+
+config arch_blinkenrocket_kout_nop
+bool "Disable UART emulation for stdout"

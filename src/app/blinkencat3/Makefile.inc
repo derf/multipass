@@ -1,2 +1,4 @@
-override loop = 1
-override arch_drivers += ,neopixel
+ifdef app
+	override loop = 1
+	override arch_drivers += ,neopixel
+endif

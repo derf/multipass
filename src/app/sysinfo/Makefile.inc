@@ -1,1 +1,3 @@
-loop = 1
+ifdef app
+	override loop = 1
+endif

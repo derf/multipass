@@ -1,0 +1,2 @@
+prompt "CCS811 Logger"
+depends on driver_ccs811 && loop && !wakeup

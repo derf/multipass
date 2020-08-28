@@ -1,0 +1,2 @@
+prompt "LED Blink"
+depends on loop && !wakeup

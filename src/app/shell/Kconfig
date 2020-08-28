@@ -1,0 +1,2 @@
+prompt "Shell / UART Echo"
+depends on meta_driver_stdin && wakeup

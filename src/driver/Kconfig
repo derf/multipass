@@ -1,0 +1,88 @@
+config meta_driver_adc
+bool
+config meta_driver_counter
+bool
+config meta_driver_i2c
+bool
+config meta_driver_neopixel
+bool
+config meta_driver_spi
+bool
+config meta_driver_stdin
+bool
+config meta_driver_timer
+bool
+
+menu "Drivers"
+
+config driver_am2320
+bool "AM2320 TH Sensor"
+depends on meta_driver_i2c
+
+config driver_bme280
+bool "BME280 TPH Sensor"
+depends on meta_driver_i2c
+
+config driver_bme680
+bool "BME680 TPH+IAQ Sensor"
+depends on meta_driver_i2c
+
+config driver_ccs811
+bool "CCS811 VOC Sensor"
+depends on meta_driver_i2c
+
+config driver_dummy
+bool "Dummy driver"
+
+config driver_eepom24lc64
+bool "24LC64 EEPROM"
+
+config driver_hcd1080
+bool "HDC1080 TH Sensor with Heated Plate"
+depends on meta_driver_i2c
+
+config driver_lm75
+bool "LM75 Temperature Sensor"
+depends on meta_driver_i2c
+# depends on I2C
+
+config driver_max44006
+bool "MAX44006 RGB Sensor"
+depends on meta_driver_i2c
+
+config driver_max44009
+bool "MAX44009 Ambient Light Sensor"
+depends on meta_driver_i2c
+
+config driver_mmsimple
+bool "MicroMoody simple"
+depends on meta_driver_i2c
+
+config driver_mmsubstate
+bool "MicroMoody with Sub-States"
+depends on meta_driver_i2c
+
+config driver_mpu9250
+bool "MPU9250 Accelerometer/Gyroscope/Magnetometer"
+depends on meta_driver_i2c
+
+config driver_nrf24l01
+bool "nRF24L01+ 2.4GHz Radio"
+depends on meta_driver_spi
+
+config driver_resistive_load
+bool "Resistive Load for Energy Model Generation Evaluation"
+
+config driver_s5851a
+bool "S5851A LoRaWAN Radio"
+
+config driver_sharp96
+bool "sharp LS013B4DN 96x96px Transflective LC Display"
+depends on meta_driver_spi
+
+config driver_soft_i2c
+bool "Software I2C"
+#depends on !driver_i2c
+select meta_driver_i2c
+
+endmenu

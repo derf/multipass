@@ -1,0 +1,2 @@
+prompt "Blinkencat 3"
+depends on (arch_arduino_nano || arch_arduino_nano_168) && meta_driver_neopixel && !loop && !wakeup

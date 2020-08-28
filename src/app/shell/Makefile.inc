@@ -1,2 +1,5 @@
-arch_drivers += ,stdin
-wakeup ?= 1
+ifdef app
+	override loop = 0
+	override wakeup = 1
+	override arch_drivers += ,stdin
+endif

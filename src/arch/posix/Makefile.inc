@@ -13,15 +13,31 @@ ifeq (${aspectc}, 1)
 endif
 
 CXX_TARGETS += src/arch/posix/arch.cc src/arch/posix/driver/gpio.cc
-CXX_TARGETS += src/arch/posix/driver/stdout.cc src/arch/posix/driver/uptime.cc
+CXX_TARGETS += src/arch/posix/driver/stdout.cc
 
 ifneq ($(findstring counter,${arch_drivers}), )
+	CONFIG_arch_posix_driver_counter = y
+endif
+
+ifeq (${timer_s}, 1)
+	CONFIG_arch_arduino_nano_driver_uptime = y
+endif
+
+ifdef CONFIG_arch_posix_driver_counter
 	CXX_TARGETS += src/arch/posix/driver/counter.cc
+endif
+
+ifdef CONFIG_arch_arduino_nano_driver_uptime
+	COMMON_FLAGS += -DTIMER_S
+	CXX_TARGETS += src/arch/arduino-nano/driver/uptime.cc
 endif
 
 OBJECTS = ${CXX_TARGETS:.cc=.o} ${C_TARGETS:.c=.o}
 
 ifneq (${gpio_trace}, )
+	COMMON_FLAGS += -DGPIO_TRACE
+endif
+ifdef CONFIG_gpio_trace
 	COMMON_FLAGS += -DGPIO_TRACE
 endif
 

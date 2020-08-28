@@ -1,0 +1,11 @@
+config arch_esp8266_driver_counter
+bool "Cycle Counter"
+select meta_driver_counter
+
+config arch_esp8266_driver_stdin
+bool "UART Input"
+select meta_driver_stdin
+
+config arch_esp8266_driver_uptime
+bool "Uptime Counter"
+select meta_driver_uptime

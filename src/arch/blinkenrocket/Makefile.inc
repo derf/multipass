@@ -22,11 +22,30 @@ endif
 CXX_TARGETS += src/arch/blinkenrocket/arch.cc
 CXX_TARGETS += src/arch/blinkenrocket/driver/gpio.cc
 CXX_TARGETS += src/arch/blinkenrocket/driver/stdout.cc
-CXX_TARGETS += src/arch/blinkenrocket/driver/uptime.cc
 
 ifneq ($(findstring softi2c,${drivers}), )
 else ifneq ($(findstring i2c,${arch_drivers}), )
+	CONFIG_arch_blinkenrocket_driver_i2c = y
+endif
+
+ifeq (${timer_s}, 1)
+	CONFIG_arch_blinkenrocket_driver_uptime = y
+endif
+
+ifdef CONFIG_arch_blinkenrocket_driver_i2c
 	CXX_TARGETS += src/arch/blinkenrocket/driver/i2c.cc
+endif
+
+ifdef CONFIG_arch_blinkenrocket_driver_uptime
+	COMMON_FLAGS += -DTIMER_S
+	CXX_TARGETS += src/arch/blinkenrocket/driver/uptime.cc
+endif
+
+ifeq (${kout_nop}, 1)
+	COMMON_FLAGS += -DKOUT_NOP
+endif
+ifdef CONFIG_arch_blinkenrocket_kout_nop
+	COMMON_FLAGS += -DKOUT_NOP
 endif
 
 OBJECTS = ${CXX_TARGETS:.cc=.o} ${C_TARGETS:.c=.o}

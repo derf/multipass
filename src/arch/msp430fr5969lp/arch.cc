@@ -89,12 +89,6 @@ void Arch::setup(void)
 	TA1CCR0 = 4096;
 	TA1CTL |= TACLR | TAIE;
 #endif
-
-#ifdef TIMER_CYCLES
-	TA2CTL = TASSEL__SMCLK | ID__1 | MC__CONTINUOUS;
-	TA2EX0 = 0;
-	TA2CTL |= TACLR;
-#endif
 }
 
 #ifdef WITH_WAKEUP

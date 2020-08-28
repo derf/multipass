@@ -1,3 +1,5 @@
-arch_drivers += ,i2c
-drivers += ,max44009
-loop ?= 1
+ifdef app
+	override loop = 1
+	override arch_drivers += ,i2c
+	override drivers += ,max44009
+endif

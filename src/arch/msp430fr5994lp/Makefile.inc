@@ -29,6 +29,8 @@ SIZE = /opt/msp430/ti/msp430-gcc-full-linux-5.1.2.0/bin/msp430-elf-size
 ARCH_SHORTNAME = msp430
 
 CXX_TARGETS += src/arch/msp430fr5994lp/arch.cc
+CXX_TARGETS += src/arch/msp430fr5994lp/driver/gpio.cc
+CXX_TARGETS += src/arch/msp430fr5994lp/driver/stdout.cc
 
 ifeq (${aspectc}, 1)
 	ifeq (${msp430_large}, )
@@ -38,39 +40,77 @@ ifeq (${aspectc}, 1)
 	endif
 endif
 
+# Command-line
+
 ifneq ($(findstring adc,${arch_drivers}), )
-	CXX_TARGETS += src/arch/msp430fr5994lp/driver/adc.cc
+	CONFIG_arch_msp430fr5994lp_driver_adc = y
 endif
 
-CXX_TARGETS += src/arch/msp430fr5994lp/driver/gpio.cc
-CXX_TARGETS += src/arch/msp430fr5994lp/driver/stdout.cc
-CXX_TARGETS += src/arch/msp430fr5994lp/driver/uptime.cc
-
 ifneq ($(findstring stdin,${arch_drivers}), )
-	CXX_TARGETS += src/arch/msp430fr5994lp/driver/stdin.cc
+	CONFIG_arch_msp430fr5994lp_driver_stdin = y
 endif
 
 ifneq ($(findstring softi2c,${drivers}), )
 else ifneq ($(findstring i2c,${arch_drivers}), )
+	CONFIG_arch_msp430fr5994lp_driver_i2c = y
+endif
+
+ifneq ($(findstring spi_a1,${arch_drivers}), )
+	CONFIG_arch_msp430fr5994lp_driver_spi_a1 = y
+endif
+
+ifneq ($(findstring spi_b,${arch_drivers}), )
+	CONFIG_arch_msp430fr5994lp_driver_spi_b = y
+endif
+
+ifneq ($(findstring timer,${arch_drivers}), )
+	CONFIG_arch_msp430fr5994lp_driver_timer = y
+endif
+
+ifneq ($(findstring counter,${arch_drivers}), )
+	CONFIG_arch_msp430fr5994lp_driver_counter = y
+endif
+
+ifeq (${timer_s}, 1)
+	CONFIG_arch_msp430fr5994lp_driver_uptime = y
+endif
+
+# Kconfig
+
+ifdef CONFIG_arch_msp430fr5994lp_driver_adc
+	CXX_TARGETS += src/arch/msp430fr5994lp/driver/adc.cc
+endif
+
+ifdef CONFIG_arch_msp430fr5994lp_driver_stdin
+	CXX_TARGETS += src/arch/msp430fr5994lp/driver/stdin.cc
+endif
+
+ifdef CONFIG_arch_msp430fr5994lp_driver_i2c
 	CXX_TARGETS += src/arch/msp430fr5994lp/driver/i2c.cc
 	COMMON_FLAGS += -DDRIVER_I2C
 endif
 
-ifneq ($(findstring spi_a1,${arch_drivers}), )
+ifdef CONFIG_arch_msp430fr5994lp_driver_spi_a1
 	CXX_TARGETS += src/arch/msp430fr5994lp/driver/spi_a1.cc
 endif
 
-ifneq ($(findstring spi_b,${arch_drivers}), )
+ifdef CONFIG_arch_msp430fr5994lp_driver_spi_b
 	CXX_TARGETS += src/arch/msp430fr5994lp/driver/spi_b.cc
 endif
 
-ifneq ($(findstring timer,${arch_drivers}), )
+ifdef CONFIG_arch_msp430fr5994lp_driver_timer
 	CXX_TARGETS += src/arch/msp430fr5994lp/driver/timer.cc
 endif
 
-ifneq ($(findstring counter,${arch_drivers}), )
+ifdef CONFIG_arch_msp430fr5994lp_driver_counter
 	CXX_TARGETS += src/arch/msp430fr5994lp/driver/counter.cc
 endif
+
+ifdef CONFIG_arch_msp430fr5994lp_driver_uptime
+	COMMON_FLAGS += -DTIMER_S
+	CXX_TARGETS += src/arch/msp430fr5994lp/driver/uptime.cc
+endif
+
 
 ifneq ($(findstring timed_resistive_load,${arch_drivers}), )
 	CXX_TARGETS += src/arch/msp430fr5994lp/driver/timed_resistive_load.cc

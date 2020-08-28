@@ -1,2 +1,4 @@
-loop ?= 1
-arch_drivers += ,stdin,neopixel
+ifdef app
+	override loop = 1
+	override arch_drivers += ,stdin,neopixel
+endif

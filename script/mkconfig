@@ -1,0 +1,92 @@
+#!/bin/sh
+
+cat <<EOF
+
+menu "System"
+
+config loop
+bool "Regularly call loop()"
+
+config wakeup
+bool "Call wakeup() on wakeup"
+
+config ostream
+bool "C++ ostream support in stdout"
+
+config i2c_freq
+int "I2C Frequency [Hz]"
+range 1000 100000
+default 100000
+depends on meta_driver_i2c
+
+config timer_freq
+int "Timer Frequency"
+range 1 10000
+default 10
+depends on meta_driver_timer
+
+endmenu
+
+choice Architecture
+bool "Architecture"
+
+EOF
+
+for arch in $(ls -1 src/arch); do
+	echo config arch_${arch} | tr - _
+	echo bool '"'"$(cat src/arch/${arch}/prompt)"'"'
+	echo
+done
+
+echo endchoice
+echo
+
+for arch in $(ls -1 src/arch); do
+	echo config arch
+	echo string
+	echo default '"'"${arch}"'"'
+	echo depends on arch_${arch} | tr - _
+	echo
+done
+
+for arch in $(ls -1 src/arch); do
+	if [ -e "src/arch/${arch}/Kconfig" ]; then
+		echo menu '"'"$(cat src/arch/${arch}/prompt) Configuration"'"'
+		echo depends on arch_${arch} | tr - _
+		echo
+		cat "src/arch/${arch}/Kconfig"
+		echo
+		echo endmenu
+		echo
+	fi
+done
+
+cat <<EOF
+choice Application
+bool "Application"
+
+EOF
+
+for app in $(ls -1 src/app); do
+	echo config app_${app} | tr - _
+	if [ -e "src/app/${app}/Kconfig" ]; then
+		echo bool
+		cat src/app/${app}/Kconfig
+	else
+		echo bool '"'${app}'"'
+	fi
+	echo
+done
+
+echo endchoice
+echo
+
+for app in $(ls -1 src/app); do
+	echo config app
+	echo string
+	echo default '"'"${app}"'"'
+	echo depends on app_${app} | tr - _
+	echo
+done
+
+cat src/driver/Kconfig

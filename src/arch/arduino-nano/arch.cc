@@ -38,11 +38,6 @@ void Arch::setup(void)
 #error Unsupported F_CPU
 #endif
 
-#ifdef TIMER_CYCLES
-	TCCR0A = 0;
-	TCCR0B = _BV(CS00);
-#endif
-
 #if defined(WITH_LOOP) || defined(TIMER_S)
 	TCCR1A = 0;
 	TCCR1B = _BV(WGM12) | _BV(CS12) | _BV(CS10); // /1024

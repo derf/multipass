@@ -1,0 +1,31 @@
+config arch_msp430fr5994lp_256k_driver_adc
+bool "ADC (Analog-Digital-Converter)"
+select meta_driver_adc
+
+config arch_msp430fr5994lp_256k_driver_counter
+bool "Cycle Counter"
+select meta_driver_counter
+
+config arch_msp430fr5994lp_256k_driver_i2c
+bool "I2C on eUSCI_B1"
+select meta_driver_i2c
+
+config arch_msp430fr5994lp_256k_driver_spi_a1
+bool "SPI on eUSCI_A1"
+select meta_driver_spi
+
+config arch_msp430fr5994lp_256k_driver_spi_b
+bool "SPI on eUSCI_B1"
+select meta_driver_spi
+
+config arch_msp430fr5994lp_256k_driver_stdin
+bool "UART Input"
+select meta_driver_stdin
+
+config arch_msp430fr5994lp_256k_driver_timer
+bool "Timer with Interrupts"
+select meta_driver_timer
+
+config arch_msp430fr5994lp_256k_driver_uptime
+bool "Uptime Counter"
+select meta_driver_uptime

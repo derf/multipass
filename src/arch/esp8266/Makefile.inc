@@ -22,7 +22,7 @@ CXXFLAGS = -std=c++11 -fno-rtti -fno-threadsafe-statics
 LDFLAGS += -nostdlib -Wl,--no-check-sections -u call_user_start -Wl,-static
 
 CXX_TARGETS += src/arch/esp8266/arch.cc src/arch/esp8266/driver/gpio.cc
-CXX_TARGETS += src/arch/esp8266/driver/stdout.cc src/arch/esp8266/driver/uptime.cc
+CXX_TARGETS += src/arch/esp8266/driver/stdout.cc
 
 OBJECTS = ${CXX_TARGETS:.cc=.o} ${C_TARGETS:.c=.o}
 
@@ -30,12 +30,33 @@ ifeq (${esp8266_led2}, 1)
 	COMMON_FLAGS += -DLED_ON_GPIO16
 endif
 
+# Commandline
+
+ifneq ($(findstring counter,${arch_drivers}), )
+	CONFIG_arch_esp8266_driver_counter = y
+endif
+
 ifneq ($(findstring stdin,${arch_drivers}), )
+	CONFIG_arch_esp8266_driver_stdin = y
+endif
+
+ifeq (${timer_s}, 1)
+	CONFIG_arch_esp8266_driver_uptime = y
+endif
+
+# Kconfig
+
+ifdef CONFIG_arch_esp8266_driver_counter
+	CXX_TARGETS += src/arch/esp8266/driver/counter.cc
+endif
+
+ifdef CONFIG_arch_esp8266_driver_stdin
 	CXX_TARGETS += src/arch/esp8266/driver/stdin.cc
 endif
 
-ifneq ($(findstring counter,${arch_drivers}), )
-	CXX_TARGETS += src/arch/esp8266/driver/counter.cc
+ifdef CONFIG_arch_esp8266_driver_uptime
+	COMMON_FLAGS += -DTIMER_S
+	CXX_TARGETS += src/arch/esp8266/driver/uptime.cc
 endif
 
 .cc.o:

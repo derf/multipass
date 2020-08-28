@@ -1,0 +1,10 @@
+config gpio_trace
+bool "Trace GPIO changes on stdout"
+
+config arch_posix_driver_counter
+bool "Cycle counter"
+select meta_driver_counter
+
+config arch_posix_driver_uptime
+bool "Uptime counter"
+select meta_driver_uptime

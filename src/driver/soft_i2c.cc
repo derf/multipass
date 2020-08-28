@@ -7,9 +7,6 @@
 #endif
 
 #ifdef SOFTI2C_TIMER
-#ifdef TIMER_CYCLES
-#error "SOFTI2C_TIMER and TIMER_CYCLES are mutually exclusive"
-#endif
 #include "driver/timer.h"
 volatile unsigned char timer_done = 0;
 #endif

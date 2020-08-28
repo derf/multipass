@@ -27,33 +27,36 @@ endif
 
 CXX_TARGETS += src/arch/stm32f446re-nucleo/driver/gpio.cc
 CXX_TARGETS += src/arch/stm32f446re-nucleo/driver/stdout.cc
-CXX_TARGETS += src/arch/stm32f446re-nucleo/driver/uptime.cc
 
-ifneq ($(findstring stdin,${arch_drivers}), )
-	CXX_TARGETS += src/arch/stm32f446re-nucleo/driver/stdin.cc
-endif
+# Commandline
 
-ifneq ($(findstring softi2c,${drivers}), )
-else ifneq ($(findstring i2c,${arch_drivers}), )
-	CXX_TARGETS += src/arch/stm32f446re-nucleo/driver/i2c.cc
-	COMMON_FLAGS += -DDRIVER_I2C
-endif
-
-ifneq ($(findstring spi_a1,${arch_drivers}), )
-	CXX_TARGETS += src/arch/stm32f446re-nucleo/driver/spi_a1.cc
-endif
-
-ifneq ($(findstring spi_b,${arch_drivers}), )
-	CXX_TARGETS += src/arch/stm32f446re-nucleo/driver/spi_b.cc
+ifneq ($(findstring counter,${arch_drivers}), )
+	CONFIG_arch_stm32f446re_nucleo_driver_counter = y
 endif
 
 ifneq ($(findstring timer,${arch_drivers}), )
+	CONFIG_arch_stm32f446re_nucleo_driver_timer = y
+endif
+
+ifeq (${timer_s}, 1)
+	CONFIG_arch_stm32f446re_nucleo_driver_uptime = y
+endif
+
+# Kconfig
+
+ifdef CONFIG_arch_stm32f446re_nucleo_driver_counter
+	CXX_TARGETS += src/arch/stm32f446re-nucleo/driver/counter.cc
+endif
+
+ifdef CONFIG_arch_stm32f446re_nucleo_driver_timer
 	CXX_TARGETS += src/arch/stm32f446re-nucleo/driver/timer.cc
 endif
 
-ifneq ($(findstring counter,${arch_drivers}), )
-	CXX_TARGETS += src/arch/stm32f446re-nucleo/driver/counter.cc
+ifdef CONFIG_arch_stm32f446re_nucleo_driver_uptime
+	COMMON_FLAGS += -DTIMER_S
+	CXX_TARGETS += src/arch/stm32f446re-nucleo/driver/uptime.cc
 endif
+
 
 ifneq (${cpu_freq}, )
 	COMMON_FLAGS += -DF_CPU=${cpu_freq}UL
