@@ -101,7 +101,7 @@ program: build/system.elf
 		-c 'reset_config srst_only' -c '$$_TARGETNAME configure -rtos auto' \
 		-c 'reset_config connect_assert_srst' -c init -c targets \
 		-c 'reset halt' -c 'flash write_image erase "build/system.elf" 0' \
-		'verify_image "build/system.elf" 0' -c 'reset run' -c 'shutdown'
+		-c 'verify_image "build/system.elf" 0' -c 'reset run' -c 'shutdown'
 
 arch_clean:
 	${QUIET}rm -f ${OBJECTS}
