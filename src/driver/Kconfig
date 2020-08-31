@@ -55,7 +55,7 @@ depends on meta_driver_i2c
 
 config driver_mmsubstate
 bool "MicroMoody with Sub-States"
-depends on meta_driver_i2c
+depends on meta_driver_i2c && !driver_mmsimple
 
 config driver_mpu9250
 bool "MPU9250 Accelerometer/Gyroscope/Magnetometer"
