@@ -78,7 +78,7 @@ config driver_sharp96
 bool "sharp LS013B4DN 96x96px Transflective LC Display"
 depends on meta_driver_spi
 
-config driver_soft_i2c
+config driver_softi2c
 bool "Software I2C"
 #depends on !driver_i2c
 select meta_driver_i2c
