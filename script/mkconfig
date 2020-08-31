@@ -69,7 +69,7 @@ bool "Application"
 EOF
 
 for app in $(ls -1 src/app); do
-	if [ -e "src/app/${app}/no-kconfig" ]; then
+	if [ ! -e "src/app/${app}/Kconfig" ]; then
 		continue
 	fi
 	echo config app_${app} | tr - _
@@ -86,7 +86,7 @@ echo endchoice
 echo
 
 for app in $(ls -1 src/app); do
-	if [ -e "src/app/${app}/no-kconfig" ]; then
+	if [ ! -e "src/app/${app}/Kconfig" ]; then
 		continue
 	fi
 	echo config app
