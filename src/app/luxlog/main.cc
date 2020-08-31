@@ -1,7 +1,6 @@
 #include "arch.h"
 #include "driver/gpio.h"
 #include "driver/stdout.h"
-#include "driver/timer.h"
 #if defined(MULTIPASS_ARCH_HAS_I2C) && !defined(DRIVER_SOFTI2C)
 #include "driver/i2c.h"
 #else
