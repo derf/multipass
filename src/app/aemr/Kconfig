@@ -1,2 +1,0 @@
-prompt "Automatic Energy Model Refinement"
-depends on !loop && !wakeup

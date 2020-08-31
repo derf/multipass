@@ -69,6 +69,9 @@ bool "Application"
 EOF
 
 for app in $(ls -1 src/app); do
+	if [ -e "src/app/${app}/no-kconfig" ]; then
+		continue
+	fi
 	echo config app_${app} | tr - _
 	if [ -e "src/app/${app}/Kconfig" ]; then
 		echo bool
@@ -83,6 +86,9 @@ echo endchoice
 echo
 
 for app in $(ls -1 src/app); do
+	if [ -e "src/app/${app}/no-kconfig" ]; then
+		continue
+	fi
 	echo config app
 	echo string
 	echo default '"'"${app}"'"'
