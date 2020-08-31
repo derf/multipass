@@ -29,11 +29,9 @@ config driver_bme680
 bool "BME680 TPH+IAQ Sensor"
 depends on meta_driver_i2c &&!driver_bme280
 
-config driver_ccs811
-bool "CCS811 VOC Sensor"
-depends on meta_driver_i2c
+# ccs811 is broken and incomplete
 
-# dummy driver is AEMR-specific and not included in Kconfig
+# dummy is AEMR-specific and not included in Kconfig
 
 config driver_eepom24lc64
 bool "24LC64 EEPROM"
@@ -69,8 +67,7 @@ depends on meta_driver_spi
 
 # resistive_load is AEMR-specific and not included in Kconfig
 
-config driver_s5851a
-bool "S5851A LoRaWAN Radio"
+# s5851a is broken and incomplete
 
 config driver_sharp96
 bool "sharp LS013B4DN 96x96px Transflective LC Display"
