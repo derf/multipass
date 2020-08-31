@@ -84,7 +84,7 @@ build/0x40000.bin: build/0x00000.bin
 	# also created by commandline for 0x00000.bin
 
 program: build/0x00000.bin build/0x40000.bin
-	${ESPTOOL} -p ${SERIAL_PORT} write_flash 0x00000 build/0x00000.bin 0x40000 build/0x40000.bin -fm dout
+	${ESPTOOL} -p ${SERIAL_PORT} write_flash 0x00000 build/0x00000.bin 0x40000 build/0x40000.bin #-fm dout
 
 arch_clean:
 	rm -f ${OBJECTS}
