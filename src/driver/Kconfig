@@ -48,10 +48,6 @@ bool "LM75 Temperature Sensor"
 depends on meta_driver_i2c
 # depends on I2C
 
-config driver_max44006
-bool "MAX44006 RGB Sensor"
-depends on meta_driver_i2c
-
 config driver_max44009
 bool "MAX44009 Ambient Light Sensor"
 depends on meta_driver_i2c
