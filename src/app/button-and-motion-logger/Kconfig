@@ -1,2 +1,2 @@
 prompt "Button and Motion Logger"
-depends on meta_driver_adc && driver_mpu9250 && !loop && !wakeup
+depends on arch_arduino_nano && meta_driver_adc && driver_mpu9250 && !loop && !wakeup

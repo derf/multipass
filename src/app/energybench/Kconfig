@@ -1,2 +1,2 @@
 prompt "Energy Consumption Benchmark"
-depends on !loop && !wakeup
+depends on arch_msp430fr5994lp && !loop && !wakeup
