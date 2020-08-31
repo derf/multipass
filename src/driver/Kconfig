@@ -27,7 +27,7 @@ depends on meta_driver_i2c
 
 config driver_bme680
 bool "BME680 TPH+IAQ Sensor"
-depends on meta_driver_i2c
+depends on meta_driver_i2c &&!driver_bme280
 
 config driver_ccs811
 bool "CCS811 VOC Sensor"
