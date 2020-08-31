@@ -2,7 +2,7 @@ codegen:
   class: Nrf24l01
   instance: nrf24l01
   includes: ['driver/nrf24l01.h']
-  flags: ['drivers=nrf24l01', 'arch_drivers=spi_b']
+  flags: ['drivers=nrf24l01', 'arch_drivers=spi']
 
 dummygen:
   enum:

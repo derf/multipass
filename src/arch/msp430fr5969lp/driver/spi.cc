@@ -1,4 +1,4 @@
-#include "driver/spi_b.h"
+#include "driver/spi.h"
 #include <msp430.h>
 
 #ifndef F_I2C

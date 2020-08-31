@@ -16,7 +16,7 @@ select meta_driver_i2c
 #bool "SPI on eUSCI_A1"
 #select meta_driver_spi
 
-config arch_msp430fr5994lp_driver_spi_b
+config arch_msp430fr5994lp_driver_spi
 bool "SPI on eUSCI_B1"
 select meta_driver_spi
 

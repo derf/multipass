@@ -47,12 +47,8 @@ else ifneq ($(findstring i2c,${arch_drivers}), )
 	CONFIG_arch_msp430fr5969lp_driver_i2c = y
 endif
 
-ifneq ($(findstring spi_a1,${arch_drivers}), )
-	CONFIG_arch_msp430fr5969lp_driver_spi_a1 = y
-endif
-
-ifneq ($(findstring spi_b,${arch_drivers}), )
-	CONFIG_arch_msp430fr5969lp_driver_spi_b = y
+ifneq ($(findstring spi,${arch_drivers}), )
+	CONFIG_arch_msp430fr5969lp_driver_spi = y
 endif
 
 ifneq ($(findstring timer,${arch_drivers}), )
@@ -82,12 +78,8 @@ ifdef CONFIG_arch_msp430fr5969lp_driver_i2c
 	COMMON_FLAGS += -DDRIVER_I2C
 endif
 
-ifdef CONFIG_arch_msp430fr5969lp_driver_spi_a1
-	CXX_TARGETS += src/arch/msp430fr5969lp/driver/spi_a1.cc
-endif
-
-ifdef CONFIG_arch_msp430fr5969lp_driver_spi_b
-	CXX_TARGETS += src/arch/msp430fr5969lp/driver/spi_b.cc
+ifdef CONFIG_arch_msp430fr5969lp_driver_spi
+	CXX_TARGETS += src/arch/msp430fr5969lp/driver/spi.cc
 endif
 
 ifdef CONFIG_arch_msp430fr5969lp_driver_timer

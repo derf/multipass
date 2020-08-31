@@ -1,5 +1,5 @@
 #include "driver/sharp96.h"
-#include "driver/spi_b.h"
+#include "driver/spi.h"
 #include "driver/gpio.h"
 
 #ifndef SHARP96_POWER_PIN

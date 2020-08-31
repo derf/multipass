@@ -1,8 +1,8 @@
 codegen:
   instance: sharp96
-  includes: ['driver/spi_b.h', 'driver/sharp96.h']
+  includes: ['driver/spi.h', 'driver/sharp96.h']
   setup: ['spi.setup();', 'sharp96.setup();']
-  flags: ['drivers=sharp96', 'arch_drivers=spi_b,counter']
+  flags: ['drivers=sharp96', 'arch_drivers=spi,counter']
 
 states:
   - UNINITIALIZED

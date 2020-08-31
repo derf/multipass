@@ -2,12 +2,8 @@
 #include "driver/gpio.h"
 #include "driver/stdout.h"
 #include "driver/uptime.h"
-#include "driver/spi_b.h"
+#include "driver/spi.h"
 #include "driver/sharp96.h"
-
-#ifndef TIMER_CYCLES
-#error makeflag timer_cycles=1 required
-#endif
 
 unsigned char const lynx[12 * 96] = {
 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -117,6 +113,9 @@ extern "C" {
 uint16_t i = 0;
 
 class Transaction {
+	/**
+	 * Transactions objects must not be nested.
+	 */
 	public:
 		inline Transaction() { asm_save_all(); }
 		inline ~Transaction() {}
@@ -126,7 +125,6 @@ class Transaction {
 
 void loop(void)
 {
-	gpio.led_toggle(1);
 	{
 		Transaction tx;
 		kout << dec << i << endl;
@@ -153,7 +151,6 @@ int main(void)
 	sharp96.setup();
 	sharp96.powerOn();
 
-	gpio.led_on(0);
 	gpio.input(GPIO::p4_5, 1);
 
 	asm_load_all();

@@ -6,6 +6,7 @@
 #define SRAM_SIZE 4096
 
 ; SRAM and stack pointer backup space
+; two backup areas allow for consistency in case of a power loss during backup
 sp_backup1:
     .space 2
 sram_backup1:
@@ -20,7 +21,8 @@ sram_backup2:
 backup_cookie:
     .space 2
 
-; save entire SRAM and CPU register state to persistent FRAM
+; save entire SRAM and CPU register state to persistent FRAM.
+; Must be called with interrupts disabled
 asm_save_all:
 
     ; r4 to r11 are callee saved -> push them to the stack.
@@ -65,9 +67,8 @@ save_sram_word:
 
 ; load entire SRAM and CPU register state from persistent FRAM,
 ; if it contains valid backup data. Execution will resume at the
-; last place where asm_save_all() was called is if nothing in between
-; had happened. Does not take possible the state of hardware peripherals
-; into account.
+; last place where asm_save_all() was called as if nothing in between
+; had happened. Does not take the state of hardware peripherals into account.
 asm_load_all:
 
     ; check if we have backup data

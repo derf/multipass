@@ -6,15 +6,7 @@
 
 #include "driver/nrf24l01.h"
 #include "driver/nrf24l01/registers.h"
-#ifdef MULTIPASS_ARCH_arduino_nano
 #include "driver/spi.h"
-#endif
-#ifdef MULTIPASS_ARCH_msp430fr5969lp
-#include "driver/spi_b.h"
-#endif
-#ifdef MULTIPASS_ARCH_msp430fr5994lp
-#include "driver/spi_b.h"
-#endif
 #include "driver/gpio.h"
 #include "arch.h"
 

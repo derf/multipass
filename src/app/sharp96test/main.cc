@@ -1,7 +1,7 @@
 #include "arch.h"
 #include "driver/gpio.h"
 #include "driver/stdout.h"
-#include "driver/spi_b.h"
+#include "driver/spi.h"
 #include "driver/sharp96.h"
 
 unsigned char const lynx[12 * 96] = {
