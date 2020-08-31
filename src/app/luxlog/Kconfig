@@ -1,2 +1,2 @@
 prompt "Ambient Brightness Logger"
-depends on driver_max44009
+depends on (arch_msp430fr5969lp || arch_msp430fr5994lp) && driver_max44009 && loop && !wakeup

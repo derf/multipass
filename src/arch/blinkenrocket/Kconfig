@@ -1,5 +1,6 @@
 config arch_blinkenrocket_driver_i2c
 bool "I2C"
+depends on !driver_softi2c
 select meta_driver_i2c
 
 config arch_blinkenrocket_driver_uptime
