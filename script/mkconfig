@@ -12,6 +12,7 @@ bool "Call wakeup() on wakeup"
 
 config ostream
 bool "C++ ostream support in stdout"
+depends on arch_esp8266 || arch_msp430fr5969lp || arch_msp430fr5994lp || arch_posix
 
 config i2c_freq
 int "I2C Frequency [Hz]"
