@@ -1,4 +1,4 @@
-#include "driver/spi.h"
+#include "driver/spi_a1.h"
 #include <msp430.h>
 
 signed char SPI::setup()
