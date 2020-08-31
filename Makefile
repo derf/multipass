@@ -200,11 +200,6 @@ ifdef CONFIG_driver_nrf24l01
 		nrf24l01_cs_pin ?= pc0
 		nrf24l01_irq_pin ?= pc2
 	endif
-	ifeq (${arch_dir}, arduino-nano-168)
-		nrf24l01_en_pin ?= pc1
-		nrf24l01_cs_pin ?= pc0
-		nrf24l01_irq_pin ?= pc2
-	endif
 	COMMON_FLAGS += -DDRIVER_NRF24L01
 	COMMON_FLAGS += -DNRF24L01_EN_PIN=GPIO::${nrf24l01_en_pin}
 	COMMON_FLAGS += -DNRF24L01_CS_PIN=GPIO::${nrf24l01_cs_pin}
