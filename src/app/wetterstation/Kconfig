@@ -1,2 +1,2 @@
 prompt "Wetterstation"
-depends on meta_driver_adc && (arch_arduino_nano || arch_arduino_nano_168)
+depends on meta_driver_adc && arch_arduino_nano
