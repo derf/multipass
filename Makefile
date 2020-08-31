@@ -223,11 +223,6 @@ ifdef CONFIG_driver_sharp96
 		sharp96_en_pin ?= p6_2
 		sharp96_cs_pin ?= p1_3
 	endif
-	ifeq (${arch_dir}, msp430fr5994lp-256k)
-		sharp96_power_pin ?= p1_2
-		sharp96_en_pin ?= p6_2
-		sharp96_cs_pin ?= p1_3
-	endif
 	COMMON_FLAGS += -DDRIVER_SHARP6
 	COMMON_FLAGS += -DSHARP96_POWER_PIN=GPIO::${sharp96_power_pin}
 	COMMON_FLAGS += -DSHARP96_EN_PIN=GPIO::${sharp96_en_pin}
