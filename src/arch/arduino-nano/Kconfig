@@ -22,7 +22,12 @@ config arch_arduino_nano_driver_timer
 bool "Timer with Interrupts"
 select meta_driver_timer
 
+config arch_arduino_nano_mega168
+bool "Cheap Hardware (ATMega168)"
+default n
+
 choice arch_arduino_nano_timer1
+
 bool "Timer 1"
 optional
 

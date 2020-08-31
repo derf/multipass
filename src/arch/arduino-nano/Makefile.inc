@@ -4,6 +4,11 @@ MCU = atmega328p
 SERIAL_PORT ?= /dev/ttyUSB0
 BAUD = 57600
 
+ifdef CONFIG_arch_arduino_nano_mega168
+	MCU = atmega168
+	BAUD = 19200
+endif
+
 cpu_freq ?= 16000000
 
 COMMON_FLAGS += -Werror=overflow
