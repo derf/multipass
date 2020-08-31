@@ -1,0 +1,2 @@
+prompt "Transaction Test"
+depends on loop && !wakeup && driver_sharp96 && meta_driver_spi

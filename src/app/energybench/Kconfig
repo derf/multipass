@@ -1,0 +1,2 @@
+prompt "Energy Consumption Benchmark"
+depends on !loop && !wakeup

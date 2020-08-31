@@ -1,0 +1,2 @@
+prompt "Do Nothing"
+depends on !loop && !wakeup
