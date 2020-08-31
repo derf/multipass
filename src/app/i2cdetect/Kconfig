@@ -1,2 +1,2 @@
 prompt "I2C Bus Scanner"
-depends on meta_driver_i2c
+depends on loop && !wakeup && meta_driver_i2c

@@ -1,2 +1,2 @@
 prompt "Motion Logger"
-depends on driver_mpu9250
+depends on arch_arduino_nano && driver_mpu9250 && !loop && !wakeup
