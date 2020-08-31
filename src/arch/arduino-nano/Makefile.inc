@@ -156,6 +156,11 @@ arch_clean:
 monitor:
 	${QUIET}screen ${SERIAL_PORT} ${uart_baud}
 
+size: build/system.elf
+	${QUIET}avr-size --format=avr --mcu=atmega328p build/system.elf | fgrep Program | perl -nE 'if (m{(\d+) bytes \(([0-9.]+%)}) { print("$$1;$$2;") }'
+	${QUIET}avr-size --format=avr --mcu=atmega328p build/system.elf | fgrep Data | perl -nE 'if (m{(\d+) bytes \(([0-9.]+%)}) { print("$$1;$$2;") }'
+	${QUIET}echo
+
 arch_help:
 	@echo "arduino-nano specific flags:"
 	@echo " SERIAL_PORT = ${SERIAL_PORT}"
@@ -168,4 +173,4 @@ arch_info:
 	@echo "Counter Overflow: 65536/255"
 	@echo "Monitor: ${SERIAL_PORT} ${uart_baud}"
 
-.PHONY: arch_clean arch_help arch_info monitor program
+.PHONY: arch_clean arch_help arch_info monitor program size
