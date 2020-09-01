@@ -331,6 +331,9 @@ Kconfig: script/mkconfig
 config: Kconfig
 	${QUIET}kconfig-qconf Kconfig
 
+randconfig: Kconfig
+	${QUIET}kconfig-conf --randconfig Kconfig
+
 clean: arch_clean
 	rm -f build/system.elf
 
@@ -368,4 +371,4 @@ info: arch_info
 	@echo "CXXFLAGS: ${CXXFLAGS}"
 	@echo "Selected (common/arch) drivers: ${drivers} / ${arch_drivers}"
 
-.PHONY: clean config default stack stackm help info
+.PHONY: clean config default randconfig stack stackm help info
