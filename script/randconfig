@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# randconfig occasionally generates invalid configs which lack an application.
+# Try generating a valid config up to ten times.
+
+for i in $(seq 1 10); do
+	kconfig-conf --randconfig Kconfig
+	if grep -F -q CONFIG_app= .config; then
+		exit 0
+	fi
+done
+
+exit 1

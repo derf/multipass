@@ -332,7 +332,7 @@ config: Kconfig
 	${QUIET}kconfig-qconf Kconfig
 
 randconfig: Kconfig
-	${QUIET}kconfig-conf --randconfig Kconfig
+	${QUIET}script/randconfig
 
 clean: arch_clean
 	rm -f build/system.elf
