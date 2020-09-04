@@ -136,11 +136,11 @@ void loop(void)
 	int mx, my, mz;
 	kout << "Temperature: " << mpu9250.getTemperature() << endl;
 	kout << "Accel X " << mpu9250.getAccelX() << endl;
-	kout << "Accel Y " << mpu9250.getAccelX() << endl;
-	kout << "Accel Z " << mpu9250.getAccelX() << endl;
+	kout << "Accel Y " << mpu9250.getAccelY() << endl;
+	kout << "Accel Z " << mpu9250.getAccelZ() << endl;
 	kout << "Gyro X " << mpu9250.getGyroX() << endl;
-	kout << "Gyro Y " << mpu9250.getGyroX() << endl;
-	kout << "Gyro Z " << mpu9250.getGyroX() << endl;
+	kout << "Gyro Y " << mpu9250.getGyroY() << endl;
+	kout << "Gyro Z " << mpu9250.getGyroZ() << endl;
 	mpu9250.getRawMagnet(&mx, &my, &mz);
 	kout << "Magnet X " << mx << endl;
 	kout << "Magnet Y " << my << endl;
