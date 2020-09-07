@@ -3,6 +3,7 @@
 set -e
 
 find src -name '*.o' -delete
+rm -f build/system.elf
 
 for i in info program; do
 	make "$@" $i
