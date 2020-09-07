@@ -6,12 +6,15 @@ menu "System"
 
 config loop
 bool "Regularly call loop()"
+default y
 
 config wakeup
 bool "Call wakeup() on wakeup"
+default n
 
 config ostream
 bool "C++ ostream support in stdout"
+default n
 depends on arch_esp8266 || arch_msp430fr5969lp || arch_msp430fr5994lp || arch_posix
 
 config i2c_freq
