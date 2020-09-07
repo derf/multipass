@@ -84,7 +84,6 @@ ext/libopencm3/Makefile:
 	git submodule update --init
 
 ext/libopencm3/lib/libopencm3_stm32f4.a: ext/libopencm3/Makefile
-	find ext/libopencm3 -type f -exec sed -i 's/python$$/python3/' '{}' ';'
 	${MAKE} -C ext/libopencm3
 
 build/system.elf: ${OBJECTS} ext/libopencm3/lib/libopencm3_stm32f4.a
