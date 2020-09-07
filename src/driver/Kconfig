@@ -79,3 +79,28 @@ bool "Software I2C"
 select meta_driver_i2c
 
 endmenu
+
+choice driver_softi2c_pullup
+
+bool "SoftI2C Pull-Up Configuration"
+depends on driver_softi2c
+
+config driver_softi2c_pullup_none
+bool "No Pull-Up Handling"
+
+config driver_softi2c_pullup_dynamic_internal
+bool "Internal Dynamic Pull-Up"
+help
+    Internal Pull-Up, disabled when transmitting LOW
+
+config driver_softi2c_pullup_dynamic_external
+bool "GPIO Dynamic Pull-Up"
+help
+    Pull-Up resistors connected to GPIO, disabled when transmitting LOW
+
+config driver_softi2c_pullup_external
+bool "GPIO Static Pull-Up"
+help
+    Pull-Up resistors connected to GPIO, always on
+
+endchoice

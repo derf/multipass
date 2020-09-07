@@ -258,14 +258,23 @@ ifdef CONFIG_timer_freq
 	COMMON_FLAGS += -DF_TIMER=${CONFIG_timer_freq}
 endif
 
+ifdef CONFIG_driver_softi2c_pullup-dynamic_internal
+	softi2c_pullup=internal
+endif
 ifeq (${softi2c_pullup}, internal)
 	COMMON_FLAGS += -DSOFTI2C_PULLUP_INTERNAL
 endif
 
+ifdef CONFIG_driver_softi2c_pullup_dynamic_external
+	softi2c_pullup=external
+endif
 ifeq (${softi2c_pullup}, external)
 	COMMON_FLAGS += -DSOFTI2C_PULLUP_EXTERNAL
 endif
 
+ifdef CONFIG_driver_softi2c_pullup_external
+	softi2c_pullup=gpio
+endif
 ifeq (${softi2c_pullup}, gpio)
 	COMMON_FLAGS += -DSOFTI2C_PULLUP_FIXED_GPIO
 endif
