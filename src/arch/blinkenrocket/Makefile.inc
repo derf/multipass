@@ -84,4 +84,7 @@ arch_info:
 	@echo "Counter Overflow: ?/?"
 	@echo "Monitor: ${SERIAL_PORT} 115200"
 
-.PHONY: arch_clean arch_help arch_info monitor program
+attributes: build/system.elf
+	${QUIET}script/size.py avr-size text,data data,bss
+
+.PHONY: arch_clean arch_help arch_info attributes monitor program

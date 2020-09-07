@@ -14,6 +14,7 @@ CC = arm-none-eabi-gcc
 CXX = arm-none-eabi-g++
 OBJCOPY = arm-none-eabi-objcopy
 OBJDUMP = arm-none-eabi-objdump
+SIZE = arm-none-eabi-size
 
 CXX_TARGETS += src/arch/stm32f446re-nucleo/arch.cc
 
@@ -125,4 +126,7 @@ arch_info:
 	@echo "Counter Overflow: 65536/255"
 	@echo "Monitor: /dev/${SERIAL_PORT} 115200"
 
-.PHONY: arch_clean arch_help arch_info monitor program
+attributes: build/system.elf
+	${QUIET}script/size.py ${SIZE} text,data data,bss
+
+.PHONY: arch_clean arch_help arch_info attributes monitor program

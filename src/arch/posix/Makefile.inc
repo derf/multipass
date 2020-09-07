@@ -70,4 +70,7 @@ arch_info:
 	@echo "Counter Overflow: 18446744073709551616/1"
 	@echo "Monitor: run build/system.elf"
 
-.PHONY: arch_clean arch_help arch_info monitor program run
+attributes: build/system.elf
+	${QUIET}script/size.py size text data,bss
+
+.PHONY: arch_clean arch_help arch_info attributes monitor program run

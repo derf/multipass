@@ -11,6 +11,7 @@ AR = ${TOOLCHAIN_BASE}/xtensa-lx106-elf-ar
 LD = ${TOOLCHAIN_BASE}/xtensa-lx106-elf-gcc
 OBJCOPY = ${TOOLCHAIN_BASE}/xtensa-lx106-elf-objcopy
 OBJDUMP = ${TOOLCHAIN_BASE}/xtensa-lx106-elf-objdump
+SIZE = ${TOOLCHAIN_BASE}/xtensa-lx106-elf-size
 
 ifeq (${aspectc}, 1)
 	CXX = ag++ -r build/repo.acp -v 0 --c_compiler ${TOOLCHAIN_BASE}/xtensa-lx106-elf-g++ -p . --Xcompiler
@@ -110,4 +111,7 @@ arch_info:
 	@echo "Counter Overflow: 4294967296/0"
 	@echo "Monitor: ${SERIAL_PORT} 115200"
 
-.PHONY: arch_clean arch_help arch_info monitor program
+attributes: build/system.elf
+	${QUIET}script/size.py ${SIZE} text,irom0.text data,bss
+
+.PHONY: arch_clean arch_help arch_info attributes monitor program
