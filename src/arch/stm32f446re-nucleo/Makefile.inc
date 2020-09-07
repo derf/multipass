@@ -111,12 +111,8 @@ monitor:
 
 arch_help:
 	@echo "stm32f446re-nucleo specific flags:"
-	@echo "    DEBUG_PORT = ${DEBUG_PORT}"
-	@echo "    SERIAL_PORT = ${SERIAL_PORT}"
 	@echo "    cpu_freq = ${cpu_freq} (desired CPU frequency in Hz)"
-	@echo "        supported frequencies: 1 / 4 / 8 / 16 MHz"
-	@echo "    MSP430_FLASHER_DIR = /home/derf/var/projects/msp430/MSP430Flasher_1.3.7"
-	@echo "        (required for flashing, must contain libmsp430.so and MSP430Flasher)"
+	@echo "        supported frequencies: 84 / 168 / 180 MHz"
 
 arch_info:
 	@echo "CPU   Freq: ${cpu_freq} Hz"
