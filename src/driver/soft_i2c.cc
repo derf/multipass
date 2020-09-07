@@ -227,7 +227,7 @@ ON_TIMER_INTERRUPT_tail
 #if SOFTI2C_PULLUP_EXTERNAL
 #ifdef MULTIPASS_ARCH_msp430fr5969lp
 SoftI2C i2c(GPIO::p1_6, GPIO::p1_7, GPIO::p1_4, GPIO::p1_5);
-#elif MULTIPASS_ARCH_msp430fr5969lp
+#elif MULTIPASS_ARCH_msp430fr5994lp
 SoftI2C i2c(GPIO::p5_0, GPIO::p5_1, GPIO::p8_2, GPIO::p8_3);
 #else
 #error "softi2c_pullup = external not supported on this architecture"

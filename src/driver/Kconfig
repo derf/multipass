@@ -95,11 +95,13 @@ help
 
 config driver_softi2c_pullup_dynamic_external
 bool "GPIO Dynamic Pull-Up"
+depends on arch_msp430fr5969lp || arch_msp430fr5994lp
 help
     Pull-Up resistors connected to GPIO, disabled when transmitting LOW
 
 config driver_softi2c_pullup_external
 bool "GPIO Static Pull-Up"
+depends on arch_msp430fr5969lp || arch_msp430fr5994lp
 help
     Pull-Up resistors connected to GPIO, always on
 
