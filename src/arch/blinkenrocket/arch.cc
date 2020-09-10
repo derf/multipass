@@ -62,12 +62,16 @@ void Arch::idle(void)
 
 void Arch::delay_us(unsigned int const us)
 {
-	_delay_us(us);
+	for (unsigned int i = 0; i < us; i++) {
+		_delay_us(1);
+	}
 }
 
 void Arch::delay_ms(unsigned int const ms)
 {
-	_delay_ms(ms);
+	for (unsigned int i = 0; i < ms; i++) {
+		_delay_ms(1);
+	}
 }
 
 Arch arch;
