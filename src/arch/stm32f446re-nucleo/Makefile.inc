@@ -35,9 +35,9 @@ ifneq ($(findstring counter,${arch_drivers}), )
 	CONFIG_arch_stm32f446re_nucleo_driver_counter = y
 endif
 
-ifneq ($(findstring timer,${arch_drivers}), )
-	CONFIG_arch_stm32f446re_nucleo_driver_timer = y
-endif
+#ifneq ($(findstring timer,${arch_drivers}), )
+#	CONFIG_arch_stm32f446re_nucleo_driver_timer = y
+#endif
 
 ifeq (${timer_s}, 1)
 	CONFIG_arch_stm32f446re_nucleo_driver_uptime = y
@@ -49,9 +49,9 @@ ifdef CONFIG_arch_stm32f446re_nucleo_driver_counter
 	CXX_TARGETS += src/arch/stm32f446re-nucleo/driver/counter.cc
 endif
 
-ifdef CONFIG_arch_stm32f446re_nucleo_driver_timer
-	CXX_TARGETS += src/arch/stm32f446re-nucleo/driver/timer.cc
-endif
+#ifdef CONFIG_arch_stm32f446re_nucleo_driver_timer
+#	CXX_TARGETS += src/arch/stm32f446re-nucleo/driver/timer.cc
+#endif
 
 ifdef CONFIG_arch_stm32f446re_nucleo_driver_uptime
 	COMMON_FLAGS += -DTIMER_S
