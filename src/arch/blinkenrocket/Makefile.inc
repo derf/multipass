@@ -68,7 +68,7 @@ program: build/system.hex
 	avrdude -p ${MCU} -c usbasp -U flash:w:build/system.hex
 
 arch_clean:
-	rm -f ${OBJECTS} build/system.hex
+	${QUIET}rm -f ${OBJECTS} build/system.hex
 
 monitor:
 	screen ${SERIAL_PORT} 115200

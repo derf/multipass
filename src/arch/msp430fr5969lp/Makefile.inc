@@ -133,8 +133,7 @@ program: build/system.hex
 	-w build/system.hex -v -g -z '[VCC]'
 
 arch_clean:
-	${QUIET}rm -f ${OBJECTS}
-	${QUIET}rm -f build/system.hex
+	${QUIET}rm -f ${OBJECTS} build/system.hex
 
 monitor:
 	${QUIET}screen /dev/${SERIAL_PORT} 115200

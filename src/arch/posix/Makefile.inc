@@ -60,7 +60,7 @@ monitor: run
 program: build/system.elf
 
 arch_clean:
-	rm -f ${OBJECTS}
+	${QUIET}rm -f ${OBJECTS}
 
 arch_help:
 	@echo "posix specific flags:"

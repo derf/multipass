@@ -344,7 +344,7 @@ randconfig: Kconfig
 	${QUIET}script/randconfig
 
 clean: arch_clean
-	rm -f build/system.elf
+	${QUIET}rm -f build/system.elf
 
 help: arch_help
 	@echo

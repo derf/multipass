@@ -70,10 +70,10 @@ endif
 
 build/system.ar: ${OBJECTS}
 	${QUIET}mkdir -p build
-	${AR} cru $@ ${OBJECTS}
+	${QUIET}${AR} cru $@ ${OBJECTS}
 
 build/system.elf: build/system.ar
-	${CC} -L${SDK_BASE}/lib -T${SDK_BASE}/lib/eagle.app.v6-derf.ld ${LDFLAGS} \
+	${QUIET}${CC} -L${SDK_BASE}/lib -T${SDK_BASE}/lib/eagle.app.v6-derf.ld ${LDFLAGS} \
 		-Wl,--gc-sections \
 		-Wl,--start-group -lc -lgcc -lhal -lpp -lphy -lnet80211 -llwip -lwpa \
 		-lmain $< -Wl,--end-group -o $@
@@ -88,8 +88,7 @@ program: build/0x00000.bin build/0x40000.bin
 	${ESPTOOL} -p ${SERIAL_PORT} write_flash 0x00000 build/0x00000.bin 0x40000 build/0x40000.bin #-fm dout
 
 arch_clean:
-	rm -f ${OBJECTS}
-	rm -f build/system.ar
+	${QUIET}rm -f ${OBJECTS} build/system.ar
 
 monitor:
 	screen ${SERIAL_PORT} 115200
