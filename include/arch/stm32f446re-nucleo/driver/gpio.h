@@ -62,9 +62,16 @@ class GPIO {
 		}
 		/*
 		inline void output(unsigned char const pin, unsigned char const value) {
-		}
-		inline unsigned char read(unsigned char const pin) {
 		}*/
+		inline unsigned int read(unsigned char const pin) {
+			if (pin < pb_0) {
+				return gpio_get(GPIOA, 1 << pin);
+			} else if (pin < pc_0) {
+				return gpio_get(GPIOB, 1 << (pin-pb_0));
+			} else if (pin < PIN_INVALID) {
+				return gpio_get(GPIOC, 1 << (pin-pc_0));
+			}
+		}
 		inline void write(unsigned char const pin, unsigned char value) {
 			if (pin < pb_0) {
 				if (value) {
