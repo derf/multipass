@@ -13,7 +13,7 @@ OBJCOPY = ${TOOLCHAIN_BASE}/xtensa-lx106-elf-objcopy
 OBJDUMP = ${TOOLCHAIN_BASE}/xtensa-lx106-elf-objdump
 SIZE = ${TOOLCHAIN_BASE}/xtensa-lx106-elf-size
 
-ifeq (${aspectc}, 1)
+ifdef CONFIG_aspectc
 	CXX = ag++ -r build/repo.acp -v 0 --c_compiler ${TOOLCHAIN_BASE}/xtensa-lx106-elf-g++ -p . --Xcompiler
 endif
 

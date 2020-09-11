@@ -8,7 +8,7 @@ OBJDUMP = objdump
 
 ARCH_SHORTNAME = x64
 
-ifeq (${aspectc}, 1)
+ifdef CONFIG_aspectc
 	CXX = ag++ -r build/repo.acp -v 0 -p . --Xcompiler
 endif
 

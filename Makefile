@@ -29,6 +29,10 @@ ifdef verbose
 	QUIET =
 endif
 
+ifeq (${aspectc}, 1)
+	CONFIG_aspectc = y
+endif
+
 ifneq (${app_dir}, )
 	include src/app/${app_dir}/Makefile.inc
 endif

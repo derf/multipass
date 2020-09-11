@@ -18,7 +18,7 @@ SIZE = arm-none-eabi-size
 
 CXX_TARGETS += src/arch/stm32f446re-nucleo/arch.cc
 
-ifeq (${aspectc}, 1)
+ifdef CONFIG_aspectc
 	CXX = ag++ -r build/repo.acp -v 0 --c_compiler arm-none-eabi-g++ -p . --Xcompiler
 endif
 

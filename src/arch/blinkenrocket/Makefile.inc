@@ -15,7 +15,7 @@ OBJDUMP = avr-objdump
 
 ARCH_SHORTNAME = avr
 
-ifeq (${aspectc}, 1)
+ifdef CONFIG_aspectc
 	CXX = ag++ -r build/repo.acp -v 0 --c_compiler avr-g++ -p . --Xcompiler
 endif
 

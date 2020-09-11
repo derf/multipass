@@ -35,7 +35,7 @@ CXX_TARGETS += src/arch/msp430fr5994lp/arch.cc
 CXX_TARGETS += src/arch/msp430fr5994lp/driver/gpio.cc
 CXX_TARGETS += src/arch/msp430fr5994lp/driver/stdout.cc
 
-ifeq (${aspectc}, 1)
+ifdef CONFIG_aspectc
 	ifeq (${msp430_large}, )
 		CXX = ag++ -r build/repo.acp -v 0 --c_compiler /opt/msp430/ti/msp430-gcc-full-linux-5.1.2.0/bin/msp430-elf-g++ -p . --Xcompiler
 	else
