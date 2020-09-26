@@ -27,7 +27,7 @@ depends on meta_driver_i2c && (arch_msp430fr5969lp || arch_msp430fr5994lp)
 
 config driver_bme680
 bool "BME680 TPH+IAQ Sensor"
-depends on meta_driver_i2c && !driver_bme280 && (arch_msp430fr5969lp || arch_msp430fr5994lp)
+depends on meta_driver_i2c && !driver_bme280 && (arch_arduino_nano || arch_msp430fr5969lp || arch_msp430fr5994lp)
 
 # ccs811 is broken and incomplete
 
