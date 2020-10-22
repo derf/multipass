@@ -154,7 +154,7 @@ void Arch::sleep_ms(unsigned int const ms)
 		asm volatile("nop");
 		__bis_SR_register(GIE | LPM2_bits);
 		asm volatile("nop");
-		__dint();
+		//__dint(); // XXX das verträgt sich nicht gut mit energytrace=sync=timer und allen anderen counter-messungen!
 	}
 	TA3CTL = TASSEL__SMCLK;
 }
