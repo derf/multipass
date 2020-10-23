@@ -5,7 +5,7 @@
 #include <stdint.h>
 
 typedef uint16_t counter_value_t;
-typedef uint8_t counter_overflow_t;
+typedef uint16_t counter_overflow_t;
 
 class Counter {
 	private:
@@ -13,7 +13,7 @@ class Counter {
 
 	public:
 		uint16_t value;
-		volatile uint8_t overflow;
+		volatile uint16_t overflow;
 
 		Counter() : overflow(0) {}
 
