@@ -119,6 +119,13 @@ void Arch::delay_ms(unsigned int const ms)
 	}
 }
 
+inline static unsigned int irq_enabled()
+{
+	unsigned int sr;
+	__asm__ __volatile__("mov SR, %0" : "=r" (sr) : );
+	return sr & GIE;
+}
+
 volatile bool sleep_done = false;
 
 // max delay: 262 ms @ 16 MHz
@@ -128,6 +135,7 @@ void Arch::sleep_ms(unsigned int const ms)
 	if (ms == 0) {
 		return;
 	}
+	int int_enabled = irq_enabled();
 	sleep_done = false;
 #if F_CPU == 16000000UL
 	TA3CTL = TASSEL__SMCLK | ID__8; // /8
@@ -154,7 +162,9 @@ void Arch::sleep_ms(unsigned int const ms)
 		asm volatile("nop");
 		__bis_SR_register(GIE | LPM2_bits);
 		asm volatile("nop");
-		//__dint(); // XXX das verträgt sich nicht gut mit energytrace=sync=timer und allen anderen counter-messungen!
+		if (!int_enabled) {
+			__dint();
+		}
 	}
 	TA3CTL = TASSEL__SMCLK;
 }
