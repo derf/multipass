@@ -21,6 +21,8 @@ CXX = /opt/msp430/ti/msp430-gcc-full-linux-5.1.2.0/bin/msp430-elf-g++
 OBJCOPY = /opt/msp430/ti/msp430-gcc-full-linux-5.1.2.0/bin/msp430-elf-objcopy
 OBJDUMP = /opt/msp430/ti/msp430-gcc-full-linux-5.1.2.0/bin/msp430-elf-objdump
 SIZE = /opt/msp430/ti/msp430-gcc-full-linux-5.1.2.0/bin/msp430-elf-size
+GDB = /opt/msp430/ti/msp430-gcc-full-linux-5.1.2.0/bin/msp430-elf-gdb
+GDBA = /opt/msp430/ti/msp430-gcc-full-linux-5.1.2.0/bin/gdb_agent_console
 
 ARCH_SHORTNAME = msp430
 

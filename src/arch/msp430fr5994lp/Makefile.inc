@@ -5,6 +5,7 @@ MCU = msp430fr5994
 
 DEBUG_PORT ?= ttyACM0
 SERIAL_PORT ?= ttyACM1
+BAUD ?= 115200
 
 cpu_freq ?= 16000000
 
@@ -28,6 +29,8 @@ CXX = /opt/msp430/ti/msp430-gcc-full-linux-5.1.2.0/bin/msp430-elf-g++
 OBJCOPY = /opt/msp430/ti/msp430-gcc-full-linux-5.1.2.0/bin/msp430-elf-objcopy
 OBJDUMP = /opt/msp430/ti/msp430-gcc-full-linux-5.1.2.0/bin/msp430-elf-objdump
 SIZE = /opt/msp430/ti/msp430-gcc-full-linux-5.1.2.0/bin/msp430-elf-size
+GDB = /opt/msp430/ti/msp430-gcc-full-linux-5.1.2.0/bin/msp430-elf-gdb
+GDBA = /opt/msp430/ti/msp430-gcc-full-linux-5.1.2.0/bin/gdb_agent_console
 
 ARCH_SHORTNAME = msp430
 
@@ -126,6 +129,10 @@ else
 	COMMON_FLAGS += -DF_CPU=16000000UL
 endif
 
+ifeq (${cpu_freq}, 32768)
+	BAUD=9600
+endif
+
 
 OBJECTS = ${CXX_TARGETS:.cc=.o} ${C_TARGETS:.c=.o} ${ASM_TARGETS:.S=.o}
 
@@ -159,7 +166,7 @@ arch_clean:
 	${QUIET}rm -f ${OBJECTS} build/system.hex
 
 monitor:
-	${QUIET}screen /dev/${SERIAL_PORT} 115200
+	${QUIET}screen /dev/${SERIAL_PORT} ${BAUD}
 
 arch_help:
 	@echo "msp430fr5994lp specific flags:"
@@ -176,7 +183,13 @@ arch_info:
 	@echo "I2C   Freq: ${i2c_freq} Hz"
 	@echo "Counter Overflow: 65536/65535"
 	@echo "sleep_ms Overflow: 250 500"
-	@echo "Monitor: /dev/${SERIAL_PORT} 115200"
+	@echo "Monitor: /dev/${SERIAL_PORT} ${BAUD}"
+
+gdb-server:
+	${GDBA} /opt/msp430/ti/msp430-gcc-full-linux-5.1.2.0/msp430.dat
+
+gdb:
+	${GDB} -ex 'target remote :55000' build/system.elf
 
 ifdef CONFIG_arch_msp430fr5994lp_large_mode
 attributes: build/system.elf
