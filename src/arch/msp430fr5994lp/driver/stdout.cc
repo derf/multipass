@@ -32,6 +32,12 @@ void StandardOutput::setup()
 	UCA0CTLW0 = UCSWRST | UCSSEL__SMCLK;
 	UCA0MCTLW = 0x5500;
 	UCA0BR0 = 8;
+#elif F_CPU == 32768UL
+	// Limited to 9600 Baud
+	// 32768 / 9600 == 3.413333 -> UCOS16 = 0, UCBR0 = 3, UCBRF0 = 0, UCBRS0 = 0x92 ("0.4003")
+	UCA0CTLW0 = UCSWRST | UCSSEL__SMCLK;
+	UCA0MCTLW = 0x9200;
+	UCA0BR0 = 3;
 #else
 #error Unsupported F_CPU
 #endif

@@ -37,6 +37,8 @@ void Arch::setup(void)
 	// 8MHz DCO
 	CSCTL0_H = CSKEY >> 8;
 	CSCTL1 = DCOFSEL_0;
+#elif F_CPU == 32768UL
+	CSCTL0_H = CSKEY >> 8;
 #else
 #error Unsupported F_CPU
 #endif
@@ -50,7 +52,7 @@ void Arch::setup(void)
 	CSCTL0_H = 0;
 
 
-#ifdef WITH_LOOP
+#if defined(WITH_LOOP) || F_CPU == 72368UL
 	// enable LXFT for RTC
 	CSCTL0_H = CSKEY >> 8;
 	CSCTL4 &= ~LFXTOFF;
@@ -81,6 +83,12 @@ void Arch::setup(void)
 #endif /* F_CPU */
 	TA0CTL |= TACLR;
 #endif /* TIMER_US */
+
+#if F_CPU == 32768UL
+	CSCTL0_H = CSKEY >> 8;
+	CSCTL2 = SELA__LFXTCLK | SELS__LFXTCLK | SELM__LFXTCLK;
+	CSCTL0_H = 0;
+#endif
 
 #if defined(WITH_LOOP) || defined(TIMER_S)
 	// 1s per wakeup for loop. Independent of SMCLK/F_CPU
@@ -153,6 +161,10 @@ void Arch::sleep_ms(unsigned int const ms)
 	TA3CTL = TASSEL__SMCLK | ID__8; // /8
 	TA3EX0 = 0; // /1 -> /8 (125 kHz)
 	TA3CCR0 = ms * 125;
+#elif F_CPU == 32768UL
+	TA3CTL = TASSEL__SMCLK | ID__8; // /8
+	TA3EX0 = 0; // /1 -> /8 (4.096 kHz)
+	TA3CCR0 = ms * 4;
 #else
 #error Unsupported F_CPU
 #endif /* F_CPU */
