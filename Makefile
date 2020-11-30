@@ -111,6 +111,10 @@ ifneq ($(findstring resistive_load,${drivers}), )
 	CONFIG_driver_resistive_load = y
 endif
 
+ifneq ($(findstring aemr_transition_sync,${drivers}), )
+	CONFIG_driver_aemr_transition_sync = y
+endif
+
 ifneq ($(findstring softi2c,${drivers}), )
 	CONFIG_driver_softi2c = y
 endif
@@ -239,6 +243,10 @@ ifdef CONFIG_driver_resistive_load
 	COMMON_FLAGS += -DRESISTIVE_LOAD_PIN2=GPIO::${resistor2_pin}
 	COMMON_FLAGS += -DRESISTIVE_LOAD_PIN3=GPIO::${resistor3_pin}
 	COMMON_FLAGS += -DRESISTIVE_LOAD_PIN4=GPIO::${resistor4_pin}
+endif
+
+ifdef CONFIG_driver_aemr_transition_sync
+	CXX_TARGETS += src/driver/aemr_transition_sync.cc
 endif
 
 ifdef CONFIG_driver_softi2c
