@@ -52,7 +52,7 @@ void Arch::setup(void)
 	CSCTL0_H = 0;
 
 
-#if defined(WITH_LOOP) || F_CPU == 72368UL
+#if defined(WITH_LOOP) || F_CPU == 32768UL
 	// enable LXFT for RTC
 	CSCTL0_H = CSKEY >> 8;
 	CSCTL4 &= ~LFXTOFF;
