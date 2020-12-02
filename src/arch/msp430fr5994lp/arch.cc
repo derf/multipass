@@ -56,13 +56,51 @@ void Arch::setup(void)
 	// enable LXFT for RTC
 	CSCTL0_H = CSKEY >> 8;
 	CSCTL4 &= ~LFXTOFF;
-	while (SFRIFG1 & OFIFG) {
+	while (CSCTL5 & LFXTOFFG) {
 		CSCTL5 &= ~LFXTOFFG;
-		SFRIFG1 &= ~OFIFG;
 	}
+	SFRIFG1 &= ~OFIFG;
 	CSCTL0_H = 0;
 
 	__delay_cycles(1000000);
+#endif
+
+#ifdef WITH_HFXT_16MHZ
+	PJSEL0 |= BIT6 | BIT7;
+	CSCTL0_H = CSKEY >> 8;
+
+	// set HFFREQ to 8-16 MHz (HFFREQ=10)
+	CSCTL4 = HFXTDRIVE_0 | HFFREQ_2 | (CSCTL4 & 0x0f);
+
+	// enable HFXT for SMCLK
+	while (CSCTL5 & HFXTOFFG) {
+		CSCTL5 &= ~HFXTOFFG;
+	}
+	SFRIFG1 &= ~OFIFG;
+	CSCTL0_H = 0;
+
+	// wait for it to stabilize
+	__delay_cycles(1000000);
+
+	// set MCLK and SMCLK to HFXT
+	CSCTL0_H = CSKEY >> 8;
+#if F_CPU == 16000000UL
+	CSCTL3 = DIVA__1 | DIVS__1 | DIVM__1;
+#elif F_CPU == 8000000UL
+	CSCTL3 = DIVA__1 | DIVS__2 | DIVM__2;
+#elif F_CPU == 4000000UL
+	CSCTL3 = DIVA__1 | DIVS__4 | DIVM__4;
+#elif F_CPU == 1000000UL
+	CSCTL3 = DIVA__1 | DIVS__16 | DIVM__16;
+#endif
+	// SELA__LFXTCLK falls back to VLOCLK if LFXT is not available, but set
+	// LFXT_FAULT (LFXTOFFG) in the process. We don't want that.
+#if defined(WITH_LOOP) || F_CPU == 32768UL
+	CSCTL2 = SELA__LFXTCLK | SELS__HFXTCLK | SELM__HFXTCLK;
+#else
+	CSCTL2 = SELA__VLOCLK | SELS__HFXTCLK | SELM__HFXTCLK;
+#endif
+	CSCTL0_H = 0;
 #endif
 
 #ifdef TIMER_US

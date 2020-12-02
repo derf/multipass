@@ -34,3 +34,9 @@ select meta_driver_uptime
 
 config arch_msp430fr5994lp_large_mode
 bool "Large Memory Model (20bit pointers, 256kB FRAM)"
+
+config arch_msp430fr5994lp_hfxt_16mhz
+bool "Use external 16MHz HFXT for system clock"
+help
+  System clock source defaults to DCO, HFXT is unpopulated by default.
+  Enable this option if your board contains a 16MHz crystal on HFXT.

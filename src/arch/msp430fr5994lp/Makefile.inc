@@ -77,6 +77,10 @@ ifeq (${timer_s}, 1)
 	CONFIG_arch_msp430fr5994lp_driver_uptime = y
 endif
 
+ifeq (${with_hfxt}, 1)
+	CONFIG_arch_msp430fr5994lp_hfxt_16mhz = y
+endif
+
 # Kconfig
 
 ifdef CONFIG_arch_msp430fr5994lp_driver_adc
@@ -107,6 +111,10 @@ endif
 ifdef CONFIG_arch_msp430fr5994lp_driver_uptime
 	COMMON_FLAGS += -DTIMER_S
 	CXX_TARGETS += src/arch/msp430fr5994lp/driver/uptime.cc
+endif
+
+ifdef CONFIG_arch_msp430fr5994lp_hfxt_16mhz
+	COMMON_FLAGS += -DWITH_HFXT_16MHZ
 endif
 
 

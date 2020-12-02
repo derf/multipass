@@ -51,6 +51,15 @@ void StandardOutput::setup()
 
 	UCA0CTLW0 &= ~UCSWRST;
 
+#if 0
+	if (CSCTL5 & LFXTOFFG) {
+		kout << "! LFXT fault" << endl;
+	}
+	if (CSCTL5 & HFXTOFFG) {
+		kout << "! HFXT fault" << endl;
+	}
+#endif
+
 	//UCA0IE |= UCRXIE;
 }
 
