@@ -1,4 +1,9 @@
 #!/bin/zsh
+#
+# Copyright 2020 Daniel Friesel
+#
+# SPDX-License-Identifier: BSD-2-Clause
+
 
 for i in {1..$#}; do
 	if [[ $argv[$i] == *_agxx_* && -f $argv[$i] ]]; then

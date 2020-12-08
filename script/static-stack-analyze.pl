@@ -1,4 +1,8 @@
 #!/usr/bin/env perl
+#
+# Copyright 2018 Daniel Friesel
+#
+# SPDX-License-Identifier: BSD-2-Clause
 
 use strict;
 use warnings;
@@ -263,41 +267,3 @@ for my $function (reverse sort { ($call_graph{$a}{max_cost} <=> $call_graph{$b}{
 			$call_graph{$function}{max_depth});
 	}
 }
-
-__END__
-
-=head1 NAME
-
-=head1 SYNOPSIS
-
-=head1 VERSION
-
-=head1 DESCRIPTION
-
-=head1 OPTIONS
-
-=over
-
-=back
-
-=head1 EXIT STATUS
-
-=head1 CONFIGURATION
-
-None.
-
-=head1 DEPENDENCIES
-
-=over
-
-=back
-
-=head1 BUGS AND LIMITATIONS
-
-=head1 AUTHOR
-
-Copyright (C) 2018 by Daniel Friesel E<lt>derf@finalrewind.orgE<gt>
-
-=head1 LICENSE
-
-  0. You just DO WHAT THE FUCK YOU WANT TO.

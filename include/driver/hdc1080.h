@@ -1,3 +1,8 @@
+/*
+ * Copyright 2020 Daniel Friesel
+ *
+ * SPDX-License-Identifier: BSD-2-Clause
+ */
 #ifndef HDC1080_H
 #define HDC1080_H
 

@@ -1,3 +1,8 @@
+/*
+ * Copyright 2020 Daniel Friesel
+ *
+ * SPDX-License-Identifier: BSD-2-Clause
+ */
 #ifndef EEPROM24LC64_H
 #define EEPROM24LC64_H
 

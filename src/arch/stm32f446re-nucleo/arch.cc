@@ -1,3 +1,8 @@
+/*
+ * Copyright 2020 Daniel Friesel
+ *
+ * SPDX-License-Identifier: BSD-2-Clause
+ */
 #include <libopencm3/cm3/nvic.h>
 #include <libopencm3/stm32/rcc.h>
 #include <libopencm3/stm32/gpio.h>

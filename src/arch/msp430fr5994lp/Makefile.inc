@@ -1,4 +1,8 @@
 # vim:ft=make
+#
+# Copyright 2020 Daniel Friesel
+#
+# SPDX-License-Identifier: BSD-2-Clause
 
 CPU = 430x
 MCU = msp430fr5994

@@ -1,4 +1,8 @@
 #!/bin/sh
+#
+# Copyright 2020 Daniel Friesel
+#
+# SPDX-License-Identifier: CC0-1.0
 
 uarttest() {
 	~/var/projects/uarttest/bin/uarttest.py "$@"

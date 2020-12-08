@@ -1,3 +1,8 @@
+/*
+ * Copyright 2020 Daniel Friesel
+ *
+ * SPDX-License-Identifier: BSD-2-Clause
+ */
 #include "object/xdrstream.h"
 
 XDRStream & XDRStream::operator<<(unsigned char c)
@@ -87,7 +92,7 @@ XDRStream & XDRStream::operator<<(double number)
 		uint64_t i;
 		double d;
 	} v;
-	// Setting one member of a struct and then reading another is undefined
+	// Setting one member of a union and then reading another is undefined
 	// behaviour, but works as intended in nearly any (embedded) compiler
 	v.d = number;
 	*this << v.i;
@@ -128,14 +133,12 @@ XDRStream & XDRStream::operator<<(XDRStream & (*fkt) (XDRStream &))
 	return fkt(*this);
 }
 
-// FLUSH
 XDRStream & flush(XDRStream & os)
 {
 	os.flush();
 	return os;
 }
 
-// TERM: null-termination
 XDRStream & term(XDRStream & os)
 {
 	os.put('\0');

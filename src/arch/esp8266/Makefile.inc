@@ -1,4 +1,8 @@
 # vim:ft=make
+#
+# Copyright 2020 Daniel Friesel
+#
+# SPDX-License-Identifier: BSD-2-Clause
 
 TOOLCHAIN_BASE ?= /home/derf/var/projects/esp8266/toolchain/xtensa-lx106-elf/bin
 SDK_BASE ?= /home/derf/var/projects/esp8266/toolchain/xtensa-lx106-elf/xtensa-lx106-elf/sysroot/usr

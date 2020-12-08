@@ -1,3 +1,8 @@
+/*
+ * Copyright 2020 Daniel Friesel
+ *
+ * SPDX-License-Identifier: BSD-2-Clause
+ */
 #ifndef OUTPUTSTREAM_H
 #define OUTPUTSTREAM_H
 
@@ -52,25 +57,18 @@ class OutputStream {
 };
 
 
-// ENDL: new line character (and flush)
 OutputStream & endl(OutputStream & os);
 
-// BIN: print numbers in binary form.
 OutputStream & bin(OutputStream & os);
 
-// OCT: print numbers in octal form.
 OutputStream & oct(OutputStream & os);
 
-// DEC: print numbers in decimal form.
 OutputStream & dec(OutputStream & os);
 
-// HEX: print numbers in hexadecimal form.
 OutputStream & hex(OutputStream & os);
 
-// FLUSH: flush OutputStream buffer
 OutputStream & flush(OutputStream & os);
 
-// TERM: zero-termination
 OutputStream & term(OutputStream & os);
 
 #endif //OUTPUTSTREAM_H

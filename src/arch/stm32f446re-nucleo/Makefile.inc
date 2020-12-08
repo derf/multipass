@@ -1,4 +1,8 @@
 # vim:ft=make
+#
+# Copyright 2020 Daniel Friesel
+#
+# SPDX-License-Identifier: BSD-2-Clause
 
 SERIAL_PORT ?= ttyACM0
 

@@ -1,3 +1,8 @@
+/*
+ * Copyright 2020 Daniel Friesel
+ *
+ * SPDX-License-Identifier: BSD-2-Clause
+ */
 #ifndef STANDARDOUTPUT_H
 #define STANDARDOUTPUT_H
 
@@ -37,25 +42,18 @@ class StandardOutput {
 };
 
 
-// ENDL: new line character (and flush)
 StandardOutput & endl(StandardOutput & os);
 
-// BIN: print numbers in binary form.
 StandardOutput & bin(StandardOutput & os);
 
-// OCT: print numbers in octal form.
 StandardOutput & oct(StandardOutput & os);
 
-// DEC: print numbers in decimal form.
 StandardOutput & dec(StandardOutput & os);
 
-// HEX: print numbers in hexadecimal form.
 StandardOutput & hex(StandardOutput & os);
 
-// FLUSH: flush StandardOutput buffer
 StandardOutput & flush(StandardOutput & os);
 
-// TERM: zero-termination
 StandardOutput & term(StandardOutput & os);
 
 extern StandardOutput kout;

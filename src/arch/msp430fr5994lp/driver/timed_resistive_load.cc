@@ -1,3 +1,8 @@
+/*
+ * Copyright 2020 Daniel Friesel
+ *
+ * SPDX-License-Identifier: BSD-2-Clause
+ */
 #include "driver/timed_resistive_load.h"
 #include "driver/gpio.h"
 #include "arch.h"

@@ -1,3 +1,8 @@
+/*
+ * Copyright 2020 Daniel Friesel
+ *
+ * SPDX-License-Identifier: BSD-2-Clause
+ */
 #ifndef TIMED_RESISTIVE_LOAD_H
 #define TIMED_RESISTIVE_LOAD_H
 

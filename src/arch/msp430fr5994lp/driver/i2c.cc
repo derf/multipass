@@ -1,3 +1,8 @@
+/*
+ * Copyright 2020 Daniel Friesel
+ *
+ * SPDX-License-Identifier: BSD-2-Clause
+ */
 #include "driver/i2c.h"
 #include "arch.h"
 #include <msp430.h>

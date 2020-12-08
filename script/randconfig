@@ -1,4 +1,8 @@
 #!/bin/sh
+#
+# Copyright 2020 Daniel Friesel
+#
+# SPDX-License-Identifier: BSD-2-Clause
 
 # randconfig occasionally generates invalid configs which lack an application.
 # Try generating a valid config up to ten times.

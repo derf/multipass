@@ -1,2 +1,6 @@
+# Copyright 2020 Daniel Friesel
+#
+# SPDX-License-Identifier: CC0-1.0
+
 prompt "Transaction Test"
 depends on loop && !wakeup && driver_sharp96 && meta_driver_spi

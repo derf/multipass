@@ -1,3 +1,8 @@
+/*
+ * Copyright 2019 Adafruit Industries
+ *
+ * SPDX-License-Identifier: LGPL-3.0-or-later
+ */
 /*!
  * @file Adafruit_NeoPixel.cpp
  *

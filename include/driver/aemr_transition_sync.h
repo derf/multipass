@@ -1,3 +1,8 @@
+/*
+ * Copyright 2020 Daniel Friesel
+ *
+ * SPDX-License-Identifier: BSD-2-Clause
+ */
 #ifndef AEMR_TRANSITION_SYNC_H
 #define AEMR_TRANSITION_SYNC_H
 

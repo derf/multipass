@@ -1,3 +1,7 @@
+# Copyright 2020 Daniel Friesel
+#
+# SPDX-License-Identifier: BSD-2-Clause
+
 # Only load .config when app/arch are not specified on commandline
 ifneq (${app}, )
 	CONFIG_app = ${app}

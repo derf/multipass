@@ -1,2 +1,6 @@
+# Copyright 2020 Daniel Friesel
+#
+# SPDX-License-Identifier: CC0-1.0
+
 prompt "LoRaWAN test"
 depends on arch_msp430fr5994lp && !meta_driver_stdin && loop && !wakeup

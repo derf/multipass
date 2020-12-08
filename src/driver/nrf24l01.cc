@@ -1,5 +1,10 @@
 /*
  * Based on https://github.com/nRF24/RF24
+ *
+ * Copyright (C) 2011 J. Coliz <maniacbug@ymail.com>
+ * Copyright (C) 2019 Daniel Friesel
+ *
+ * SPDX-License-Identifier: GPL-2.0-only
  */
 
 #include <stdlib.h>

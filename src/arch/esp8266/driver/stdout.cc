@@ -1,3 +1,8 @@
+/*
+ * Copyright 2020 Daniel Friesel
+ *
+ * SPDX-License-Identifier: BSD-2-Clause
+ */
 #include "driver/stdout.h"
 extern "C" {
 #include "osapi.h"
@@ -197,14 +202,12 @@ ICACHE_FLASH_ATTR void StandardOutput::printf_float(float num)
 	put('0' + ((int)(num * 100) % 10));
 }
 
-// FLUSH
 StandardOutput & flush(StandardOutput & os)
 {
 	os.flush();
 	return os;
 }
 
-// ENDL: fuegt einen Zeilenumbruch in die Ausgabe ein.
 StandardOutput & endl(StandardOutput & os)
 {
 	os.put('\n');
@@ -212,35 +215,30 @@ StandardOutput & endl(StandardOutput & os)
 	return os;
 }
 
-// BIN: print numbers in binary form
 StandardOutput & bin(StandardOutput & os)
 {
 	os.setBase(2);
 	return os;
 }
 
-// OCT: print numbers in octal form.
 StandardOutput & oct(StandardOutput & os)
 {
 	os.setBase(8);
 	return os;
 }
 
-// DEC: print numbers in decimal form.
 StandardOutput & dec(StandardOutput & os)
 {
 	os.setBase(10);
 	return os;
 }
 
-// HEX: print numbers in hexadecimal form.
 StandardOutput & hex(StandardOutput & os)
 {
 	os.setBase(16);
 	return os;
 }
 
-// TERM: null-termination
 StandardOutput & term(StandardOutput & os)
 {
 	os.put('\0');

@@ -1,3 +1,6 @@
+# Copyright 2020 Daniel Friesel
+#
+# SPDX-License-Identifier: CC0-1.0
 config arch_arduino_nano_driver_adc
 bool "ADC (Analog-Digital-Converter)"
 select meta_driver_adc

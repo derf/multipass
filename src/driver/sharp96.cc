@@ -1,3 +1,8 @@
+/*
+ * Copyright 2020 Daniel Friesel
+ *
+ * SPDX-License-Identifier: BSD-2-Clause
+ */
 #include "driver/sharp96.h"
 #include "driver/spi.h"
 #include "driver/gpio.h"

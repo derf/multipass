@@ -1,3 +1,8 @@
+/*
+ * Copyright 2020 Daniel Friesel
+ *
+ * SPDX-License-Identifier: BSD-2-Clause
+ */
 #include "driver/counter.h"
 
 #if defined(TIMER_S) || defined(WITH_LOOP)

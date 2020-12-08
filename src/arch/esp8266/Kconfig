@@ -1,3 +1,6 @@
+# Copyright 2020 Daniel Friesel
+#
+# SPDX-License-Identifier: CC0-1.0
 config arch_esp8266_driver_counter
 bool "Cycle Counter"
 select meta_driver_counter

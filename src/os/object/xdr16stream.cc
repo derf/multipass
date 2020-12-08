@@ -1,3 +1,8 @@
+/*
+ * Copyright 2020 Daniel Friesel
+ *
+ * SPDX-License-Identifier: BSD-2-Clause
+ */
 #include "object/xdr16stream.h"
 
 XDRStream & XDRStream::operator<<(unsigned char c)
@@ -126,14 +131,12 @@ XDRStream & XDRStream::operator<<(XDRStream & (*fkt) (XDRStream &))
 	return fkt(*this);
 }
 
-// FLUSH
 XDRStream & flush(XDRStream & os)
 {
 	os.flush();
 	return os;
 }
 
-// TERM: null-termination
 XDRStream & term(XDRStream & os)
 {
 	os.put('\0');

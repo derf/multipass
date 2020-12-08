@@ -1,2 +1,6 @@
+# Copyright 2020 Daniel Friesel
+#
+# SPDX-License-Identifier: CC0-1.0
+
 prompt "Blinkencat 3"
 depends on arch_arduino_nano && meta_driver_neopixel && !loop && !wakeup

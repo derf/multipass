@@ -1,3 +1,8 @@
+/*
+ * Copyright 2020 Daniel Friesel
+ *
+ * SPDX-License-Identifier: BSD-2-Clause
+ */
 #include "object/outputstream.h"
 
 OutputStream & OutputStream::operator<<(unsigned char c)
@@ -192,14 +197,12 @@ void OutputStream::printf_float(float num)
 	put('0' + ((unsigned int)(num * 100) % 10));
 }
 
-// FLUSH
 OutputStream & flush(OutputStream & os)
 {
 	os.flush();
 	return os;
 }
 
-// ENDL: fuegt einen Zeilenumbruch in die Ausgabe ein.
 OutputStream & endl(OutputStream & os)
 {
 	os.put('\n');
@@ -207,35 +210,30 @@ OutputStream & endl(OutputStream & os)
 	return os;
 }
 
-// BIN: print numbers in binary form
 OutputStream & bin(OutputStream & os)
 {
 	os.setBase(2);
 	return os;
 }
 
-// OCT: print numbers in octal form.
 OutputStream & oct(OutputStream & os)
 {
 	os.setBase(8);
 	return os;
 }
 
-// DEC: print numbers in decimal form.
 OutputStream & dec(OutputStream & os)
 {
 	os.setBase(10);
 	return os;
 }
 
-// HEX: print numbers in hexadecimal form.
 OutputStream & hex(OutputStream & os)
 {
 	os.setBase(16);
 	return os;
 }
 
-// TERM: null-termination
 OutputStream & term(OutputStream & os)
 {
 	os.put('\0');

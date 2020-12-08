@@ -1,3 +1,9 @@
+;
+; Copyright 2020 Daniel Friesel
+;
+; SPDX-License-Identifier: BSD-2-Clause
+;
+
 .global asm_save_all
 .global asm_load_all
 .global asm_load_mem

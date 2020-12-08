@@ -1,3 +1,8 @@
+/*
+ * Copyright 2020 Daniel Friesel
+ *
+ * SPDX-License-Identifier: BSD-2-Clause
+ */
 #ifndef XDRSTREAM_H
 #define XDRSTREAM_H
 
@@ -35,10 +40,8 @@ class XDRStream {
 };
 
 
-// FLUSH: flush XDRStream buffer
 XDRStream & flush(XDRStream & os);
 
-// TERM: zero-termination
 XDRStream & term(XDRStream & os);
 
 template<int TSize>
@@ -47,4 +50,4 @@ XDRStream & opaque(XDRStream & os);
 XDRStream & fixed(XDRStream & os);
 XDRStream & variable(XDRStream & os);
 
-#endif //OUTPUTSTREAM_H
+#endif

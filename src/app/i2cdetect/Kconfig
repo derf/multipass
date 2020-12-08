@@ -1,2 +1,6 @@
+# Copyright 2020 Daniel Friesel
+#
+# SPDX-License-Identifier: CC0-1.0
+
 prompt "I2C Bus Scanner"
 depends on loop && !wakeup && meta_driver_i2c

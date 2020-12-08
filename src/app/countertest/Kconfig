@@ -1,2 +1,6 @@
+# Copyright 2020 Daniel Friesel
+#
+# SPDX-License-Identifier: CC0-1.0
+
 prompt "Cycle Counter Test"
 depends on meta_driver_counter && loop && !wakeup

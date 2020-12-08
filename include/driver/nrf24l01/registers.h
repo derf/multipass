@@ -1,6 +1,8 @@
 /*
     Copyright (c) 2007 Stefan Engelke <mbox@stefanengelke.de>
-	Portions Copyright (C) 2011 Greg Copeland
+    Portions Copyright (C) 2011 Greg Copeland
+
+    SPDX-License-Identifier: MIT
 
     Permission is hereby granted, free of charge, to any person
     obtaining a copy of this software and associated documentation

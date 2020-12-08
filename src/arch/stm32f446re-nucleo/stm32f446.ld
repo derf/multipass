@@ -1,3 +1,9 @@
+/*
+ * Copyright 2020 Daniel Friesel
+ *
+ * SPDX-License-Identifier: CC0-1.0
+ */
+
 MEMORY
 {
 	rom (rx) : ORIGIN = 0x08000000, LENGTH = 512K
