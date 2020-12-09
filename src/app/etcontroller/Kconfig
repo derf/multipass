@@ -1,0 +1,11 @@
+prompt "EnergyTrace Controller for External MCU"
+depends on !loop && !wakeup
+
+config ETCONTROLLER_RESET_PIN
+string "GPIO Pin connected to RESET of the target MCU"
+depends on app_etcontroller
+
+config ETCONTROLLER_NRST
+bool "RESET is !RESET (active low)"
+default y
+depends on app_etcontroller
