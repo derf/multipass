@@ -13,6 +13,10 @@ ifdef CONFIG_arch_arduino_nano_mega168
 	BAUD = 19200
 endif
 
+ifdef CONFIG_arch_arduino_nano_cpufreq
+	cpu_freq = ${CONFIG_arch_arduino_nano_cpufreq}
+endif
+
 cpu_freq ?= 16000000
 
 COMMON_FLAGS += -Werror=overflow

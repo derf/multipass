@@ -1,6 +1,15 @@
 # Copyright 2020 Daniel Friesel
 #
 # SPDX-License-Identifier: CC0-1.0
+
+config arch_arduino_nano_cpufreq
+int "CPU Frequency"
+#!accept [62500, 125000, 250000, 500000, 1000000, 2000000, 4000000, 8000000, 16000000]
+range 62500 16000000
+default 16000000
+help
+  Assumes an externel 16MHz crystal to be present
+
 config arch_arduino_nano_driver_adc
 bool "ADC (Analog-Digital-Converter)"
 select meta_driver_adc
