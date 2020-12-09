@@ -39,7 +39,7 @@ config arch_msp430fr5994lp_dco_frequency
 int "DCO Frequency"
 default "16000000"
 #!accept [1000000, 2666666, 3500000, 4000000, 5333333, 7000000, 8000000, 16000000, 21000000, 24000000]
-range 1000000 24000000
+range "1000000" "24000000"
 help
   Specify the desired DCO frequency here. The DCO will be configured accordingly.
 
@@ -64,21 +64,21 @@ range "1" "32"
 config arch_msp430fr5994lp_sela
 int "ACLK Assignment"
 default "0"
-range 0 2
+range "0" "2"
 help
   0=LFXT or VLO, 1=VLO, 2=LFMODCLK
 
 config arch_msp430fr5994lp_selm
 int "MCLK Assignment"
 default "3"
-range 0 5
+range "0" "5"
 help
   0=LFXT or VLO, 1=VLO, 2=LFMODCLK, 3=DCO, 4=MODCLK, 5=HFXT or DCO
 
 config arch_msp430fr5994lp_sels
 int "SCLK Assignment"
 default "3"
-range 0 5
+range "0" "5"
 help
   0=LFXT or VLO, 1=VLO, 2=LFMODCLK, 3=DCO, 4=MODCLK, 5=HFXT or DCO
 
@@ -87,9 +87,9 @@ int "CPU Frequency"
 range arch_msp430fr5994lp_lfxt_frequency arch_msp430fr5994lp_lfxt_frequency if arch_msp430fr5994lp_selm = "0" && arch_msp430fr5994lp_divm = "1"
 range 6000 14000 if arch_msp430fr5994lp_selm = "1" && arch_msp430fr5994lp_divm = "1"
 default "9400" if arch_msp430fr5994lp_selm = "1" && arch_msp430fr5994lp_divm = "1"
-range 37500 37500 if arch_msp430fr5994lp_selm = "2" && arch_msp430fr5994lp_divm = "1"
+range "37500" "37500" if arch_msp430fr5994lp_selm = "2" && arch_msp430fr5994lp_divm = "1"
 range arch_msp430fr5994lp_dco_frequency arch_msp430fr5994lp_dco_frequency if arch_msp430fr5994lp_selm = "3" && arch_msp430fr5994lp_divm = "1"
-range 4800000 4800000 if arch_msp430fr5994lp_selm = "4" && arch_msp430fr5994lp_divm = "1"
+range "4800000" "4800000" if arch_msp430fr5994lp_selm = "4" && arch_msp430fr5994lp_divm = "1"
 range arch_msp430fr5994lp_hfxt_frequency arch_msp430fr5994lp_hfxt_frequency if arch_msp430fr5994lp_selm = "5" && arch_msp430fr5994lp_divm = "1"
 help
 
@@ -105,13 +105,13 @@ help
 config arch_msp430fr5994lp_lfxt_frequency
 int "LFXT Crystal/Input Frequency"
 default "32768"
-range 10000 50000
+range "10000" "50000"
 depends on arch_msp430fr5994lp_lfxt
 
 config arch_msp430fr5994lp_lfxt_drive
 int "LFXT Drive"
 default "0"
-range 0 3
+range "0" "3"
 depends on arch_msp430fr5994lp_lfxt
 
 config arch_msp430fr5994lp_lfxt_off
@@ -132,13 +132,13 @@ help
 config arch_msp430fr5994lp_hfxt_frequency
 int "HFXT Crystal/Input Frequency"
 default "16000000"
-range 0 24000000
+range "0" "24000000"
 depends on arch_msp430fr5994lp_hfxt
 
 config arch_msp430fr5994lp_hfxt_drive
 int "HFXT Drive"
 default "0"
-range 0 3
+range "0" "3"
 depends on arch_msp430fr5994lp_hfxt
 
 config arch_msp430fr5994lp_hfxt_off
