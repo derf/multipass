@@ -152,7 +152,7 @@ class PTALog {
 			log[log_index - 1].prev_state_overflow = counter.overflow;
 			counter.start();
 #endif
-#ifndef PTALOG_GPIO_BEFORE
+#if defined(PTALOG_GPIO) && !defined(PTALOG_GPIO_BEFORE)
 			gpio.write(sync_pin, 1);
 #endif
 		}
@@ -167,10 +167,8 @@ class PTALog {
 
 		inline void stopTransition()
 		{
-#ifdef PTALOG_GPIO
-#if !defined(PTALOG_GPIO_BEFORE) && !defined(PTALOG_GPIO_BAR)
+#if defined(PTALOG_GPIO) && !defined(PTALOG_GPIO_BEFORE) && !defined(PTALOG_GPIO_BAR)
 			gpio.write(sync_pin, 0);
-#endif
 #endif
 #ifdef PTALOG_TIMING
 			counter.stop();
