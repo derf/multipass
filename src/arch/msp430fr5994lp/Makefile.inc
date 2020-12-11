@@ -9,7 +9,7 @@ MCU = msp430fr5994
 
 DEBUG_PORT ?= ttyACM0
 SERIAL_PORT ?= ttyACM1
-BAUD ?= 115200
+uart_freq ?= 115200
 
 cpu_freq ?= 16000000
 
@@ -142,7 +142,13 @@ else
 endif
 
 ifeq (${cpu_freq}, 32768)
-	BAUD=9600
+	uart_freq=9600
+endif
+
+ifneq (${uart_freq}, )
+	COMMON_FLAGS += -DF_UART=${uart_freq}UL
+else
+	COMMON_FLAGS += -DF_UART=115200UL
 endif
 
 
@@ -195,7 +201,7 @@ arch_info:
 	@echo "I2C   Freq: ${i2c_freq} Hz"
 	@echo "Counter Overflow: 65536/65535"
 	@echo "sleep_ms Overflow: 250 500"
-	@echo "Monitor: /dev/${SERIAL_PORT} ${BAUD}"
+	@echo "Monitor: /dev/${SERIAL_PORT} ${uart_freq}"
 
 gdb-server:
 	${GDBA} /opt/msp430/ti/msp430-gcc-full-linux-5.1.2.0/msp430.dat
