@@ -184,7 +184,7 @@ arch_clean:
 	${QUIET}rm -f ${OBJECTS} build/system.hex
 
 monitor:
-	${QUIET}screen /dev/${SERIAL_PORT} ${BAUD}
+	${QUIET}screen /dev/${SERIAL_PORT} ${uart_freq}
 
 arch_help:
 	@echo "msp430fr5994lp specific flags:"
