@@ -1,0 +1,6 @@
+# Copyright 2020 Daniel Friesel
+#
+# SPDX-License-Identifier: CC0-1.0
+
+prompt "Deflate Test"
+depends on !loop && !wakeup
