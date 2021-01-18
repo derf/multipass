@@ -100,23 +100,27 @@ static uint16_t udeflate_get_bits(uint8_t num_bits)
  * sets. We don't do that; instead, we expect the uncompressed source to
  * be no more than a few kB of data.
  */
-uint8_t udeflate_bl_count[12];
-uint16_t udeflate_next_code[12];
 
-// TODO specify bl_count and next_code lists
-// (length and distance codes may use separate alphabets)
-static void udeflate_build_alphabet(uint8_t* lengths, uint16_t size)
+// used for huffman alphabet in type 2 and literal/length alphabet in type 1&2
+uint8_t udeflate_bl_count_ll[12];
+uint16_t udeflate_next_code_ll[12];
+
+// used for distance alphabet in types 1&2
+uint8_t udeflate_bl_count_d[12];
+uint16_t udeflate_next_code_d[12];
+
+static void udeflate_build_alphabet(uint8_t* lengths, uint16_t size, uint8_t* bl_count, uint16_t* next_code)
 {
 	uint16_t i;
 	uint16_t code = 0;
-	uint8_t max_len = 0;
+	uint16_t max_len = 0;
 	for (i = 0; i < 12; i++) {
-		udeflate_bl_count[i] = 0;
+		bl_count[i] = 0;
 	}
 
 	for (i = 0; i < size; i++) {
 		if (lengths[i]) {
-			udeflate_bl_count[lengths[i]]++;
+			bl_count[lengths[i]]++;
 		}
 		if (lengths[i] > max_len) {
 			max_len = lengths[i];
@@ -124,26 +128,26 @@ static void udeflate_build_alphabet(uint8_t* lengths, uint16_t size)
 	}
 
 	for (i = 1; i < max_len+1; i++) {
-		code = (code + udeflate_bl_count[i-1]) << 1;
-		udeflate_next_code[i] = code;
+		code = (code + bl_count[i-1]) << 1;
+		next_code[i] = code;
 	}
 
 	for (i = 0; i < 12; i++) {
-		kout << "bl_count[" << i << "] = " << udeflate_bl_count[i] << endl;
+		kout << "bl_count[" << i << "] = " << bl_count[i] << endl;
 	}
 	for (i = 0; i < 12; i++) {
-		kout << "next_code[" << i << "] = " << udeflate_next_code[i] << endl;
+		kout << "next_code[" << i << "] = " << next_code[i] << endl;
 	}
 }
 
-static uint16_t udeflate_huff(uint8_t* lengths, uint16_t size)
+static uint16_t udeflate_huff(uint8_t* lengths, uint16_t size, uint8_t* bl_count, uint16_t* next_code)
 {
 	uint16_t next_word = udeflate_get_word();
 	for (uint8_t num_bits = 1; num_bits < 12; num_bits++) {
 		uint16_t next_bits = udeflate_rev_word(next_word, num_bits);
 		// TODO benötigt bit reversal bei der Abgleichung code <-> next_bits
 		// (geeignete is_bit_eq(next_bits, code_candidate, num_bits) Funktion?)
-		if (udeflate_bl_count[num_bits] && next_bits >= udeflate_next_code[num_bits] && next_bits < udeflate_next_code[num_bits] + udeflate_bl_count[num_bits] ) {
+		if (bl_count[num_bits] && next_bits >= next_code[num_bits] && next_bits < next_code[num_bits] + bl_count[num_bits] ) {
 			kout << "found huffman code, length = " << num_bits << endl;
 			udeflate_bit_offset += num_bits;
 			while (udeflate_bit_offset >= 8) {
@@ -151,7 +155,7 @@ static uint16_t udeflate_huff(uint8_t* lengths, uint16_t size)
 				udeflate_bit_offset -= 8;
 			}
 			uint8_t len_pos = next_bits;
-			uint8_t cur_pos = udeflate_next_code[num_bits];
+			uint8_t cur_pos = next_code[num_bits];
 			for (uint16_t i = 0; i < size; i++) {
 				if (lengths[i] == num_bits) {
 					if (cur_pos == len_pos) {
@@ -163,6 +167,39 @@ static uint16_t udeflate_huff(uint8_t* lengths, uint16_t size)
 		}
 	}
 	return 65535;
+}
+
+static int8_t udeflate_huffman(uint8_t* ll_lengths, uint16_t ll_size, uint8_t* d_lengths, uint8_t d_size)
+{
+	uint16_t code;
+	uint16_t dcode;
+	uint16_t output_pos = 0;
+	while (1) {
+		code = udeflate_huff(ll_lengths, ll_size, udeflate_bl_count_ll, udeflate_next_code_ll);
+		kout << "code " << code << endl;
+		if (code < 256) {
+			deflate_output[output_pos] = code;
+			output_pos++;
+		} else if (code == 256) {
+			return 0;
+		} else {
+			uint16_t len_val = udeflate_length_offsets[code - 257];
+			uint8_t extra_bits = udeflate_length_bits[code - 257];
+			if (extra_bits) {
+				len_val += udeflate_get_bits(extra_bits);
+			}
+			dcode = udeflate_huff(d_lengths, d_size, udeflate_bl_count_d, udeflate_next_code_d);
+			uint16_t dist_val = udeflate_distance_offsets[dcode];
+			extra_bits = udeflate_distance_bits[dcode];
+			if (extra_bits) {
+				dist_val += udeflate_get_bits(extra_bits);
+			}
+			while (len_val--) {
+				deflate_output[output_pos] = deflate_output[output_pos-dist_val];
+				output_pos++;
+			}
+		}
+	}
 }
 
 static int8_t udeflate_dynamic_huffman()
@@ -182,11 +219,11 @@ static int8_t udeflate_dynamic_huffman()
 		udeflate_hc_lengths[udeflate_hclen_index[i]] = 0;
 	}
 
-	udeflate_build_alphabet(udeflate_hc_lengths, sizeof(udeflate_hc_lengths));
+	udeflate_build_alphabet(udeflate_hc_lengths, sizeof(udeflate_hc_lengths), udeflate_bl_count_ll, udeflate_next_code_ll);
 
 	uint16_t items_processed = 0;
 	while (items_processed < hlit + hdist) {
-		uint8_t code = udeflate_huff(udeflate_hc_lengths, 19);
+		uint8_t code = udeflate_huff(udeflate_hc_lengths, 19, udeflate_bl_count_ll, udeflate_next_code_ll);
 		kout << "code = " << code << endl;
 		if (code == 16) {
 			uint8_t copy_count = 3 + udeflate_get_bits(2);
@@ -214,6 +251,11 @@ static int8_t udeflate_dynamic_huffman()
 			items_processed++;
 		}
 	}
+
+	udeflate_build_alphabet(udeflate_lld_lengths, hlit, udeflate_bl_count_ll, udeflate_next_code_ll);
+	udeflate_build_alphabet(udeflate_lld_lengths + hlit, hdist, udeflate_bl_count_d, udeflate_next_code_d);
+
+	return udeflate_huffman(udeflate_lld_lengths, hlit, udeflate_lld_lengths + hlit, hdist);
 
 	return 0;
 }
@@ -266,6 +308,7 @@ int main(void)
 	for (uint8_t i = 0; i < 5; i++) {
 		int8_t ret = udeflate_zlib((unsigned char*)deflate_input, sizeof(deflate_input));
 		kout << "udeflate returned " << ret << endl;
+		kout << "Output: " << (char*)deflate_output << endl;
 	}
 
 	arch.idle();
