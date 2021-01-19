@@ -8,12 +8,35 @@
 #include "driver/stdout.h"
 #include "driver/uptime.h"
 
+#define UDEFLATE_ERR_LENGTH (-1)
+#define UDEFLATE_ERR_METHOD (-2)
+#define UDEFLATE_ERR_FDICT (-3)
+#define UDEFLATE_ERR_BLOCK (-4)
+#define UDEFLATE_ERR_CHECKSUM (-5)
+
+/*
+// bad apple 0042.png
+unsigned char const deflate_input[] = {
+	40, 207, 99, 96, 64, 0, 102, 134, 81, 14, 117, 57, 236, 84, 229, 240, 147, 193, 145, 167, 148, 99, 79, 41, 7, 183, 209, 243, 113, 114, 80, 148, 161, 248, 7, 37, 120, 71, 16, 0, 0, 108, 36, 4, 56
+};
+*/
+
+/*
+// bad apple 1000.png
+unsigned char const deflate_input[] = {
+	40, 207, 173, 210, 189, 13, 194, 48, 16, 5, 224, 103, 82, 208, 225, 17, 204, 32, 72, 153, 129, 13, 50, 4, 189, 205, 36, 180, 244, 44, 16, 38, 193, 27, 96, 58, 138, 196, 6, 147, 31, 191, 68, 73, 4, 18, 215, 125, 186, 211, 249, 78, 62, 4, 10, 252, 11, 55, 198, 137, 97, 52, 1, 146, 145, 37, 120, 136, 132, 10, 72, 120, 2, 186, 135, 3, 114, 134, 226, 50, 201, 153, 4, 124, 7, 55, 130, 154, 125, 71, 241, 160, 146, 86, 192, 154, 51, 3, 40, 46, 235, 32, 34, 218, 125, 28, 100, 213, 163, 4, 118, 61, 12, 98, 52, 168, 64, 112, 27, 194, 195, 19, 66, 3, 253, 27, 68, 124, 170, 131, 140, 107, 119, 80, 193, 166, 214, 58, 162, 93, 193, 7, 202, 52, 131, 15, 160, 167, 97, 150, 144, 243, 255, 228, 211, 101, 131, 110, 118, 116, 33, 51, 153, 241, 4, 233, 196, 182, 4, 95, 112, 198, 50, 74, 190, 81, 187, 128, 108, 2, 245, 37, 220, 223, 168, 63, 184, 30, 87, 197, 254, 112, 22, 75, 221, 94, 223, 233, 137, 202
+};
+*/
+
+
 unsigned char const deflate_input[] = {
 	120, 1, 5, 193, 193, 13, 192, 32, 16, 3, 193, 86, 182, 182, 196, 68, 220,
 	135, 147, 12, 86, 218, 103, 102, 198, 70, 133, 98, 147, 37, 118, 243, 143,
 	58, 195, 100, 137, 221, 124, 237, 195, 140, 141, 10, 197, 102, 191, 51, 79,
 	41, 23, 153, 255, 22, 11
 };
+
+
 /*
 unsigned char const deflate_input[] = {
 	120, 1, 243, 72, 204, 201, 201, 215, 81, 8, 79, 205, 41, 81, 4, 0, 26, 155, 3, 250
@@ -26,6 +49,7 @@ unsigned char* udeflate_input_now;
 uint8_t udeflate_bit_offset = 0;
 
 unsigned char deflate_output[1024];
+uint16_t deflate_output_pos;
 
 uint16_t const udeflate_length_offsets[] = {
 	3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 17, 19, 23, 27, 31, 35, 43, 51, 59, 67,
@@ -183,15 +207,15 @@ static int8_t udeflate_huffman(uint8_t* ll_lengths, uint16_t ll_size, uint8_t* d
 {
 	uint16_t code;
 	uint16_t dcode;
-	uint16_t output_pos = 0;
+	deflate_output_pos = 0;
 	while (1) {
 		code = udeflate_huff(ll_lengths, ll_size, udeflate_bl_count_ll, udeflate_next_code_ll);
 #ifdef UDEFLATE_DEBUG
 		kout << "code " << code << endl;
 #endif
 		if (code < 256) {
-			deflate_output[output_pos] = code;
-			output_pos++;
+			deflate_output[deflate_output_pos] = code;
+			deflate_output_pos++;
 		} else if (code == 256) {
 			return 0;
 		} else {
@@ -207,8 +231,8 @@ static int8_t udeflate_huffman(uint8_t* ll_lengths, uint16_t ll_size, uint8_t* d
 				dist_val += udeflate_get_bits(extra_bits);
 			}
 			while (len_val--) {
-				deflate_output[output_pos] = deflate_output[output_pos-dist_val];
-				output_pos++;
+				deflate_output[deflate_output_pos] = deflate_output[deflate_output_pos-dist_val];
+				deflate_output_pos++;
 			}
 		}
 	}
@@ -320,13 +344,13 @@ int8_t udeflate(unsigned char* buf, uint16_t buf_len)
 		return udeflate_dynamic_huffman();
 	}
 
-	return -4;
+	return UDEFLATE_ERR_BLOCK;
 }
 
 int8_t udeflate_zlib(unsigned char* buf, uint16_t buf_len)
 {
 	if (buf_len < 4) {
-		return -1;
+		return UDEFLATE_ERR_LENGTH;
 	}
 	uint8_t zlib_method = buf[0] & 0x0f;
 	uint16_t zlib_window_size = 1 << (8 + ((buf[0] & 0xf0) >> 4));
@@ -338,14 +362,37 @@ int8_t udeflate_zlib(unsigned char* buf, uint16_t buf_len)
 #endif
 
 	if (zlib_method != 8) {
-		return -2;
+		return UDEFLATE_ERR_METHOD;
 	}
 
 	if (zlib_flags & 0x10) {
-		return -3;
+		return UDEFLATE_ERR_FDICT;
 	}
 
-	return udeflate(buf+2, buf_len-2);
+	uint8_t ret = udeflate(buf+2, buf_len-2);
+
+#ifdef UDEFLATE_CHECKSUM
+	if (ret == 0) {
+		uint16_t udeflate_s1 = 1;
+		uint16_t udeflate_s2 = 0;
+
+		for (uint16_t i = 0; i < deflate_output_pos; i++) {
+			udeflate_s1 = ((uint32_t)udeflate_s1 + (uint32_t)deflate_output[i]) % 65521;
+			udeflate_s2 = ((uint32_t)udeflate_s2 + (uint32_t)udeflate_s1) % 65521;
+		}
+
+		if (udeflate_bit_offset) {
+			udeflate_input_now++;
+		}
+
+		if ((udeflate_s2 != (((uint16_t)udeflate_input_now[0] << 8) | (uint16_t)udeflate_input_now[1]))
+				|| (udeflate_s1 != (((uint16_t)udeflate_input_now[2] << 8) | (uint16_t)udeflate_input_now[3]))) {
+			return UDEFLATE_ERR_CHECKSUM;
+		}
+	}
+#endif
+
+	return ret;
 }
 
 int main(void)
