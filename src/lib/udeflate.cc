@@ -314,19 +314,19 @@ static int8_t udeflate_static_huffman()
 	for (i = 256; i <= 279; i++) {
 		udeflate_lld_lengths[i] = 7;
 	}
-	for (i = 280; i <= 284; i++) {
+	for (i = 280; i <= 285; i++) {
 		udeflate_lld_lengths[i] = 8;
 	}
-	for (i = 285; i <= 285 + 29; i++) {
+	for (i = 286; i <= 286 + 29; i++) {
 		udeflate_lld_lengths[i] = 5;
 	}
 
-	udeflate_build_alphabet(udeflate_lld_lengths, 285, udeflate_bl_count_ll,
+	udeflate_build_alphabet(udeflate_lld_lengths, 286, udeflate_bl_count_ll,
 				udeflate_next_code_ll);
-	udeflate_build_alphabet(udeflate_lld_lengths + 285, 29,
+	udeflate_build_alphabet(udeflate_lld_lengths + 286, 29,
 				udeflate_bl_count_d, udeflate_next_code_d);
-	return udeflate_huffman(udeflate_lld_lengths, 285,
-				udeflate_lld_lengths + 285, 29);
+	return udeflate_huffman(udeflate_lld_lengths, 286,
+				udeflate_lld_lengths + 286, 29);
 }
 
 static int8_t udeflate_dynamic_huffman()
