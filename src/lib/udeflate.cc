@@ -418,7 +418,7 @@ int8_t udeflate_zlib(unsigned char *input_buf, uint16_t input_len,
 		return UDEFLATE_ERR_METHOD;
 	}
 
-	if (zlib_flags & 0x10) {
+	if (zlib_flags & 0x20) {
 		return UDEFLATE_ERR_FDICT;
 	}
 
