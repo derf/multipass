@@ -290,10 +290,10 @@ static int8_t udeflate_uncompressed()
 		return UDEFLATE_ERR_NLEN;
 	}
 	udeflate_input_now += 4;
-	if (udeflate_input_now + len > udeflate_input_end) {
+	if (udeflate_input_now + len >= udeflate_input_end) {
 		return UDEFLATE_ERR_INPUT_LENGTH;
 	}
-	if (udeflate_output_now + len > udeflate_output_end) {
+	if (udeflate_output_now + len >= udeflate_output_end) {
 		return UDEFLATE_ERR_OUTPUT_LENGTH;
 	}
 	for (uint16_t i = 0; i < len; i++) {
