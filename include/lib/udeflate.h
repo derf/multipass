@@ -13,6 +13,7 @@
 #define UDEFLATE_ERR_CHECKSUM (-5)
 #define UDEFLATE_ERR_OUTPUT_LENGTH (-6)
 #define UDEFLATE_ERR_FCHECK (-7)
+#define UDEFLATE_ERR_NLEN (-8)
 
 int8_t udeflate(unsigned char *input_buf, uint16_t input_len,
 		unsigned char *output_buf, uint16_t output_len);

@@ -279,6 +279,29 @@ static int8_t udeflate_huffman(uint8_t * ll_lengths, uint16_t ll_size,
 	}
 }
 
+static int8_t udeflate_uncompressed()
+{
+	udeflate_input_now++;
+	uint16_t len =
+	    ((uint16_t) udeflate_input_now[1] << 8) + udeflate_input_now[0];
+	uint16_t nlen =
+	    ((uint16_t) udeflate_input_now[3] << 8) + udeflate_input_now[2];
+	if (len & nlen) {
+		return UDEFLATE_ERR_NLEN;
+	}
+	udeflate_input_now += 4;
+	if (udeflate_input_now + len > udeflate_input_end) {
+		return UDEFLATE_ERR_INPUT_LENGTH;
+	}
+	if (udeflate_output_now + len > udeflate_output_end) {
+		return UDEFLATE_ERR_OUTPUT_LENGTH;
+	}
+	for (uint16_t i = 0; i < len; i++) {
+		*(udeflate_output_now++) = *(udeflate_input_now++);
+	}
+	return 0;
+}
+
 static int8_t udeflate_static_huffman()
 {
 	uint16_t i;
@@ -389,6 +412,9 @@ int8_t udeflate(unsigned char *input_buf, uint16_t input_len,
 	udeflate_output_now = output_buf;
 	udeflate_output_end = output_buf + output_len;
 
+	if (block_type == 0) {
+		return udeflate_uncompressed();
+	}
 	if (block_type == 1) {
 		return udeflate_static_huffman();
 	}
@@ -406,12 +432,13 @@ int8_t udeflate_zlib(unsigned char *input_buf, uint16_t input_len,
 		return UDEFLATE_ERR_INPUT_LENGTH;
 	}
 	uint8_t zlib_method = input_buf[0] & 0x0f;
-	uint16_t zlib_window_size = 1 << (8 + ((input_buf[0] & 0xf0) >> 4));
 	uint8_t zlib_flags = input_buf[1];
 
 #ifdef UDEFLATE_DEBUG
 	kout << "zlib_method=" << zlib_method << endl;
-	kout << "zlib_window_size=" << zlib_window_size << endl;
+	kout << "zlib_window_size=" << ((uint16_t) 1 <<
+					(8 +
+					 ((input_buf[0] & 0xf0) >> 4))) << endl;
 #endif
 
 	if (zlib_method != 8) {
@@ -422,7 +449,7 @@ int8_t udeflate_zlib(unsigned char *input_buf, uint16_t input_len,
 		return UDEFLATE_ERR_FDICT;
 	}
 
-	if ((((uint16_t)input_buf[0] << 8) | input_buf[1]) % 31) {
+	if ((((uint16_t) input_buf[0] << 8) | input_buf[1]) % 31) {
 		return UDEFLATE_ERR_FCHECK;
 	}
 
