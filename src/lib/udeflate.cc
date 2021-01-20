@@ -242,6 +242,9 @@ static int8_t udeflate_huffman(uint8_t * ll_lengths, uint16_t ll_size,
 		kout << "code " << code << endl;
 #endif
 		if (code < 256) {
+			if (udeflate_output_now == udeflate_output_end) {
+				return UDEFLATE_ERR_OUTPUT_LENGTH;
+			}
 			*udeflate_output_now = code;
 			udeflate_output_now++;
 		} else if (code == 256) {
@@ -262,10 +265,16 @@ static int8_t udeflate_huffman(uint8_t * ll_lengths, uint16_t ll_size,
 				dist_val += udeflate_get_bits(extra_bits);
 			}
 			while (len_val--) {
+				if (udeflate_output_now == udeflate_output_end) {
+					return UDEFLATE_ERR_OUTPUT_LENGTH;
+				}
 				udeflate_output_now[0] =
 				    udeflate_output_now[-dist_val];
 				udeflate_output_now++;
 			}
+		}
+		if (udeflate_input_now >= udeflate_input_end - 4) {
+			return UDEFLATE_ERR_INPUT_LENGTH;
 		}
 	}
 }
@@ -362,8 +371,6 @@ static int8_t udeflate_dynamic_huffman()
 
 	return udeflate_huffman(udeflate_lld_lengths, hlit,
 				udeflate_lld_lengths + hlit, hdist);
-
-	return 0;
 }
 
 int8_t udeflate(unsigned char *input_buf, uint16_t input_len,
@@ -396,7 +403,7 @@ int8_t udeflate_zlib(unsigned char *input_buf, uint16_t input_len,
 		     unsigned char *output_buf, uint16_t output_len)
 {
 	if (input_len < 4) {
-		return UDEFLATE_ERR_LENGTH;
+		return UDEFLATE_ERR_INPUT_LENGTH;
 	}
 	uint8_t zlib_method = input_buf[0] & 0x0f;
 	uint16_t zlib_window_size = 1 << (8 + ((input_buf[0] & 0xf0) >> 4));
