@@ -422,6 +422,10 @@ int8_t udeflate_zlib(unsigned char *input_buf, uint16_t input_len,
 		return UDEFLATE_ERR_FDICT;
 	}
 
+	if ((((uint16_t)input_buf[0] << 8) | input_buf[1]) % 31) {
+		return UDEFLATE_ERR_FCHECK;
+	}
+
 	uint8_t ret =
 	    udeflate(input_buf + 2, input_len - 2, output_buf, output_len);
 
