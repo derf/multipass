@@ -7,4 +7,7 @@
 ifdef app
 	override timer_s = 0
 	override loop = 0
+	override arch_drivers += ,counter
 endif
+
+CXX_TARGETS += src/lib/udeflate.cc
