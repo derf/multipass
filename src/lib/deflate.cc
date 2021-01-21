@@ -400,11 +400,12 @@ static int8_t deflate_dynamic_huffman()
 				deflate_lld_lengths + hlit, hdist);
 }
 
-int8_t deflate(unsigned char *input_buf, uint16_t input_len,
+int16_t deflate(unsigned char *input_buf, uint16_t input_len,
 		unsigned char *output_buf, uint16_t output_len)
 {
 	uint8_t is_final = input_buf[0] & 0x01;
 	uint8_t block_type = (input_buf[0] & 0x06) >> 1;
+	int8_t ret;
 #ifdef DEFLATE_DEBUG
 	kout << "is_final=" << is_final << " block_type=" << block_type << endl;
 #endif
@@ -416,20 +417,28 @@ int8_t deflate(unsigned char *input_buf, uint16_t input_len,
 	deflate_output_now = output_buf;
 	deflate_output_end = output_buf + output_len;
 
-	if (block_type == 0) {
-		return deflate_uncompressed();
-	}
-	if (block_type == 1) {
-		return deflate_static_huffman();
-	}
-	if (block_type == 2) {
-		return deflate_dynamic_huffman();
+	switch (block_type) {
+		case 0:
+			ret = deflate_uncompressed();
+			break;
+		case 1:
+			ret = deflate_static_huffman();
+			break;
+		case 2:
+			ret = deflate_dynamic_huffman();
+			break;
+		default:
+			return DEFLATE_ERR_BLOCK;
 	}
 
-	return DEFLATE_ERR_BLOCK;
+	if (ret < 0) {
+		return ret;
+	}
+
+	return deflate_output_now - output_buf;
 }
 
-int8_t deflate_zlib(unsigned char *input_buf, uint16_t input_len,
+int16_t deflate_zlib(unsigned char *input_buf, uint16_t input_len,
 		     unsigned char *output_buf, uint16_t output_len)
 {
 	if (input_len < 4) {
@@ -457,11 +466,11 @@ int8_t deflate_zlib(unsigned char *input_buf, uint16_t input_len,
 		return DEFLATE_ERR_FCHECK;
 	}
 
-	uint8_t ret =
+	int16_t ret =
 	    deflate(input_buf + 2, input_len - 2, output_buf, output_len);
 
 #ifdef DEFLATE_CHECKSUM
-	if (ret == 0) {
+	if (ret >= 0) {
 		uint16_t deflate_s1 = 1;
 		uint16_t deflate_s2 = 0;
 

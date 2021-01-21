@@ -51,7 +51,7 @@ int main(void)
 
 	for (uint8_t i = 0; i < 5; i++) {
 		counter.start();
-		int8_t ret = deflate_zlib((unsigned char*)deflate_input, sizeof(deflate_input), deflate_output, sizeof(deflate_output));
+		int16_t ret = deflate_zlib((unsigned char*)deflate_input, sizeof(deflate_input), deflate_output, sizeof(deflate_output));
 		counter.stop();
 		kout << "deflate returned " << ret << endl;
 		kout << "Output: " << (char*)deflate_output << endl;
