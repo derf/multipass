@@ -9,7 +9,7 @@
 #include "driver/uptime.h"
 #include "driver/counter.h"
 
-#include "lib/deflate.h"
+#include "lib/inflate.h"
 
 
 /*
@@ -28,10 +28,7 @@ unsigned char const deflate_input[] = {
 
 
 unsigned char const deflate_input[] = {
-	120, 1, 5, 193, 193, 13, 192, 32, 16, 3, 193, 86, 182, 182, 196, 68, 220,
-	135, 147, 12, 86, 218, 103, 102, 198, 70, 133, 98, 147, 37, 118, 243, 143,
-	58, 195, 100, 137, 221, 124, 237, 195, 140, 141, 10, 197, 102, 191, 51, 79,
-	41, 23, 153, 255, 22, 11
+	120, 156, 243, 72, 205, 201, 201, 215, 81, 8, 207, 47, 202, 73, 177, 87, 240, 64, 226, 41, 2, 0, 128, 125, 9, 17
 };
 
 
@@ -51,9 +48,9 @@ int main(void)
 
 	for (uint8_t i = 0; i < 5; i++) {
 		counter.start();
-		int16_t ret = deflate_zlib((unsigned char*)deflate_input, sizeof(deflate_input), deflate_output, sizeof(deflate_output));
+		int16_t ret = inflate_zlib((unsigned char*)deflate_input, sizeof(deflate_input), deflate_output, sizeof(deflate_output));
 		counter.stop();
-		kout << "deflate returned " << ret << endl;
+		kout << "inflate returned " << ret << endl;
 		kout << "Output: " << (char*)deflate_output << endl;
 		kout << "took " << counter.value << "/" << counter.overflow << " cycles" << endl;
 	}

@@ -10,4 +10,4 @@ ifdef app
 	override arch_drivers += ,counter
 endif
 
-CXX_TARGETS += src/lib/deflate.cc
+CXX_TARGETS += src/lib/inflate.cc

@@ -1,10 +1,12 @@
 /*
+ * zlib-deflate-nostdlib
+ *
  * Copyright 2021 Daniel Friesel
  *
  * SPDX-License-Identifier: BSD-2-Clause
  */
 
-#include "lib/deflate.h"
+#include "lib/inflate.h"
 
 /*
  * The compressed (inflated) input data.
@@ -368,10 +370,10 @@ static int8_t deflate_dynamic_huffman()
 			       deflate_lld_lengths + hlit, hdist);
 }
 
-int16_t deflate(unsigned char *input_buf, uint16_t input_len,
+int16_t inflate(unsigned char *input_buf, uint16_t input_len,
 		unsigned char *output_buf, uint16_t output_len)
 {
-	uint8_t is_final = input_buf[0] & 0x01;
+	//uint8_t is_final = input_buf[0] & 0x01;
 	uint8_t block_type = (input_buf[0] & 0x06) >> 1;
 	int8_t ret;
 
@@ -403,7 +405,7 @@ int16_t deflate(unsigned char *input_buf, uint16_t input_len,
 	return deflate_output_now - output_buf;
 }
 
-int16_t deflate_zlib(unsigned char *input_buf, uint16_t input_len,
+int16_t inflate_zlib(unsigned char *input_buf, uint16_t input_len,
 		     unsigned char *output_buf, uint16_t output_len)
 {
 	if (input_len < 4) {
@@ -425,7 +427,7 @@ int16_t deflate_zlib(unsigned char *input_buf, uint16_t input_len,
 	}
 
 	int16_t ret =
-	    deflate(input_buf + 2, input_len - 2, output_buf, output_len);
+	    inflate(input_buf + 2, input_len - 2, output_buf, output_len);
 
 #ifdef DEFLATE_CHECKSUM
 	if (ret >= 0) {

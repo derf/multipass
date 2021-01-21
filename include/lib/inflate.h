@@ -1,4 +1,6 @@
 /*
+ * zlib-deflate-nostdlib
+ *
  * Copyright 2021 Daniel Friesel
  *
  * SPDX-License-Identifier: BSD-2-Clause
@@ -15,7 +17,7 @@
 #define DEFLATE_ERR_FCHECK (-7)
 #define DEFLATE_ERR_NLEN (-8)
 
-int16_t deflate(unsigned char *input_buf, uint16_t input_len,
+int16_t inflate(unsigned char *input_buf, uint16_t input_len,
 		unsigned char *output_buf, uint16_t output_len);
-int16_t deflate_zlib(unsigned char *input_buf, uint16_t input_len,
+int16_t inflate_zlib(unsigned char *input_buf, uint16_t input_len,
 		     unsigned char *output_buf, uint16_t output_len);
