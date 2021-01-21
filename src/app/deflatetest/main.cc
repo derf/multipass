@@ -9,13 +9,8 @@
 #include "driver/uptime.h"
 #include "driver/counter.h"
 
-#include "lib/udeflate.h"
+#include "lib/deflate.h"
 
-#define UDEFLATE_ERR_LENGTH (-1)
-#define UDEFLATE_ERR_METHOD (-2)
-#define UDEFLATE_ERR_FDICT (-3)
-#define UDEFLATE_ERR_BLOCK (-4)
-#define UDEFLATE_ERR_CHECKSUM (-5)
 
 /*
 // bad apple 0042.png
@@ -56,9 +51,9 @@ int main(void)
 
 	for (uint8_t i = 0; i < 5; i++) {
 		counter.start();
-		int8_t ret = udeflate_zlib((unsigned char*)deflate_input, sizeof(deflate_input), deflate_output, sizeof(deflate_output));
+		int8_t ret = deflate_zlib((unsigned char*)deflate_input, sizeof(deflate_input), deflate_output, sizeof(deflate_output));
 		counter.stop();
-		kout << "udeflate returned " << ret << endl;
+		kout << "deflate returned " << ret << endl;
 		kout << "Output: " << (char*)deflate_output << endl;
 		kout << "took " << counter.value << "/" << counter.overflow << " cycles" << endl;
 	}
