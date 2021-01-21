@@ -6,10 +6,6 @@
 
 #include "lib/deflate.h"
 
-#ifdef DEFLATE_DEBUG
-#include "driver/stdout.h"
-#endif
-
 /*
  * The compressed (inflated) input data.
  */
@@ -148,11 +144,8 @@ static uint16_t deflate_get_word()
 		ret |=
 		    (uint16_t) (deflate_input_now[2] &
 				deflate_bitmask(deflate_bit_offset)) << (16 -
-									   deflate_bit_offset);
+									 deflate_bit_offset);
 	}
-#ifdef DEFLATE_DEBUG
-	kout << "get_word = " << bin << ret << dec << endl;
-#endif
 	return ret;
 }
 
@@ -168,7 +161,7 @@ static uint16_t deflate_get_bits(uint8_t num_bits)
 }
 
 static void deflate_build_alphabet(uint8_t * lengths, uint16_t size,
-				    uint8_t * bl_count, uint16_t * next_code)
+				   uint8_t * bl_count, uint16_t * next_code)
 {
 	uint16_t i;
 	uint16_t code = 0;
@@ -190,29 +183,16 @@ static void deflate_build_alphabet(uint8_t * lengths, uint16_t size,
 		code = (code + bl_count[i - 1]) << 1;
 		next_code[i] = code;
 	}
-
-#ifdef DEFLATE_DEBUG
-	for (i = 0; i < 12; i++) {
-		kout << "bl_count[" << i << "] = " << bl_count[i] << endl;
-	}
-	for (i = 0; i < 12; i++) {
-		kout << "next_code[" << i << "] = " << next_code[i] << endl;
-	}
-#endif
 }
 
 static uint16_t deflate_huff(uint8_t * lengths, uint16_t size,
-			      uint8_t * bl_count, uint16_t * next_code)
+			     uint8_t * bl_count, uint16_t * next_code)
 {
 	uint16_t next_word = deflate_get_word();
 	for (uint8_t num_bits = 1; num_bits < 12; num_bits++) {
 		uint16_t next_bits = deflate_rev_word(next_word, num_bits);
 		if (bl_count[num_bits] && next_bits >= next_code[num_bits]
 		    && next_bits < next_code[num_bits] + bl_count[num_bits]) {
-#ifdef DEFLATE_DEBUG
-			kout << "found huffman code, length = " << num_bits <<
-			    endl;
-#endif
 			deflate_bit_offset += num_bits;
 			while (deflate_bit_offset >= 8) {
 				deflate_input_now++;
@@ -234,17 +214,14 @@ static uint16_t deflate_huff(uint8_t * lengths, uint16_t size,
 }
 
 static int8_t deflate_huffman(uint8_t * ll_lengths, uint16_t ll_size,
-			       uint8_t * d_lengths, uint8_t d_size)
+			      uint8_t * d_lengths, uint8_t d_size)
 {
 	uint16_t code;
 	uint16_t dcode;
 	while (1) {
 		code =
 		    deflate_huff(ll_lengths, ll_size, deflate_bl_count_ll,
-				  deflate_next_code_ll);
-#ifdef DEFLATE_DEBUG
-		kout << "code " << code << endl;
-#endif
+				 deflate_next_code_ll);
 		if (code < 256) {
 			if (deflate_output_now == deflate_output_end) {
 				return DEFLATE_ERR_OUTPUT_LENGTH;
@@ -261,8 +238,8 @@ static int8_t deflate_huffman(uint8_t * ll_lengths, uint16_t ll_size,
 			}
 			dcode =
 			    deflate_huff(d_lengths, d_size,
-					  deflate_bl_count_d,
-					  deflate_next_code_d);
+					 deflate_bl_count_d,
+					 deflate_next_code_d);
 			uint16_t dist_val = deflate_distance_offsets[dcode];
 			extra_bits = deflate_distance_bits[dcode];
 			if (extra_bits) {
@@ -326,11 +303,11 @@ static int8_t deflate_static_huffman()
 	}
 
 	deflate_build_alphabet(deflate_lld_lengths, 286, deflate_bl_count_ll,
-				deflate_next_code_ll);
+			       deflate_next_code_ll);
 	deflate_build_alphabet(deflate_lld_lengths + 286, 29,
-				deflate_bl_count_d, deflate_next_code_d);
+			       deflate_bl_count_d, deflate_next_code_d);
 	return deflate_huffman(deflate_lld_lengths, 286,
-				deflate_lld_lengths + 286, 29);
+			       deflate_lld_lengths + 286, 29);
 }
 
 static int8_t deflate_dynamic_huffman()
@@ -339,12 +316,6 @@ static int8_t deflate_dynamic_huffman()
 	uint16_t hlit = 257 + deflate_get_bits(5);
 	uint8_t hdist = 1 + deflate_get_bits(5);
 	uint8_t hclen = 4 + deflate_get_bits(4);
-
-#ifdef DEFLATE_DEBUG
-	kout << "hlit=" << hlit << endl;
-	kout << "hdist=" << hdist << endl;
-	kout << "hclen=" << hclen << endl;
-#endif
 
 	for (i = 0; i < hclen; i++) {
 		deflate_hc_lengths[deflate_hclen_index[i]] =
@@ -355,17 +326,14 @@ static int8_t deflate_dynamic_huffman()
 	}
 
 	deflate_build_alphabet(deflate_hc_lengths,
-				sizeof(deflate_hc_lengths),
-				deflate_bl_count_ll, deflate_next_code_ll);
+			       sizeof(deflate_hc_lengths),
+			       deflate_bl_count_ll, deflate_next_code_ll);
 
 	uint16_t items_processed = 0;
 	while (items_processed < hlit + hdist) {
 		uint8_t code =
 		    deflate_huff(deflate_hc_lengths, 19, deflate_bl_count_ll,
-				  deflate_next_code_ll);
-#ifdef DEFLATE_DEBUG
-		kout << "code = " << code << endl;
-#endif
+				 deflate_next_code_ll);
 		if (code == 16) {
 			uint8_t copy_count = 3 + deflate_get_bits(2);
 			for (uint8_t i = 0; i < copy_count; i++) {
@@ -392,12 +360,12 @@ static int8_t deflate_dynamic_huffman()
 	}
 
 	deflate_build_alphabet(deflate_lld_lengths, hlit,
-				deflate_bl_count_ll, deflate_next_code_ll);
+			       deflate_bl_count_ll, deflate_next_code_ll);
 	deflate_build_alphabet(deflate_lld_lengths + hlit, hdist,
-				deflate_bl_count_d, deflate_next_code_d);
+			       deflate_bl_count_d, deflate_next_code_d);
 
 	return deflate_huffman(deflate_lld_lengths, hlit,
-				deflate_lld_lengths + hlit, hdist);
+			       deflate_lld_lengths + hlit, hdist);
 }
 
 int16_t deflate(unsigned char *input_buf, uint16_t input_len,
@@ -406,9 +374,6 @@ int16_t deflate(unsigned char *input_buf, uint16_t input_len,
 	uint8_t is_final = input_buf[0] & 0x01;
 	uint8_t block_type = (input_buf[0] & 0x06) >> 1;
 	int8_t ret;
-#ifdef DEFLATE_DEBUG
-	kout << "is_final=" << is_final << " block_type=" << block_type << endl;
-#endif
 
 	deflate_input_now = input_buf;
 	deflate_input_end = input_buf + input_len;
@@ -418,17 +383,17 @@ int16_t deflate(unsigned char *input_buf, uint16_t input_len,
 	deflate_output_end = output_buf + output_len;
 
 	switch (block_type) {
-		case 0:
-			ret = deflate_uncompressed();
-			break;
-		case 1:
-			ret = deflate_static_huffman();
-			break;
-		case 2:
-			ret = deflate_dynamic_huffman();
-			break;
-		default:
-			return DEFLATE_ERR_BLOCK;
+	case 0:
+		ret = deflate_uncompressed();
+		break;
+	case 1:
+		ret = deflate_static_huffman();
+		break;
+	case 2:
+		ret = deflate_dynamic_huffman();
+		break;
+	default:
+		return DEFLATE_ERR_BLOCK;
 	}
 
 	if (ret < 0) {
@@ -446,13 +411,6 @@ int16_t deflate_zlib(unsigned char *input_buf, uint16_t input_len,
 	}
 	uint8_t zlib_method = input_buf[0] & 0x0f;
 	uint8_t zlib_flags = input_buf[1];
-
-#ifdef DEFLATE_DEBUG
-	kout << "zlib_method=" << zlib_method << endl;
-	kout << "zlib_window_size=" << ((uint16_t) 1 <<
-					(8 +
-					 ((input_buf[0] & 0xf0) >> 4))) << endl;
-#endif
 
 	if (zlib_method != 8) {
 		return DEFLATE_ERR_METHOD;
