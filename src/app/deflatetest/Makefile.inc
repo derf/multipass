@@ -10,4 +10,8 @@ ifdef app
 	override arch_drivers += ,counter
 endif
 
-CXX_TARGETS += src/lib/inflate.cc
+ifdef deflate_nop
+	COMMON_FLAGS += -DDEFLATE_NOP
+else
+	CXX_TARGETS += src/lib/inflate.cc
+endif

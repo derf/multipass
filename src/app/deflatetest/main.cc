@@ -12,17 +12,20 @@
 #include "lib/inflate.h"
 #include "deflate_data.cc"
 
-unsigned char deflate_output[1024];
-
 int main(void)
 {
 	arch.setup();
 	gpio.setup();
 	kout.setup();
 
-	for (uint8_t i = 0; i < 5; i++) {
+	while (1) {
 		counter.start();
-		int16_t ret = inflate_zlib((unsigned char*)inflate_input, inflate_input_size, deflate_output, sizeof(deflate_output));
+#ifdef DEFLATE_NOP
+		kout << (unsigned char*)inflate_input << endl;
+		uint16_t ret = 1;
+#else
+		int16_t ret = inflate_zlib((unsigned char*)inflate_input, inflate_input_size, deflate_output, deflate_output_size);
+#endif
 		counter.stop();
 		kout << "inflate returned " << ret << endl;
 		kout << "Output: " << (char*)deflate_output << endl;
