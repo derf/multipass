@@ -169,7 +169,7 @@ build/system.elf: ${OBJECTS}
 		-Wl,--library-path=/opt/msp430/ti/msp430-gcc-full-linux-5.1.2.0/include/ \
 		-Wl,--gc-sections \
 		-o $@ ${OBJECTS}
-	${QUIET}${SIZE} build/system.elf | tail -n1 | awk '{ print "  ROM: " int(($$1+$$2)*100/49152) "%     RAM: " int(($$2+$$3)*100/4096) "%" }'
+	${QUIET}${SIZE} build/system.elf | tail -n1 | awk '{ print "  ROM: " ($$1+$$2) " (" int(($$1+$$2)*100/49152) "%)     RAM: " ($$2 + $$3) " (" int(($$2+$$3)*100/4096) "%)" }'
 
 build/system.hex: build/system.elf
 	${QUIET}${OBJCOPY} -O ihex ${@:.hex=.elf} $@
@@ -182,6 +182,9 @@ program: build/system.hex
 
 arch_clean:
 	${QUIET}rm -f ${OBJECTS} build/system.hex
+
+cat:
+	${QUIET}script/cat.py /dev/${SERIAL_PORT} ${uart_freq} ${cpu_freq} 65536
 
 monitor:
 	${QUIET}screen /dev/${SERIAL_PORT} ${uart_freq}
@@ -217,4 +220,4 @@ attributes: build/system.elf
 	${QUIET}script/size.py ${SIZE} text,data data,bss
 endif
 
-.PHONY: arch_clean arch_help arch_info attributes monitor program
+.PHONY: arch_clean arch_help arch_info attributes cat monitor program
