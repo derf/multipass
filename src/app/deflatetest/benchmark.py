@@ -18,6 +18,7 @@ def main(arch):
     status = subprocess.run(
         ["./mp"] + make_args + ["deflate_nop=1"],
         stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
         universal_newlines=True,
     )
 
@@ -26,9 +27,18 @@ def main(arch):
         if match:
             base_rom = int(match.group(1))
             base_ram = int(match.group(2))
+        match = re.match(r"Program: *(\d+) bytes", line)
+        if match:
+            base_rom = int(match.group(1))
+        match = re.match(r"Data: *(\d+) bytes", line)
+        if match:
+            base_ram = int(match.group(1))
 
     status = subprocess.run(
-        ["./mp"] + make_args, stdout=subprocess.PIPE, universal_newlines=True
+        ["./mp"] + make_args,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        universal_newlines=True,
     )
 
     for line in status.stdout.split("\n"):
@@ -36,6 +46,12 @@ def main(arch):
         if match:
             defl_rom = int(match.group(1))
             defl_ram = int(match.group(2))
+        match = re.match(r"Program: *(\d+) bytes", line)
+        if match:
+            defl_rom = int(match.group(1))
+        match = re.match(r"Data: *(\d+) bytes", line)
+        if match:
+            defl_ram = int(match.group(1))
 
     rom_usage = int(np.ceil((defl_rom - base_rom) / 16)) * 16
     ram_usage = int(np.ceil((defl_ram - base_ram) / 16)) * 16
