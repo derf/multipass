@@ -88,18 +88,9 @@ uint8_t deflate_hc_lengths[19];
 
 /*
  * Code lengths of the literal/length and distance alphabets.
+ * up to 286 literal/length codes + up to 32 distance codes.
  */
 uint8_t deflate_lld_lengths[318];
-
-/*
- * Assumptions:
- * * huffman code length is limited to 11 bits
- * * there are no more than 255 huffman codes with the same length
- *
- * Rationale: longer huffman codes might appear when handling large data
- * sets. We don't do that; instead, we expect the uncompressed source to
- * be no more than a few kB of data.
- */
 
 /*
  * Bit length counts and next code entries for Literal/Length alphabet.
@@ -107,17 +98,23 @@ uint8_t deflate_lld_lengths[318];
  * Literal/Length alphabet. See the algorithm in RFC 1951 section 3.2.2 for
  * details.
  *
- * In deflate, these variables are also used for the huffman alphabet in
- * dynamic huffman blocks.
+ * Assumption: There are no more than 255 huffman codes with the same length.
+ * As the largest alphabet (the literal/length alphabet) contains just 288
+ * codes in total, this should be reasonable.
+ *
+ * These variables are also used for the huffman alphabet in dynamic huffman
+ * blocks.
  */
-uint8_t deflate_bl_count_ll[12];
-uint16_t deflate_next_code_ll[12];
+uint8_t deflate_bl_count_ll[16];
+uint16_t deflate_next_code_ll[16];
 
 /*
- * Bit length counts and next code entries for Distance alphabet.
+ * Bit length counts and next code entries for Distance alphabet. Note that,
+ * even though there are just 30 different distance codes, individual
+ * codes may be up to 16 bits long.
  */
-uint8_t deflate_bl_count_d[12];
-uint16_t deflate_next_code_d[12];
+uint8_t deflate_bl_count_d[16];
+uint16_t deflate_next_code_d[16];
 
 static uint16_t deflate_rev_word(uint16_t word, uint8_t bits)
 {
@@ -132,7 +129,7 @@ static uint16_t deflate_rev_word(uint16_t word, uint8_t bits)
 	return ret;
 }
 
-static uint8_t deflate_bitmask(uint8_t bit_count)
+static uint16_t deflate_bitmask(uint8_t bit_count)
 {
 	return (1 << bit_count) - 1;
 }
@@ -168,7 +165,7 @@ static void deflate_build_alphabet(uint8_t * lengths, uint16_t size,
 	uint16_t i;
 	uint16_t code = 0;
 	uint16_t max_len = 0;
-	for (i = 0; i < 12; i++) {
+	for (i = 0; i < 16; i++) {
 		bl_count[i] = 0;
 	}
 
@@ -187,11 +184,17 @@ static void deflate_build_alphabet(uint8_t * lengths, uint16_t size,
 	}
 }
 
+/*
+ * This function trades speed for low memory requirements. Instead of building
+ * an actual huffman tree (at a cost of about 650 Bytes of RAM), we iterate
+ * through the code lengths whenever we have found a huffman code.  This is
+ * very slow, but memory-efficient.
+ */
 static uint16_t deflate_huff(uint8_t * lengths, uint16_t size,
 			     uint8_t * bl_count, uint16_t * next_code)
 {
 	uint16_t next_word = deflate_get_word();
-	for (uint8_t num_bits = 1; num_bits < 12; num_bits++) {
+	for (uint8_t num_bits = 1; num_bits < 16; num_bits++) {
 		uint16_t next_bits = deflate_rev_word(next_word, num_bits);
 		if (bl_count[num_bits] && next_bits >= next_code[num_bits]
 		    && next_bits < next_code[num_bits] + bl_count[num_bits]) {
@@ -202,6 +205,7 @@ static uint16_t deflate_huff(uint8_t * lengths, uint16_t size,
 			}
 			uint8_t len_pos = next_bits;
 			uint8_t cur_pos = next_code[num_bits];
+			// This is slow, but memory-efficient
 			for (uint16_t i = 0; i < size; i++) {
 				if (lengths[i] == num_bits) {
 					if (cur_pos == len_pos) {
@@ -232,6 +236,8 @@ static int8_t deflate_huffman(uint8_t * ll_lengths, uint16_t ll_size,
 			deflate_output_now++;
 		} else if (code == 256) {
 			return 0;
+		} else if (code == 65535) {
+			return DEFLATE_ERR_HUFFMAN;
 		} else {
 			uint16_t len_val = deflate_length_offsets[code - 257];
 			uint8_t extra_bits = deflate_length_bits[code - 257];
@@ -264,7 +270,10 @@ static int8_t deflate_huffman(uint8_t * ll_lengths, uint16_t ll_size,
 
 static int8_t deflate_uncompressed()
 {
-	deflate_input_now++;
+	if (deflate_bit_offset) {
+		deflate_input_now++;
+		deflate_bit_offset = 0;
+	}
 	uint16_t len =
 	    ((uint16_t) deflate_input_now[1] << 8) + deflate_input_now[0];
 	uint16_t nlen =
@@ -334,7 +343,8 @@ static int8_t deflate_dynamic_huffman()
 	uint16_t items_processed = 0;
 	while (items_processed < hlit + hdist) {
 		uint8_t code =
-		    deflate_huff(deflate_hc_lengths, 19, deflate_bl_count_ll,
+		    deflate_huff(deflate_hc_lengths, sizeof(deflate_hc_lengths),
+				 deflate_bl_count_ll,
 				 deflate_next_code_ll);
 		if (code == 16) {
 			uint8_t copy_count = 3 + deflate_get_bits(2);
@@ -373,36 +383,42 @@ static int8_t deflate_dynamic_huffman()
 int16_t inflate(unsigned char *input_buf, uint16_t input_len,
 		unsigned char *output_buf, uint16_t output_len)
 {
-	//uint8_t is_final = input_buf[0] & 0x01;
-	uint8_t block_type = (input_buf[0] & 0x06) >> 1;
-	int8_t ret;
-
 	deflate_input_now = input_buf;
 	deflate_input_end = input_buf + input_len;
-	deflate_bit_offset = 3;
+	deflate_bit_offset = 0;
 
 	deflate_output_now = output_buf;
 	deflate_output_end = output_buf + output_len;
 
-	switch (block_type) {
-	case 0:
-		ret = deflate_uncompressed();
-		break;
-	case 1:
-		ret = deflate_static_huffman();
-		break;
-	case 2:
-		ret = deflate_dynamic_huffman();
-		break;
-	default:
-		return DEFLATE_ERR_BLOCK;
-	}
+	while (1) {
+		uint8_t block_type = deflate_get_bits(3);
+		uint8_t is_final = block_type & 0x01;
+		int8_t ret;
 
-	if (ret < 0) {
-		return ret;
-	}
+		block_type >>= 1;
 
-	return deflate_output_now - output_buf;
+		switch (block_type) {
+		case 0:
+			ret = deflate_uncompressed();
+			break;
+		case 1:
+			ret = deflate_static_huffman();
+			break;
+		case 2:
+			ret = deflate_dynamic_huffman();
+			break;
+		default:
+			return DEFLATE_ERR_BLOCK;
+		}
+
+		if (ret < 0) {
+			return ret;
+		}
+
+		if (is_final) {
+			return deflate_output_now - output_buf;
+		}
+	}
 }
 
 int16_t inflate_zlib(unsigned char *input_buf, uint16_t input_len,
