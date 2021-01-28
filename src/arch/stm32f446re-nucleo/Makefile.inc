@@ -98,6 +98,7 @@ build/system.elf: ${OBJECTS} ext/libopencm3/lib/libopencm3_stm32f4.a
 		-T src/arch/stm32f446re-nucleo/stm32f446.ld \
 		${OBJECTS} -lopencm3_stm32f4 \
 		-o $@
+	${QUIET}${SIZE} build/system.elf | tail -n1 | awk '{ print "  ROM: " ($$1+$$2) " (" int(($$1+$$2)*100/49152) "%)     RAM: " ($$2 + $$3) " (" int(($$2+$$3)*100/4096) "%)" }'
 
 program: build/system.elf
 	openocd -c 'source [find interface/stlink-v2-1.cfg]' \
@@ -109,6 +110,9 @@ program: build/system.elf
 
 arch_clean:
 	${QUIET}rm -f ${OBJECTS}
+
+cat:
+	${QUIET}script/cat.py /dev/${SERIAL_PORT} 115200 ${cpu_freq} 65536
 
 monitor:
 	${QUIET}screen /dev/${SERIAL_PORT} 115200
@@ -128,4 +132,4 @@ arch_info:
 attributes: build/system.elf
 	${QUIET}script/size.py ${SIZE} text,data data,bss
 
-.PHONY: arch_clean arch_help arch_info attributes monitor program
+.PHONY: arch_clean arch_help arch_info attributes cat monitor program

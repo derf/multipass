@@ -81,6 +81,7 @@ build/system.elf: build/system.ar
 		-Wl,--gc-sections \
 		-Wl,--start-group -lc -lgcc -lhal -lpp -lphy -lnet80211 -llwip -lwpa \
 		-lmain $< -Wl,--end-group -o $@
+	${QUIET}${SIZE} build/system.elf | tail -n1 | awk '{ print "  ROM: " ($$1+$$2) " (" int(($$1+$$2)*100/49152) "%)     RAM: " ($$2 + $$3) " (" int(($$2+$$3)*100/4096) "%)" }'
 
 build/0x00000.bin: build/system.elf
 	${ESPTOOL} --chip esp8266 elf2image -o build/ $<
@@ -96,6 +97,9 @@ arch_clean:
 
 monitor:
 	screen ${SERIAL_PORT} 115200
+
+cat:
+	${QUIET}script/cat.py ${SERIAL_PORT} 115200 80000000 0
 
 arch_help:
 	@echo "esp8266 coding advice:"
@@ -117,4 +121,4 @@ arch_info:
 attributes: build/system.elf
 	${QUIET}script/size.py ${SIZE} text,irom0.text data,bss
 
-.PHONY: arch_clean arch_help arch_info attributes monitor program
+.PHONY: arch_clean arch_help arch_info attributes cat monitor program

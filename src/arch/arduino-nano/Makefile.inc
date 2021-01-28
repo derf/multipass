@@ -161,6 +161,9 @@ program: build/system.hex
 arch_clean:
 	${QUIET}rm -f ${OBJECTS} build/system.hex
 
+cat:
+	${QUIET}script/cat.py ${SERIAL_PORT} ${uart_baud} ${cpu_freq} 65536
+
 monitor:
 	${QUIET}screen ${SERIAL_PORT} ${uart_baud}
 
@@ -184,4 +187,4 @@ arch_info:
 attributes: build/system.elf
 	${QUIET}script/size.py avr-size text,data data,bss
 
-.PHONY: arch_clean arch_help arch_info attributes monitor program size
+.PHONY: arch_clean arch_help arch_info attributes cat monitor program size
