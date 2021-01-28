@@ -6,8 +6,8 @@ import subprocess
 import sys
 
 
-def main(arch):
-    make_args = [f"arch={arch}", "app=deflatetest"]
+def main(make_args):
+    make_args += ["app=deflatetest"]
     base_rom = None
     base_ram = None
     defl_rom = None
@@ -55,7 +55,8 @@ def main(arch):
 
     rom_usage = int(np.ceil((defl_rom - base_rom) / 16)) * 16
     ram_usage = int(np.ceil((defl_ram - base_ram) / 16)) * 16
-    print(f"| {arch} | {rom_usage} B | {ram_usage} B")
+    arch_line = " ".join(make_args)
+    print(f"| {arch_line} | {rom_usage} B | {ram_usage} B")
 
     status = subprocess.run(
         ["make", "cat"] + make_args, stdout=subprocess.PIPE, universal_newlines=True
@@ -74,4 +75,4 @@ def main(arch):
 
 
 if __name__ == "__main__":
-    main(*sys.argv[1:])
+    main(sys.argv[1:])

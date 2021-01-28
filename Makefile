@@ -258,6 +258,14 @@ ifdef CONFIG_driver_softi2c
 	COMMON_FLAGS += -DDRIVER_SOFTI2C
 endif
 
+ifdef CONFIG_lib_inflate
+	CXX_TARGETS += src/lib/inflate.cc
+endif
+
+ifdef CONFIG_lib_inflate_checksum
+	COMMON_FLAGS += -DDEFLATE_CHECKSUM
+endif
+
 # Configure drivers (TODO: Kconfig)
 
 ifneq (${i2c_freq}, )
