@@ -61,7 +61,7 @@ void Sharp96::clear()
 
 void Sharp96::writeLine(unsigned char line_no, unsigned char* data)
 {
-	txbuf[0] = CMD_WRITE_LINE | (CMD_WRITE_LINE * vcom);
+	txbuf[0] = CMD_WRITE_LINE | (CMD_TOGGLE_VCOM * vcom);
 	txbuf[1] = swap_bits(line_no + 1);
 	gpio.write(SHARP96_CS_PIN, 1);
 	spi.xmit(2, txbuf, 0, txbuf);
