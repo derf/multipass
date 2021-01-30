@@ -62,6 +62,13 @@ class Timer {
 			TA0CCR0 = 2000000UL / frequency;
 			TA0CTL |= TACLR;
 		}
+
+		inline void setup_hz_low(uint16_t const frequency) { // 250 kHz base
+			TA0CTL = TASSEL__SMCLK | _TA0_MAIN_DIV;
+			TA0EX0 = 7;
+			TA0CCR0 = 250000UL / frequency;
+			TA0CTL |= TACLR;
+		}
 #endif
 
 		inline void start(unsigned char const interrupt) {
