@@ -266,6 +266,10 @@ ifdef CONFIG_lib_inflate_checksum
 	COMMON_FLAGS += -DDEFLATE_CHECKSUM
 endif
 
+ifdef CONFIG_lib_inflate_lut
+	COMMON_FLAGS += -DDEFLATE_WITH_LUT
+endif
+
 # Configure drivers (TODO: Kconfig)
 
 ifneq (${i2c_freq}, )

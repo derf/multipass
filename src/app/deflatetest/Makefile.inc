@@ -19,3 +19,7 @@ endif
 ifdef deflate_checksum
 	override CONFIG_lib_inflate_checksum = y
 endif
+
+ifdef deflate_with_lut
+	override CONFIG_lib_inflate_lut = y
+endif
