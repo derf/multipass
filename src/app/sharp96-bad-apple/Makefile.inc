@@ -8,4 +8,5 @@ ifdef app
 	override arch_drivers += spi,timer
 	override drivers += sharp96
 	override CONFIG_lib_inflate = y
+	override CONFIG_lib_inflate_lut = y
 endif
