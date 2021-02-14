@@ -23,6 +23,22 @@ struct bme680_field_data data;
 float lux;
 int8_t bme680_status;
 
+static void bme680_init(void)
+{
+	bme680_status = bme680.init();
+	kout << "# BME680 init returned " << bme680_status << endl;
+
+	bme680.power_mode = BME680_FORCED_MODE;
+	bme680.tph_sett.os_hum = BME680_OS_2X;
+	bme680.tph_sett.os_pres = BME680_OS_16X;
+	bme680.tph_sett.os_temp = BME680_OS_2X;
+
+	bme680.gas_sett.run_gas = BME680_ENABLE_GAS_MEAS;
+	bme680.gas_sett.heatr_dur = 100;
+	bme680.gas_sett.heatr_temp = 300;
+	bme680.setSensorSettings(BME680_OST_SEL | BME680_OSP_SEL | BME680_OSH_SEL | BME680_GAS_SENSOR_SEL);
+}
+
 void loop(void)
 {
 	static unsigned char i = 0;
@@ -35,11 +51,13 @@ void loop(void)
 
 #ifdef POWER_PIN
 	if (lux < 0 || bme680_status != 0) {
-		if (i == 18) {
+		if (i == 17) {
 			kout << "# Cycling power to I2C clients" << endl;
 			gpio.write(POWER_PIN, 0);
-		} else if (i == 19) {
+		} else if (i == 18) {
 			gpio.write(POWER_PIN, 1);
+		} else if (i == 19) {
+			bme680_init();
 		}
 	}
 #endif
@@ -69,25 +87,14 @@ void loop(void)
 		}
 	}
 
-	if (i == 0) {
-		bme680_status = bme680.init();
-		kout << "BME680 init " << bme680_status << endl;
-
-		bme680.power_mode = BME680_FORCED_MODE;
-		bme680.tph_sett.os_hum = BME680_OS_2X;
-		bme680.tph_sett.os_pres = BME680_OS_16X;
-		bme680.tph_sett.os_temp = BME680_OS_2X;
-
-		bme680.gas_sett.run_gas = BME680_ENABLE_GAS_MEAS;
-		bme680.gas_sett.heatr_dur = 100;
-		bme680.gas_sett.heatr_temp = 300;
-		bme680.setSensorSettings(BME680_OST_SEL | BME680_OSP_SEL | BME680_OSH_SEL | BME680_GAS_SENSOR_SEL);
-	}
-	else if (i == 1 && bme680_status == 0) {
+	if (i == 1 && bme680_status == 0) {
 		bme680_status = bme680.setSensorMode();
 	}
 	else if (i == 2) {
-		if (bme680_status == 0 && bme680.getSensorData(&data) == 0) {
+		if (bme680_status == 0) {
+			bme680_status = bme680.getSensorData(&data);
+		}
+		if (bme680_status == 0) {
 			kout << "BME680 temperature: " << (float)data.temperature / 100 << " degC" << endl;
 			kout << "BME680 humidity: " << (float)data.humidity / 1000  << " %" << endl;
 			kout << "BME680 pressure: " << (float)data.pressure / 100 << " hPa" << endl;
@@ -144,6 +151,8 @@ int main(void)
 	bme680.delay_ms = bme680_delay_ms;
 
 	bme680.amb_temp = 25;
+
+	bme680_init();
 
 	arch.idle_loop();
 
