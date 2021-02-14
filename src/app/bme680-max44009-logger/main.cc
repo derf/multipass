@@ -95,9 +95,10 @@ void loop(void)
 			bme680_status = bme680.getSensorData(&data);
 		}
 		if (bme680_status == 0) {
-			kout << "BME680 temperature: " << (float)data.temperature / 100 << " degC" << endl;
-			kout << "BME680 humidity: " << (float)data.humidity / 1000  << " %" << endl;
-			kout << "BME680 pressure: " << (float)data.pressure / 100 << " hPa" << endl;
+			bme680.amb_temp = data.temperature;
+			kout << "BME680 temperature: " << data.temperature << " degC" << endl;
+			kout << "BME680 humidity: " << data.humidity  << " %" << endl;
+			kout << "BME680 pressure: " << data.pressure / 100 << " hPa" << endl;
 			kout << "BME680 gas resistance: " << data.gas_resistance << endl;
 		} else {
 			kout << "# BME680 error " << bme680_status << endl;

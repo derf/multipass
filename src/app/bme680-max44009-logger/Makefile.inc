@@ -9,3 +9,5 @@ ifdef app
 	override arch_drivers += ,i2c
 	override drivers += ,bme680,max44009
 endif
+
+COMMON_FLAGS += -DBME680_FLOAT_POINT_COMPENSATION
