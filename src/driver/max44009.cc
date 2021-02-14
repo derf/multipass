@@ -19,7 +19,9 @@ float MAX44009::getLux()
 	txbuf[0] = 0x03;
 	txbuf[1] = 0x04;
 
-	i2c.xmit(address, 2, txbuf, 2, rxbuf);
+	if (i2c.xmit(address, 2, txbuf, 2, rxbuf) != 0) {
+		return -1;
+	}
 
 	luxHigh = rxbuf[0];
 	luxLow = rxbuf[1];

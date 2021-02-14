@@ -15,12 +15,36 @@
 #include "driver/bme680_util.h"
 #include "driver/max44009.h"
 
+#ifdef MULTIPASS_ARCH_arduino_nano
+#define POWER_PIN GPIO::pc3
+#endif
+
 struct bme680_field_data data;
+float lux;
+int8_t bme680_status;
 
 void loop(void)
 {
 	static unsigned char i = 0;
 
+	if (lux >= 0 && bme680_status == 0) {
+		gpio.led_off(0);
+	} else {
+		gpio.led_on(0);
+	}
+
+#ifdef POWER_PIN
+	if (lux < 0 || bme680_status != 0) {
+		if (i == 18) {
+			kout << "# Cycling power to I2C clients" << endl;
+			gpio.write(POWER_PIN, 0);
+		} else if (i == 19) {
+			gpio.write(POWER_PIN, 1);
+		}
+	}
+#endif
+
+#ifdef MULTIPASS_ARCH_arduino_nano
 	if ((i == 1) && (ADCSRA & _BV(ADIF))) {
 		uint8_t adcr_l = ADCL;
 		uint8_t adcr_h = ADCH;
@@ -32,20 +56,45 @@ void loop(void)
 
 		kout << "VCC: " << vcc << endl;
 	}
+#endif
 
 	if (i == 0) {
-		bme680.setSensorMode();
+		lux = max44009.getLux();
+		if (lux >= 0) {
+			kout << "MAX44009: ";
+			kout.printf_float(max44009.getLux());
+			kout << " lx" << endl;
+		} else {
+			kout << "# MAX44009 error" << endl;
+		}
 	}
-	else if (i == 1) {
-		if (bme680.getSensorData(&data) == 0) {
+
+	if (i == 0) {
+		bme680_status = bme680.init();
+		kout << "BME680 init " << bme680_status << endl;
+
+		bme680.power_mode = BME680_FORCED_MODE;
+		bme680.tph_sett.os_hum = BME680_OS_2X;
+		bme680.tph_sett.os_pres = BME680_OS_16X;
+		bme680.tph_sett.os_temp = BME680_OS_2X;
+
+		bme680.gas_sett.run_gas = BME680_ENABLE_GAS_MEAS;
+		bme680.gas_sett.heatr_dur = 100;
+		bme680.gas_sett.heatr_temp = 300;
+		bme680.setSensorSettings(BME680_OST_SEL | BME680_OSP_SEL | BME680_OSH_SEL | BME680_GAS_SENSOR_SEL);
+	}
+	else if (i == 1 && bme680_status == 0) {
+		bme680_status = bme680.setSensorMode();
+	}
+	else if (i == 2) {
+		if (bme680_status == 0 && bme680.getSensorData(&data) == 0) {
 			kout << "BME680 temperature: " << (float)data.temperature / 100 << " degC" << endl;
 			kout << "BME680 humidity: " << (float)data.humidity / 1000  << " %" << endl;
 			kout << "BME680 pressure: " << (float)data.pressure / 100 << " hPa" << endl;
 			kout << "BME680 gas resistance: " << data.gas_resistance << endl;
+		} else {
+			kout << "# BME680 error " << bme680_status << endl;
 		}
-		kout << "MAX44009: ";
-		kout.printf_float(max44009.getLux());
-		kout << " lx" << endl;
 	}
 
 	i = (i + 1) % 20;
@@ -53,11 +102,24 @@ void loop(void)
 
 int main(void)
 {
-	unsigned short i = 0;
-
 	arch.setup();
 	gpio.setup();
 	kout.setup();
+
+#ifdef POWER_PIN
+	gpio.output(POWER_PIN);
+	gpio.write(POWER_PIN, 1);
+#endif
+
+#ifdef MULTIPASS_ARCH_arduino_nano
+
+	kout << "# Reset reason: " << MCUSR << endl;
+	MCUSR = 0;
+
+	/* watchdog reset after ~4 seconds */
+	asm("wdr");
+	WDTCSR = _BV(WDCE) | _BV(WDE);
+	WDTCSR = _BV(WDE) | _BV(WDP3);
 
 	// One ADC conversion per four seconds
 	TCCR0A = 0;
@@ -67,13 +129,14 @@ int main(void)
 	ADMUX = _BV(REFS0) | 0x0e;
 	ADCSRB = _BV(ADTS2);
 	ADCSRA = _BV(ADEN) | _BV(ADATE) | _BV(ADPS2) | _BV(ADPS1);
+#endif
 
 	if (i2c.setup() != 0) {
-		kout << "I2C setup failed" << endl;
+		kout << "# I2C setup failed" << endl;
 		return 1;
 	}
 
-	kout << "I2C setup OK" << endl;
+	kout << "# I2C setup OK" << endl;
 
 	bme680.intf = BME680_I2C_INTF;
 	bme680.read = bme680_i2c_read;
@@ -81,22 +144,6 @@ int main(void)
 	bme680.delay_ms = bme680_delay_ms;
 
 	bme680.amb_temp = 25;
-
-	int8_t rslt = BME680_OK;
-	rslt = bme680.init();
-	kout << "BME680 init " << rslt << endl;
-
-	bme680.power_mode = BME680_FORCED_MODE;
-	bme680.tph_sett.os_hum = BME680_OS_2X;
-	bme680.tph_sett.os_pres = BME680_OS_16X;
-	bme680.tph_sett.os_temp = BME680_OS_2X;
-
-	bme680.gas_sett.run_gas = BME680_ENABLE_GAS_MEAS;
-	bme680.gas_sett.heatr_dur = 100;
-	bme680.gas_sett.heatr_temp = 300;
-	bme680.setSensorSettings(BME680_OST_SEL | BME680_OSP_SEL | BME680_OSH_SEL | BME680_GAS_SENSOR_SEL);
-
-	arch.delay_ms(200);
 
 	arch.idle_loop();
 
