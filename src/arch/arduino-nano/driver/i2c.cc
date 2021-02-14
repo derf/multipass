@@ -64,6 +64,7 @@ static signed char i2c_start_write(unsigned char addr)
 static signed char i2c_stop()
 {
 	TWCR = _BV(TWINT) | _BV(TWSTO) | _BV(TWEN);
+	return 0;
 }
 
 /*
@@ -128,8 +129,6 @@ signed char I2C::xmit(unsigned char address,
 		unsigned char tx_len, unsigned char *tx_buf,
 		unsigned char rx_len, unsigned char *rx_buf)
 {
-	unsigned char i;
-
 	if (tx_len) {
 		if (i2c_start_write(address) < 0) {
 			return -1;
