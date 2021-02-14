@@ -17,18 +17,76 @@
 
 void CCS811::init()
 {
-	gpio.output(nWAKE);
-	gpio.write(nWAKE, 1);
+	startFirmware();
+	//setMode(1);
+	//setEnv(50, 0, 0, 0);
 }
 
-short CCS811::check()
+// switch to Application mode
+void CCS811::startFirmware()
 {
-	gpio.write(nWAKE, 0);
+	if (getStatus() & 0x10) {
+		txbuf[0] = 0xf4;
+		i2c.xmit(address, 1, txbuf, 0, rxbuf);
+	}
+}
+
+unsigned char CCS811::getManufacturerID()
+{
 	txbuf[0] = 0x20;
-	rxbuf[0] = 0;
 	i2c.xmit(address, 1, txbuf, 1, rxbuf);
-	gpio.write(nWAKE, 1);
 	return rxbuf[0];
 }
 
-CCS811 ccs811(0x5a);
+void CCS811::setMode(unsigned char mode)
+{
+	txbuf[0] = 0x01;
+	txbuf[1] = (mode & 0x07) << 4;
+	i2c.xmit(address, 2, txbuf, 0, rxbuf);
+}
+
+void CCS811::read()
+{
+	txbuf[0] = 0x02;
+	i2c.xmit(address, 1, txbuf, 8, rxbuf);
+	eco2 = (rxbuf[0] << 8) + rxbuf[1];
+	tvoc = (rxbuf[2] << 8) + rxbuf[3];
+	status = rxbuf[4];
+	error_id = rxbuf[5];
+}
+
+void CCS811::setEnv(unsigned char humi, unsigned char humi_fraction, unsigned char temp, unsigned char temp_fraction)
+{
+	txbuf[0] = 0x05;
+	txbuf[1] = humi;
+	txbuf[2] = humi_fraction;
+	txbuf[3] = temp; //((temp - 25) << 1) + (((temp - 25) & 0x80) >> 7);
+	txbuf[4] = temp_fraction; //(temp << 1) + ((temp & 0x80) >> 7);
+	i2c.xmit(address, 5, txbuf, 0, rxbuf);
+}
+
+unsigned char CCS811::getStatus()
+{
+	txbuf[0] = 0x00;
+	i2c.xmit(address, 1, txbuf, 1, rxbuf);
+	return rxbuf[0];
+}
+
+unsigned char CCS811::getError()
+{
+	txbuf[0] = 0xe0;
+	i2c.xmit(address, 1, txbuf, 1, rxbuf);
+	return rxbuf[0];
+}
+
+// switch to Bootloader mode
+void CCS811::reset()
+{
+	txbuf[0] = 0xff;
+	txbuf[1] = 0x11;
+	txbuf[2] = 0xe5;
+	txbuf[3] = 0x72;
+	txbuf[4] = 0x8a;
+}
+
+CCS811 ccs811;

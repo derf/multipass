@@ -125,7 +125,13 @@ void loop(void)
 	kout << "BME680 gas resistance " << data.gas_resistance << endl;
 #endif
 #ifdef DRIVER_CCS811
-	kout << "CCS811 status is " << ccs811.check() << endl;
+	ccs811.read();
+	kout << "CCS811 eCO₂ : " << ccs811.eco2 << " ppm" << endl;
+	kout << "CCS811 tVOC : " << ccs811.tvoc << " ppb" << endl;
+	kout << bin;
+	kout << "CCS811 status: " << ccs811.status << endl;
+	kout << "CCS811 error: " << ccs811.error_id << endl;
+	kout << dec;
 #endif
 #ifdef DRIVER_HDC1080
 	/*
@@ -186,7 +192,17 @@ int main(void)
 	kout << "I2C setup OK" << endl;
 
 #ifdef DRIVER_CCS811
+	kout << hex;
+	kout << "CCS811 HWID: " << ccs811.getManufacturerID() << endl;
+	arch.delay_ms(65);
+	kout << "CCS811 status: " << ccs811.getStatus() << endl;
+	arch.delay_ms(65);
 	ccs811.init();
+	arch.delay_ms(65);
+	kout << "CCS811 status: " << ccs811.getStatus() << endl;
+	kout << dec;
+	ccs811.setMode(1);
+	//arch.delay_ms(50);
 #endif
 #ifdef DRIVER_HDC1080
 	hdc1080.init();

@@ -9,15 +9,29 @@
 class CCS811 {
 	private:
 		CCS811(const CCS811 &copy);
-		unsigned char const address;
-		unsigned char txbuf[3];
-		unsigned char rxbuf[2];
+		unsigned char const address = 0x5a;
+		unsigned char txbuf[5];
+		unsigned char rxbuf[8];
 
 	public:
-		CCS811(unsigned char const addr) : address(addr) {}
+		CCS811() {}
+
+		unsigned short eco2;
+		unsigned short tvoc;
+		unsigned char status;
+		unsigned char error_id;
+		unsigned char raw_current;
+		unsigned short raw_voltage;
 
 		void init();
-		short check();
+		unsigned char getStatus();
+		unsigned char getError();
+		unsigned char getManufacturerID();
+		void startFirmware();
+		void setMode(unsigned char mode);
+		void read();
+		void setEnv(unsigned char humi, unsigned char humi_fraction, unsigned char temp, unsigned char temp_fraction);
+		void reset();
 };
 
 extern CCS811 ccs811;
