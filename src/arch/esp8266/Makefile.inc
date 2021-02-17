@@ -81,7 +81,7 @@ build/system.elf: build/system.ar
 		-Wl,--gc-sections \
 		-Wl,--start-group -lc -lgcc -lhal -lpp -lphy -lnet80211 -llwip -lwpa \
 		-lmain $< -Wl,--end-group -o $@
-	${QUIET}${SIZE} build/system.elf | tail -n1 | awk '{ print "  ROM: " ($$1+$$2) " (" int(($$1+$$2)*100/49152) "%)     RAM: " ($$2 + $$3) " (" int(($$2+$$3)*100/4096) "%)" }'
+	${QUIET}${SIZE} build/system.elf | tail -n1 | awk '{ print "  ROM: " ($$1+$$2) " (" int(($$1+$$2)*100/4194304) "%)     RAM: " ($$2 + $$3) " (" int(($$2+$$3)*100/81920) "%)" }'
 
 build/0x00000.bin: build/system.elf
 	${ESPTOOL} --chip esp8266 elf2image -o build/ $<

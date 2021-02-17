@@ -98,7 +98,7 @@ build/system.elf: ${OBJECTS} ext/libopencm3/lib/libopencm3_stm32f4.a
 		-T src/arch/stm32f446re-nucleo/stm32f446.ld \
 		${OBJECTS} -lopencm3_stm32f4 \
 		-o $@
-	${QUIET}${SIZE} build/system.elf | tail -n1 | awk '{ print "  ROM: " ($$1+$$2) " (" int(($$1+$$2)*100/49152) "%)     RAM: " ($$2 + $$3) " (" int(($$2+$$3)*100/4096) "%)" }'
+	${QUIET}${SIZE} build/system.elf | tail -n1 | awk '{ print "  ROM: " ($$1+$$2) " (" int(($$1+$$2)*100/524288) "%)     RAM: " ($$2 + $$3) " (" int(($$2+$$3)*100/131072) "%)" }'
 
 program: build/system.elf
 	openocd -c 'source [find interface/stlink-v2-1.cfg]' \
