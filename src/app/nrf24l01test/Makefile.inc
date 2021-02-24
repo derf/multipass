@@ -5,9 +5,10 @@
 # SPDX-License-Identifier: CC0-1.0
 
 ifdef app
-	override loop = 1
+	CONFIG_loop = y
 	override timer_s = 1
-	override drivers += ,nrf24l01
+	override arch_drivers += ,spi
+	CONFIG_driver_nrf24l01 = y
 endif
 
 ifeq (${tx}, 1)
