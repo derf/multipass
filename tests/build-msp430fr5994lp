@@ -1,0 +1,12 @@
+#!/bin/sh
+
+set -e
+
+apps="bme680-max44009-logger
+	countertest deflatetest donothing i2cdetect ledblink
+	nrf24l01test sharp96-bad-apple sharp96test shell sysinfo timertest
+	waittest"
+
+for app in $apps; do
+	make -B arch=msp430fr5994lp app=$app build/system.elf
+done

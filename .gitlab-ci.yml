@@ -12,9 +12,7 @@ build_esp8266:
   script:
   - curl -s https://ess.cs.uos.de/static/.gitlab-ci/xtensa-lx106-elf.tar.xz | tar -C /opt -xJf -
   - mkdir -p build
-  - make -B arch=esp8266 app=donothing
-  - make -B arch=esp8266 app=ledblink loop=1 timer_s=1
-  - make -B arch=esp8266 app=sysinfo
+  - sh -x tests/build-esp8266
 
 build_posix:
   stage: build
@@ -31,9 +29,7 @@ build_msp430fr5969lp:
   script:
   - curl -s https://ess.cs.uos.de/static/.gitlab-ci/msp430-gcc-full-linux-5.1.2.0.tar.xz | tar -C /opt -xJf -
   - mkdir -p build
-  - make -B arch=msp430fr5969lp app=donothing
-  - make -B arch=msp430fr5969lp app=ledblink loop=1 timer_s=1
-  - make -B arch=msp430fr5969lp app=sysinfo
+  - sh -x tests/build-msp430fr5969lp
 
 build_msp430fr5994lp:
   stage: build
@@ -42,9 +38,7 @@ build_msp430fr5994lp:
   script:
   - curl -s https://ess.cs.uos.de/static/.gitlab-ci/msp430-gcc-full-linux-5.1.2.0.tar.xz | tar -C /opt -xJf -
   - mkdir -p build
-  - make -B arch=msp430fr5994lp app=donothing
-  - make -B arch=msp430fr5994lp app=ledblink loop=1 timer_s=1
-  - make -B arch=msp430fr5994lp app=sysinfo
+  - sh -x tests/build-msp430fr5994lp
 
 build_stm32f446re-nucleo:
   stage: build
@@ -52,12 +46,7 @@ build_stm32f446re-nucleo:
   - apt-get update -qy
   - apt-get install -y --no-install-recommends gcc-arm-none-eabi binutils-arm-none-eabi libnewlib-arm-none-eabi libstdc++-arm-none-eabi-newlib git python3
   - mkdir -p build
-  - make arch=stm32f446re-nucleo ext/libopencm3/lib/libopencm3_stm32f4.a
-  - make arch=stm32f446re-nucleo app=donothing
-  - find src -name '*.o' -delete
-  - make arch=stm32f446re-nucleo app=ledblink loop=1 timer_s=1
-  - find src -name '*.o' -delete
-  - make arch=stm32f446re-nucleo app=sysinfo
+  - sh -x tests/build-stm32f446re-nucleo
 
 test_posix:
   stage: test

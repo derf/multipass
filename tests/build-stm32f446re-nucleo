@@ -1,0 +1,12 @@
+#!/bin/sh
+
+set -e
+
+apps="countertest deflatetest donothing ledblink
+	sysinfo"
+
+for app in $apps; do
+	find src -name '*.o' -delete
+	rm -f build/system.elf
+	make arch=stm32f446re-nucleo app=$app build/system.elf
+done

@@ -1,0 +1,11 @@
+#!/bin/sh
+
+set -e
+
+apps="donothing ledblink
+	sysinfo timertest
+	waittest"
+
+for app in $apps; do
+	make -B arch=atmega2560 app=$app build/system.elf
+done
