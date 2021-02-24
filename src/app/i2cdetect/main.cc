@@ -126,12 +126,10 @@ void loop(void)
 #endif
 #ifdef DRIVER_CCS811
 	ccs811.read();
-	kout << "CCS811 eCO₂ : " << ccs811.eco2 << " ppm" << endl;
-	kout << "CCS811 tVOC : " << ccs811.tvoc << " ppb" << endl;
 	kout << bin;
-	kout << "CCS811 status: " << ccs811.status << endl;
-	kout << "CCS811 error: " << ccs811.error_id << endl;
+	kout << "CCS811 status / error: " << ccs811.status << " / " << ccs811.error_id << endl;
 	kout << dec;
+	kout << "CCS811 tVOC / eCO₂ : " << ccs811.tvoc << " ppb / " << ccs811.eco2 << " ppm" << endl;
 #endif
 #ifdef DRIVER_HDC1080
 	/*
@@ -201,7 +199,7 @@ int main(void)
 	arch.delay_ms(65);
 	kout << "CCS811 status: " << ccs811.getStatus() << endl;
 	kout << dec;
-	ccs811.setMode(1);
+	ccs811.setMode(2);
 	//arch.delay_ms(50);
 #endif
 #ifdef DRIVER_HDC1080
