@@ -6,5 +6,5 @@
 
 ifdef app
 	override arch_drivers += ,i2c
-	override drivers += ,mpu9250
+	CONFIG_driver_mpu9250 = y
 endif

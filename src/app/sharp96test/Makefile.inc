@@ -5,7 +5,7 @@
 # SPDX-License-Identifier: CC0-1.0
 
 ifdef app
-	override loop = 1
-	override arch_drivers += spi
-	override drivers += sharp96
+	CONFIG_loop = y
+	override arch_drivers += ,spi
+	CONFIG_driver_sharp96 = y
 endif

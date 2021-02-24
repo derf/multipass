@@ -5,12 +5,9 @@
 # Only load .config when app/arch are not specified on commandline
 ifneq (${app}, )
 	CONFIG_app = ${app}
+	CONFIG_arch = ${arch}
 else
 	-include .config
-endif
-
-ifneq (${arch}, )
-	CONFIG_arch = ${arch}
 endif
 
 # Make cannot include "foo"/Makefile.inc, so remove quotes from config entries

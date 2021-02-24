@@ -6,9 +6,9 @@
 
 ifdef app
 	override timer_s = 0
-	override loop = 0
 	override arch_drivers += ,counter
 	override CONFIG_lib_inflate = y
+	#COMMON_FLAGS += -Wl,--library-path=src/arch/msp430fr5994lp -T msp430fr5994-no-lea.ld
 endif
 
 ifdef deflate_nop

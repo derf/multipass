@@ -5,7 +5,7 @@
 # SPDX-License-Identifier: CC0-1.0
 
 ifdef app
-	override loop = 1
+	CONFIG_loop = y
 	override arch_drivers += ,i2c
-	override drivers += ,max44009
+	CONFIG_driver_max44009 = y
 endif
