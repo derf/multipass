@@ -6,7 +6,8 @@
 
 ifdef app
 	override arch_drivers += spi,timer
-	override drivers += sharp96
-	override CONFIG_lib_inflate = y
-	override CONFIG_lib_inflate_lut = y
+	CONFIG_driver_sharp96 = y
+	CONFIG_lib_inflate = y
+	CONFIG_lib_inflate_lut = y
+	CONFIG_arch_msp430fr5994lp_large_mode = y
 endif
