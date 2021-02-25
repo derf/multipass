@@ -42,6 +42,9 @@
 #ifdef DRIVER_MPU9250
 #include "driver/mpu9250.h"
 #endif
+#ifdef DRIVER_TSL2591
+#include "driver/tsl2591.h"
+#endif
 
 void loop(void)
 {
@@ -127,6 +130,12 @@ void loop(void)
 	kout.printf_float(max44009.getLux());
 	kout << endl;
 #endif
+
+#ifdef DRIVER_TSL2591
+	tsl2591.read();
+	kout << dec << "TSL2591 CH0: " << tsl2591.ch0 << " / CH1: " << tsl2591.ch1;
+	kout << hex << "   (status: 0x" << tsl2591.getStatus() << ")" << endl;
+#endif
 }
 
 int main(void)
@@ -209,6 +218,10 @@ int main(void)
 
 #ifdef DRIVER_MPU9250
 	mpu9250.init();
+#endif
+
+#ifdef DRIVER_TSL2591
+	tsl2591.init();
 #endif
 
 	arch.idle_loop();
