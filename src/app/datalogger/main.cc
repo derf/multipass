@@ -45,6 +45,9 @@
 #ifdef DRIVER_TSL2591
 #include "driver/tsl2591.h"
 #endif
+#ifdef DRIVER_SCD4X
+#include "driver/scd4x.h"
+#endif
 
 void loop(void)
 {
@@ -136,6 +139,17 @@ void loop(void)
 	kout << dec << "TSL2591 CH0: " << tsl2591.ch0 << " / CH1: " << tsl2591.ch1;
 	kout << hex << "   (status: 0x" << tsl2591.getStatus() << ")" << endl;
 #endif
+
+#ifdef DRIVER_SCD4X
+	scd4x.read();
+	kout << dec << "CO₂: " << scd4x.co2 << " ppm" << endl;
+	kout << "Temperature: ";
+	kout.printf_float(((175.0 * scd4x.rawTemperature) / 65536) - 45);
+	kout << " °c" << endl;
+	kout << "Humidity: ";
+	kout.printf_float((100.0 * scd4x.rawHumidity) / 65536);
+	kout << " %" << endl;
+#endif
 }
 
 int main(void)
@@ -222,6 +236,10 @@ int main(void)
 
 #ifdef DRIVER_TSL2591
 	tsl2591.init();
+#endif
+
+#ifdef DRIVER_SCD4X
+	scd4x.start();
 #endif
 
 	arch.idle_loop();

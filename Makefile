@@ -108,6 +108,14 @@ ifneq ($(findstring sharp96,${drivers}), )
 	CONFIG_driver_sharp96 = y
 endif
 
+ifneq ($(findstring tsl2591,${drivers}), )
+	CONFIG_driver_tsl2591 = y
+endif
+
+ifneq ($(findstring scd4x,${drivers}), )
+	CONFIG_driver_scd4x = y
+endif
+
 ifneq ($(findstring resistive_load,${drivers}), )
 	CONFIG_driver_resistive_load = y
 endif
@@ -190,6 +198,16 @@ endif
 ifdef CONFIG_driver_mmsubstate
 	CXX_TARGETS += src/driver/mmsubstate.cc
 	COMMON_FLAGS += -DDRIVER_MMSUBSTATE
+endif
+
+ifdef CONFIG_driver_tsl2591
+	CXX_TARGETS += src/driver/tsl2591.cc
+	COMMON_FLAGS += -DDRIVER_TSL2591
+endif
+
+ifdef CONFIG_driver_scd4x
+	CXX_TARGETS += src/driver/scd4x.cc
+	COMMON_FLAGS += -DDRIVER_SCD4X
 endif
 
 ifdef CONFIG_driver_nrf24l01
