@@ -203,15 +203,21 @@ signed char SoftI2C::xmit(unsigned char address,
 
 	if (tx_len) {
 		start();
-		tx((address << 1) | 0);
+		if (tx((address << 1) | 0) == false) {
+			return -1;
+		}
 
 		for (i = 0; i < tx_len; i++) {
-			tx(tx_buf[i]);
+			if (tx(tx_buf[i]) == false) {
+				return -1;
+			}
 		}
 	}
 	if (rx_len) {
 		start();
-		tx((address << 1) | 1);
+		if (tx((address << 1) | 1) == false) {
+			return -1;
+		}
 
 		for (i = 1; i <= rx_len; i++) {
 			rx_buf[i-1] = rx((i < rx_len) * 1);
