@@ -123,21 +123,21 @@ class GPIO {
 				P4OUT = pull ? (P4OUT | (1 << (pin - p4_0))) : (P4OUT & ~(1 << (pin - p4_0)));
 				P4REN |= (1 << (pin - p4_0));
 			} else if (pin < p6_0) {
-				P5DIR &= ~(1 << (pin - pj_0));
+				P5DIR &= ~(1 << (pin - p5_0));
 				P5OUT = pull ? (P5OUT | (1 << (pin - p5_0))) : (P5OUT & ~(1 << (pin - p5_0)));
-				P5REN |= (1 << (pin - pj_0));
+				P5REN |= (1 << (pin - p5_0));
 			} else if (pin < p7_0) {
-				P6DIR &= ~(1 << (pin - p2_0));
+				P6DIR &= ~(1 << (pin - p6_0));
 				P6OUT = pull ? (P6OUT | (1 << (pin - p6_0))) : (P6OUT & ~(1 << (pin - p6_0)));
-				P6REN |= (1 << (pin - p2_0));
+				P6REN |= (1 << (pin - p6_0));
 			} else if (pin < p8_0) {
-				P7DIR &= ~(1 << (pin - p3_0));
+				P7DIR &= ~(1 << (pin - p7_0));
 				P7OUT = pull ? (P7OUT | (1 << (pin - p7_0))) : (P7OUT & ~(1 << (pin - p7_0)));
-				P7REN |= (1 << (pin - p3_0));
+				P7REN |= (1 << (pin - p7_0));
 			} else if (pin < pj_0) {
-				P8DIR &= ~(1 << (pin - p4_0));
+				P8DIR &= ~(1 << (pin - p8_0));
 				P8OUT = pull ? (P8OUT | (1 << (pin - p8_0))) : (P8OUT & ~(1 << (pin - p8_0)));
-				P8REN |= (1 << (pin - p4_0));
+				P8REN |= (1 << (pin - p8_0));
 			} else if (pin < PIN_INVALID) {
 				PJDIR &= ~(1 << (pin - pj_0));
 				PJOUT = pull ? (PJOUT | (1 << (pin - pj_0))) : (PJOUT & ~(1 << (pin - pj_0)));
