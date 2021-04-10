@@ -6,9 +6,10 @@
 #include "arch.h"
 #include "driver/gpio.h"
 #include "driver/stdout.h"
-#if defined(MULTIPASS_ARCH_HAS_I2C) && !defined(DRIVER_SOFTI2C)
+#ifdef DRIVER_HARDWARE_I2C
 #include "driver/i2c.h"
-#else
+#endif
+#ifdef DRIVER_SOFTI2C
 #include "driver/soft_i2c.h"
 #endif
 

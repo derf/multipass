@@ -6,6 +6,8 @@ config meta_driver_adc
 bool
 config meta_driver_counter
 bool
+config meta_driver_hardware_i2c
+bool
 config meta_driver_i2c
 bool
 config meta_driver_neopixel

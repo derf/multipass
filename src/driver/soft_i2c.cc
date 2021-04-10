@@ -235,6 +235,8 @@ ON_TIMER_INTERRUPT_head
 ON_TIMER_INTERRUPT_tail
 #endif
 
+#ifndef DRIVER_HARDWARE_I2C
+
 #if SOFTI2C_PULLUP_EXTERNAL
 #ifdef MULTIPASS_ARCH_msp430fr5969lp
 SoftI2C i2c(GPIO::p1_6, GPIO::p1_7, GPIO::p1_4, GPIO::p1_5);
@@ -258,3 +260,5 @@ SoftI2C i2c(GPIO::p5_0, GPIO::p5_1);
 SoftI2C i2c(GPIO::px00, GPIO::px01);
 #endif /* MULTIPASS_ARCH_* */
 #endif /* !SOFTI2C_PULLUP_EXTERNAL */
+
+#endif /* !DRIVER_HARDWARE_I2C */

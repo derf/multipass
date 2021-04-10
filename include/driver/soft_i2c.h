@@ -35,6 +35,8 @@ class SoftI2C {
 				unsigned char rx_len, unsigned char *rx_buf);
 };
 
+#ifndef DRIVER_HARDWARE_I2C
 extern SoftI2C i2c;
+#endif
 
 #endif

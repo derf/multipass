@@ -273,6 +273,10 @@ ifdef CONFIG_driver_softi2c
 	COMMON_FLAGS += -DDRIVER_SOFTI2C
 endif
 
+ifdef CONFIG_meta_driver_hardware_i2c
+	COMMON_FLAGS += -DDRIVER_HARDWARE_I2C
+endif
+
 ifdef CONFIG_lib_inflate
 	CXX_TARGETS += src/lib/inflate.cc
 endif
