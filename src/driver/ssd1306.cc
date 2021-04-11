@@ -20,6 +20,7 @@ void SSD1306::init()
 	for (i = 0; i < sizeof(init1); i++) {
 		writeCommand(init1[i]);
 	}
+	// set multiplex ratio (i.e., number of rows)
 	writeCommand(height - 1);
 	for (i = 0; i < sizeof(init2); i++) {
 		writeCommand(init2[i]);
