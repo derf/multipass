@@ -30,6 +30,17 @@ void SSD1306::init()
 	}
 }
 
+void SSD1306::setContrast(unsigned char contrast)
+{
+	writeCommand(SSD1306_SET_CONTRAST);
+	writeCommand(contrast);
+}
+
+void SSD1306::setInvert(bool invert)
+{
+	writeCommand(SSD1306_SET_NORM_INV | invert);
+}
+
 void SSD1306::showImage(unsigned char* data, uint16_t length)
 {
 	uint8_t i;

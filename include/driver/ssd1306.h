@@ -56,7 +56,7 @@ class SSD1306 {
 			SSD1306_SET_DISP_CLK_DIV, 0x80,
 			SSD1306_SET_PRECHARGE, 0xf1,
 			SSD1306_SET_VCOM_DESEL, 0x30,
-			SSD1306_SET_CONTRAST, 0xff,
+			SSD1306_SET_CONTRAST, 0x7f,
 			SSD1306_SET_ENTIRE_ON,
 			SSD1306_SET_NORM_INV,
 			SSD1306_SET_CHARGE_PUMP, 0x14,
@@ -70,6 +70,8 @@ class SSD1306 {
 		SSD1306() {}
 
 		void init();
+		void setContrast(unsigned char contrast);
+		void setInvert(bool invert);
 		void showImage(unsigned char* data, uint16_t length);
 };
 
