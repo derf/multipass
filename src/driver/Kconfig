@@ -80,6 +80,20 @@ config driver_sharp96
 bool "sharp LS013B4DN 96x96px Transflective LC Display"
 depends on ( arch_msp430fr5969lp || arch_msp430fr5994lp ) && meta_driver_spi
 
+config driver_ssd1306
+bool "SSD1306 I2C OLED display"
+depends on meta_driver_i2c
+
+config driver_ssd1306_width
+int "Display width"
+default 128
+depends on driver_ssd1306
+
+config driver_ssd1306_height
+int "Display height"
+default 64
+depends on driver_ssd1306
+
 config driver_softi2c
 bool "Software I2C"
 #depends on !driver_i2c

@@ -108,6 +108,10 @@ ifneq ($(findstring sharp96,${drivers}), )
 	CONFIG_driver_sharp96 = y
 endif
 
+ifneq ($(findstring ssd1306,${drivers}), )
+	CONFIG_driver_ssd1306 = y
+endif
+
 ifneq ($(findstring tsl2591,${drivers}), )
 	CONFIG_driver_tsl2591 = y
 endif
@@ -249,6 +253,11 @@ ifdef CONFIG_driver_sharp96
 	COMMON_FLAGS += -DSHARP96_POWER_PIN=GPIO::${sharp96_power_pin}
 	COMMON_FLAGS += -DSHARP96_EN_PIN=GPIO::${sharp96_en_pin}
 	COMMON_FLAGS += -DSHARP96_CS_PIN=GPIO::${sharp96_cs_pin}
+endif
+
+ifdef CONFIG_driver_ssd1306
+	CXX_TARGETS += src/driver/ssd1306.cc
+	COMMON_FLAGS += -DDRIVER_SSD1306 -DSSD1306_WIDTH=${CONFIG_driver_ssd1306_width} -DSSD1306_HEIGHT=${CONFIG_driver_ssd1306_height}
 endif
 
 ifdef CONFIG_driver_resistive_load
