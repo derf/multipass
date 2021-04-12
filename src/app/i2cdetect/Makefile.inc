@@ -6,4 +6,5 @@
 
 ifdef app
 	override arch_drivers += ,i2c
+	CONFIG_meta_driver_hardware_i2c = y
 endif
