@@ -1,0 +1,6 @@
+# Copyright 2021 Daniel Friesel
+#
+# SPDX-License-Identifier: CC0-1.0
+
+prompt "SSD1306 Test"
+depends on driver_ssd1306 && loop && !wakeup

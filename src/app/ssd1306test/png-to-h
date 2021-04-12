@@ -1,0 +1,23 @@
+#!/usr/bin/env python3
+
+from PIL import Image
+import sys
+
+
+def load_image(filename):
+    im = Image.open(filename)
+    w, h = im.size
+    buf = [0 for i in range(buf_w * buf_h // 8)]
+    for y in range(min(h, buf_h)):
+        for x in range(min(w, buf_w)):
+            if im.getpixel((x, y)):
+                buf[(y // 8) * buf_w + x] |= 1 << (y % 8)
+    return buf
+
+
+buf_w = int(sys.argv[1])
+buf_h = int(sys.argv[2])
+filename = sys.argv[3]
+
+buf = load_image(filename)
+print(", ".join(map(str, buf)))

@@ -4,7 +4,7 @@ set -e
 
 apps="bme680-max44009-logger button-and-motion-logger
 	donothing i2cdetect ledblink mpu9250_motionlog
-	shell sysinfo timertest
+	shell ssd1306test sysinfo timertest
 	waittest wetterstation ws2812b_dmap ws2812b_uart"
 
 for app in $apps; do

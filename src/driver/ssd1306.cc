@@ -4,8 +4,11 @@
  * SPDX-License-Identifier: BSD-2-Clause
  */
 #include "driver/ssd1306.h"
+#if defined(MULTIPASS_ARCH_HAS_I2C) && !defined(DRIVER_SOFTI2C)
 #include "driver/i2c.h"
+#else
 #include "driver/soft_i2c.h"
+#endif
 
 void SSD1306::writeCommand(uint8_t command)
 {
