@@ -53,4 +53,5 @@ test_posix:
   stage: test
   script:
   - mkdir -p build
+  - touch .config
   - ./mpm arch=posix app=donothing
