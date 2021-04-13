@@ -73,16 +73,16 @@ endif
 
 OBJECTS = ${CXX_TARGETS:.cc=.o} ${C_TARGETS:.c=.o} ${ASM_TARGETS:.S=.o}
 
-.cc.o:
+%.o : %.cc | include/config.h
 	${QUIET}${CXX} ${INCLUDES} ${COMMON_FLAGS} ${CXXFLAGS} -c -o $@ ${@:.o=.cc}
 
-.c.o:
+%.o : %.c | include/config.h
 	${QUIET}${CC} ${INCLUDES} ${COMMON_FLAGS} ${CFLAGS} -c -o $@ ${@:.o=.c}
 
-.S.o:
+%.o : %.S | include/config.h
 	${QUIET}${CC} ${INCLUDES} ${COMMON_FLAGS} -c -o $@ ${@:.o=.S}
 
-.s.o:
+%.o : %.s | include/config.h
 	${QUIET}${CC} ${INCLUDES} ${COMMON_FLAGS} -c -o $@ ${@:.o=.S}
 
 ext/libopencm3/Makefile:

@@ -45,10 +45,10 @@ ifdef CONFIG_gpio_trace
 	COMMON_FLAGS += -DGPIO_TRACE
 endif
 
-.cc.o:
+%.o : %.cc | include/config.h
 	${QUIET}${CXX} ${INCLUDES} ${COMMON_FLAGS} ${CXXFLAGS} -c -o $@ ${@:.o=.cc}
 
-.c.o:
+%.o: %.c | include/config.h
 	${QUIET}${CC} ${INCLUDES} ${COMMON_FLAGS} ${CFLAGS} -c -o $@ ${@:.o=.c}
 
 build/system.elf: ${OBJECTS}

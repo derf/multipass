@@ -380,6 +380,9 @@ endif
 
 default: build/system.elf
 
+include/config.h: .config
+	${QUIET}awk -f script/conf2h.awk .config > include/config.h
+
 stack: default
 	${QUIET}test -n "${OBJDUMP}"
 	${QUIET}test -n "${ARCH_SHORTNAME}"

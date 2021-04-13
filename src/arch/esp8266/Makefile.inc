@@ -64,11 +64,11 @@ ifdef CONFIG_arch_esp8266_driver_uptime
 	CXX_TARGETS += src/arch/esp8266/driver/uptime.cc
 endif
 
-.cc.o:
+%.o : %.cc | include/config.h
 	${QUIET}${CXX} ${INCLUDES} ${COMMON_FLAGS} ${CXXFLAGS} -c -o $@ ${@:.o=.cc}
 	${QUIET}${OBJCOPY} --rename-section .text=.irom0.text --rename-section .literal=.irom0.literal $@
 
-.c.o:
+%.o : %.c | include/config.h
 	${QUIET}${CC} ${INCLUDES} ${COMMON_FLAGS} ${CFLAGS} -c -o $@ ${@:.o=.c}
 	${QUIET}${OBJCOPY} --rename-section .text=.irom0.text --rename-section .literal=.irom0.literal $@
 
