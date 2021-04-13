@@ -1,0 +1,6 @@
+# Copyright 2020 Daniel Friesel
+#
+# SPDX-License-Identifier: CC0-1.0
+
+prompt "SSD1306 Bad Apple"
+depends on driver_ssd1306 && !wakeup
