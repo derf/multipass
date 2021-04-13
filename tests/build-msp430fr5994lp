@@ -2,6 +2,8 @@
 
 set -e
 
+touch .config
+
 apps="bme680-max44009-logger
 	countertest deflatetest donothing i2cdetect ledblink
 	nrf24l01test ssd1306test sharp96-bad-apple sharp96test shell sysinfo timertest

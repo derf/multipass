@@ -2,6 +2,8 @@
 
 set -e
 
+touch .config
+
 apps="countertest deflatetest donothing ledblink
 	sysinfo"
 

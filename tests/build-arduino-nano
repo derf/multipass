@@ -2,6 +2,8 @@
 
 set -e
 
+touch .config
+
 apps="bme680-max44009-logger button-and-motion-logger
 	donothing i2cdetect ledblink mpu9250_motionlog
 	shell ssd1306test sysinfo timertest

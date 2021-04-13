@@ -2,6 +2,8 @@
 
 set -e
 
+touch .config
+
 for app in deflatetest donothing ledblink sysinfo; do
 	make -B arch=esp8266 app=$app build/system.elf
 done
