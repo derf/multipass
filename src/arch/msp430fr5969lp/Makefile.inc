@@ -11,6 +11,7 @@ DEBUG_PORT ?= ttyACM0
 SERIAL_PORT ?= ttyACM1
 
 cpu_freq ?= 8000000
+uart_freq ?= 115200
 
 MSP430_FLASHER_DIR ?= /opt/msp430/MSP430Flasher_1.3.15
 
@@ -142,7 +143,7 @@ arch_clean:
 	${QUIET}rm -f ${OBJECTS} build/system.hex
 
 monitor:
-	${QUIET}screen /dev/${SERIAL_PORT} 115200
+	${QUIET}screen /dev/${SERIAL_PORT} ${uart_freq}
 
 arch_help:
 	@echo "msp430fr5969lp specific flags:"
@@ -159,7 +160,7 @@ arch_info:
 	@echo "I2C   Freq: ${i2c_freq} Hz"
 	@echo "Counter Overflow: 65536/255"
 	@echo "sleep_ms Overflow: 250 500"
-	@echo "Monitor: /dev/${SERIAL_PORT} 115200"
+	@echo "Monitor: /dev/${SERIAL_PORT} ${uart_freq}"
 
 attributes: build/system.elf
 	${QUIET}script/size.py ${SIZE} text,data data,bss
