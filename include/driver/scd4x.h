@@ -24,7 +24,6 @@ class SCD4x {
 		void stop();
 
 		void startLowPower();
-		void stopLowPower();
 
 		void read();
 };

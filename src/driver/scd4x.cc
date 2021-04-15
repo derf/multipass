@@ -25,6 +25,13 @@ void SCD4x::stop()
 	i2c.xmit(address, 2, txbuf, 0, rxbuf);
 }
 
+void SCD4x::startLowPower()
+{
+	txbuf[0] = 0x21;
+	txbuf[1] = 0xac;
+	i2c.xmit(address, 2, txbuf, 0, rxbuf);
+}
+
 void SCD4x::read()
 {
 	txbuf[0] = 0xec;
