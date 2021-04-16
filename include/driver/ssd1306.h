@@ -96,7 +96,7 @@ class SSD1306 {
 
 		// height == 32? 0x02 : 0x12
 
-		const unsigned char init3[13] = {
+		const unsigned char init3[19] = {
 			/*
 			 * Set clock to recommended values: 370 kHz (bits 7..4),
 			 * no divider (bits 3..0). Increase divider for glitchy effects.
@@ -133,7 +133,13 @@ class SSD1306 {
 			SSD1306_SET_CHARGE_PUMP, 0x14,
 
 			// turn on display
-			SSD1306_SET_DISP | 0x01
+			SSD1306_SET_DISP | 0x01,
+
+			// reset column pointer
+			SSD1306_SET_COL_ADDR, 0, 127,
+
+			// reset page pointer
+			SSD1306_SET_PAGE_ADDR, 0, 7
 		};
 
 		void writeCommand(uint8_t command);
