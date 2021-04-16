@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 
 from PIL import Image
+import os
 import sys
 import zlib
 
-buf_w = 128
-buf_h = 64
+buf_w, buf_h = map(int, os.getenv("size", "128x64").split("x"))
 
 def load_image(filename):
     im = Image.open(filename)

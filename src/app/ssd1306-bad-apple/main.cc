@@ -15,7 +15,7 @@ volatile unsigned char timer_done = 0;
 
 #include "frames.cc"
 
-__attribute__((section(".leaRAM"))) unsigned char img_buf[(128 * 64 / 8) * 3];
+__attribute__((section(".leaRAM"))) unsigned char img_buf[(SSD1306_WIDTH * SSD1306_HEIGHT / 8) * 3];
 
 int main(void)
 {
@@ -35,7 +35,7 @@ int main(void)
 			timer_done = 0;
 			timer.start(1);
 
-			ssd1306.showImage(img_buf + (128 * 64 / 8 * 2), 128 * 64 / 8);
+			ssd1306.showImage(img_buf + (SSD1306_WIDTH * SSD1306_HEIGHT / 8 * 2), SSD1306_WIDTH * SSD1306_HEIGHT / 8);
 
 			inflate(frames[i], sizeof(img_buf), img_buf, sizeof(img_buf));
 
@@ -47,7 +47,7 @@ int main(void)
 			timer_done = 0;
 			timer.start(1);
 
-			ssd1306.showImage(img_buf + (128 * 64 / 8 * 0), 128 * 64 / 8);
+			ssd1306.showImage(img_buf + (SSD1306_WIDTH * SSD1306_HEIGHT / 8 * 0), SSD1306_WIDTH * SSD1306_HEIGHT / 8);
 
 			while (!timer_done) {
 				arch.idle();
@@ -57,7 +57,7 @@ int main(void)
 			timer_done = 0;
 			timer.start(1);
 
-			ssd1306.showImage(img_buf + (128 * 64 / 8 * 1), 128 * 64 / 8);
+			ssd1306.showImage(img_buf + (SSD1306_WIDTH * SSD1306_HEIGHT / 8 * 1), SSD1306_WIDTH * SSD1306_HEIGHT / 8);
 
 			while (!timer_done) {
 				arch.idle();
