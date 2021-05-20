@@ -126,7 +126,7 @@ arch_info:
 	@echo "CPU   Freq: ${cpu_freq} Hz"
 	@echo "Timer Freq: ${timer_freq} Hz -> $(shell src/arch/stm32f446re-nucleo/model.py f_timer "${cpu_freq}" "${timer_freq}")"
 	@echo "I2C   Freq: ${i2c_freq} Hz"
-	@echo "Counter Overflow: 65536/255"
+	@echo "Counter Overflow: 4294967296/255"
 	@echo "Monitor: /dev/${SERIAL_PORT} 115200"
 
 attributes: build/system.elf
