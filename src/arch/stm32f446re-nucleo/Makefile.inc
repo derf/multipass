@@ -20,6 +20,8 @@ OBJCOPY = arm-none-eabi-objcopy
 OBJDUMP = arm-none-eabi-objdump
 SIZE = arm-none-eabi-size
 
+ARCH_SHORTNAME = stm32f4
+
 CXX_TARGETS += src/arch/stm32f446re-nucleo/arch.cc
 
 ifdef CONFIG_aspectc

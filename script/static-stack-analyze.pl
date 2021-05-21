@@ -36,16 +36,22 @@ my %arch_data = (
 		call_relocation => 'R_AVR_CALL',
 	},
 	msp430 => {
-		# For each function call, the 4-Byte (20 bits at 2-Byte alignment) return
+		# For each function call, the 2-Byte (16 bits at 2-Byte alignment) return
 		# address is pushed onto the stack.
-		call_cost => 4,
+		call_cost => 2,
 		call_relocation => 'R_MSP430X_ABS16',
 	},
 	msp430large => {
-		# For each function call, the 4-Byte (20 bits at 2-Byte alignment) return
+		# For each function call, the 4-Byte (20 bits at 4-Byte alignment) return
 		# address is pushed onto the stack.
 		call_cost => 4,
 		call_relocation => 'R_MSP430X_ABS20_ADR_DST',
+	},
+	stm32f4 => {
+		# For each function call, the 4-Byte (32 bits) return
+		# address is pushed onto the stack.
+		call_cost => 4,
+		call_relocation => 'R_ARM_THM_CALL',
 	},
 );
 
