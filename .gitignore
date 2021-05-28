@@ -4,10 +4,10 @@
 /.config.old
 /build
 /Kconfig
+/include/config.h
 /src/app/aemr/main.cc
 /src/app/prototest/nanopb.pb.h
 /src/app/prototest/nanopb.pb.cc
-/src/app/prototest/nanopb.proto
 /src/app/prototest/nanopbbench.pb.h
 /src/app/prototest/nanopbbench.pb.cc
 /src/app/prototest/nanopbbench.proto
