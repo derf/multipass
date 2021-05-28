@@ -118,7 +118,7 @@ OutputStream & OutputStream::operator<<(float number)
 
 OutputStream & OutputStream::operator<<(void *pointer)
 {
-	unsigned short temp_base = base;
+	unsigned char temp_base = base;
 	*this << hex << (long)pointer;
 	switch (temp_base) {
 	case 2:
