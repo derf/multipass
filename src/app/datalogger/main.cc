@@ -9,7 +9,7 @@
 
 #if defined(DRIVER_I2C)
 #include "driver/i2c.h"
-#elif defined(DRIVER_SOFTI2C)
+#elif defined(CONFIG_driver_softi2c)
 #include "driver/soft_i2c.h"
 #endif
 
@@ -159,7 +159,7 @@ int main(void)
 	gpio.setup();
 	kout.setup();
 
-#if defined(DRIVER_I2C) || defined(DRIVER_SOFTI2C)
+#if defined(DRIVER_I2C) || defined(CONFIG_driver_softi2c)
 	if (i2c.setup() != 0) {
 		kout << "I2C setup FAILED" << endl;
 		return 1;

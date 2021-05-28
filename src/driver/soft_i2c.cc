@@ -16,12 +16,12 @@
 volatile unsigned char timer_done = 0;
 #endif
 
-#ifdef SOFTI2C_PULLUP_INTERNAL
+#ifdef CONFIG_driver_softi2c_pullup_dynamic_internal
 #define SDA_HIGH gpio.input(sda, 1)
 #define SDA_LOW gpio.output(sda, 0)
 #define SCL_HIGH gpio.input(scl, 1)
 #define SCL_LOW gpio.output(scl, 0)
-#elif SOFTI2C_PULLUP_EXTERNAL
+#elif CONFIG_driver_softi2c_pullup_dynamic_external
 #define SDA_HIGH { gpio.input(sda); gpio.write(sda_pull, 1); }
 #define SDA_LOW { gpio.write(sda_pull, 0); gpio.output(sda); }
 #define SCL_HIGH { gpio.input(scl); gpio.write(scl_pull, 1); }
@@ -63,11 +63,11 @@ inline void i2c_wait()
 
 signed char SoftI2C::setup()
 {
-#ifdef SOFTI2C_PULLUP_EXTERNAL
+#ifdef CONFIG_driver_softi2c_pullup_dynamic_external
 	gpio.output(sda_pull);
 	gpio.output(scl_pull);
 #endif
-#ifdef SOFTI2C_PULLUP_FIXED_GPIO
+#ifdef CONFIG_driver_softi2c_pullup_external
 #if MULTIPASS_ARCH_msp430fr5969lp
 	gpio.output(GPIO::p1_4, 1);
 	gpio.output(GPIO::p1_5, 1);
@@ -77,7 +77,7 @@ signed char SoftI2C::setup()
 #else
 #error "softi2c_pullup=gpio not supported on this architecture"
 #endif /* MULTIPASS_ARCH_* */
-#endif /* SOFTI2C_PULLUP_FIXED_GPIO */
+#endif /* CONFIG_driver_softi2c_pullup_external */
 	SDA_HIGH;
 	SCL_HIGH;
 #ifdef SOFTI2C_TIMER
@@ -237,7 +237,7 @@ ON_TIMER_INTERRUPT_tail
 
 #ifndef DRIVER_HARDWARE_I2C
 
-#if SOFTI2C_PULLUP_EXTERNAL
+#if CONFIG_driver_softi2c_pullup_dynamic_external
 #ifdef MULTIPASS_ARCH_msp430fr5969lp
 SoftI2C i2c(GPIO::p1_6, GPIO::p1_7, GPIO::p1_4, GPIO::p1_5);
 #elif MULTIPASS_ARCH_msp430fr5994lp
@@ -259,6 +259,6 @@ SoftI2C i2c(GPIO::p5_0, GPIO::p5_1);
 #elif MULTIPASS_ARCH_posix
 SoftI2C i2c(GPIO::px00, GPIO::px01);
 #endif /* MULTIPASS_ARCH_* */
-#endif /* !SOFTI2C_PULLUP_EXTERNAL */
+#endif /* !CONFIG_driver_softi2c_pullup_dynamic_external */
 
 #endif /* !DRIVER_HARDWARE_I2C */

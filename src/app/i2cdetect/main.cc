@@ -9,7 +9,7 @@
 #ifdef DRIVER_HARDWARE_I2C
 #include "driver/i2c.h"
 #endif
-#ifdef DRIVER_SOFTI2C
+#ifdef CONFIG_driver_softi2c
 #include "driver/soft_i2c.h"
 #endif
 

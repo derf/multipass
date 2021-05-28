@@ -5,7 +5,7 @@
  */
 #include <stdlib.h>
 #include "driver/eeprom24lc64.h"
-#if defined(MULTIPASS_ARCH_HAS_I2C) && !defined(DRIVER_SOFTI2C)
+#if defined(MULTIPASS_ARCH_HAS_I2C) && !defined(CONFIG_driver_softi2c)
 #include "driver/i2c.h"
 #else
 #include "driver/soft_i2c.h"

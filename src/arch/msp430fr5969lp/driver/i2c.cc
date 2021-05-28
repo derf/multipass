@@ -35,7 +35,7 @@ inline void await_i2c_int(unsigned int ie_flags, unsigned int ifg_flags)
 
 signed char I2C::setup()
 {
-#ifdef I2C_PULLUP_FIXED_GPIO
+#ifdef CONFIG_I2C_PULLUP_FIXED_GPIO
 	P1DIR |= BIT4 | BIT5;
 	P1OUT |= BIT4 | BIT5;
 #endif

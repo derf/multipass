@@ -11,7 +11,7 @@ class SoftI2C {
 		SoftI2C(const SoftI2C &copy);
 
 		unsigned char sda, scl;
-#if SOFTI2C_PULLUP_EXTERNAL
+#if CONFIG_driver_softi2c_pullup_dynamic_external
 		unsigned char sda_pull, scl_pull;
 #endif
 
@@ -21,7 +21,7 @@ class SoftI2C {
 		unsigned char rx(bool send_ack);
 
 	public:
-#if SOFTI2C_PULLUP_EXTERNAL
+#if CONFIG_driver_softi2c_pullup_dynamic_external
 		SoftI2C(unsigned char sda, unsigned char scl,
 				unsigned char sda_pull, unsigned char scl_pull) :
 			sda(sda), scl(scl), sda_pull(sda_pull), scl_pull(scl_pull) {}

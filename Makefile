@@ -279,7 +279,7 @@ endif
 
 ifdef CONFIG_driver_softi2c
 	CXX_TARGETS += src/driver/soft_i2c.cc
-	COMMON_FLAGS += -DDRIVER_SOFTI2C
+	COMMON_FLAGS += -DCONFIG_driver_softi2c
 endif
 
 ifdef CONFIG_meta_driver_hardware_i2c
@@ -318,25 +318,25 @@ ifdef CONFIG_driver_softi2c_pullup_dynamic_internal
 	softi2c_pullup=internal
 endif
 ifeq (${softi2c_pullup}, internal)
-	COMMON_FLAGS += -DSOFTI2C_PULLUP_INTERNAL
+	COMMON_FLAGS += -DCONFIG_driver_softi2c_pullup_dynamic_internal
 endif
 
 ifdef CONFIG_driver_softi2c_pullup_dynamic_external
 	softi2c_pullup=external
 endif
 ifeq (${softi2c_pullup}, external)
-	COMMON_FLAGS += -DSOFTI2C_PULLUP_EXTERNAL
+	COMMON_FLAGS += -DCONFIG_driver_softi2c_pullup_dynamic_external
 endif
 
 ifdef CONFIG_driver_softi2c_pullup_external
 	softi2c_pullup=gpio
 endif
 ifeq (${softi2c_pullup}, gpio)
-	COMMON_FLAGS += -DSOFTI2C_PULLUP_FIXED_GPIO
+	COMMON_FLAGS += -DCONFIG_driver_softi2c_pullup_external
 endif
 
 ifeq (${i2c_pullup}, gpio)
-	COMMON_FLAGS += -DI2C_PULLUP_FIXED_GPIO
+	COMMON_FLAGS += -DCONFIG_I2C_PULLUP_FIXED_GPIO
 endif
 
 ifeq (${softi2c_timer}, 1)
