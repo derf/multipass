@@ -38,11 +38,11 @@ select meta_driver_timer
 choice arch_arduino_nano_cpu
 bool "CPU Type"
 
-config arch_arduino_nano_mega168
-bool "ATMega168"
-
 config arch_arduino_nano_mega328
 bool "ATMega328"
+
+config arch_arduino_nano_mega168
+bool "ATMega168"
 
 endchoice
 
