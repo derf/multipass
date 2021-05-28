@@ -314,7 +314,7 @@ ifdef CONFIG_timer_freq
 	COMMON_FLAGS += -DF_TIMER=${CONFIG_timer_freq}
 endif
 
-ifdef CONFIG_driver_softi2c_pullup-dynamic_internal
+ifdef CONFIG_driver_softi2c_pullup_dynamic_internal
 	softi2c_pullup=internal
 endif
 ifeq (${softi2c_pullup}, internal)
