@@ -44,176 +44,68 @@ ifneq (${stack_usage}, )
 	COMMON_FLAGS += -fstack-usage
 endif
 
-# Allow .config driver entries to be overriddenvia commandline / environment
-
-ifneq ($(findstring dummy,${drivers}), )
-	CONFIG_driver_dummy = y
-endif
-
-ifneq ($(findstring lm75,${drivers}), )
-	CONFIG_driver_lm75 = y
-endif
-
-ifneq ($(findstring s5851a,${drivers}), )
-	CONFIG_driver_s5851a = y
-endif
-
-ifneq ($(findstring am2320,${drivers}), )
-	CONFIG_driver_am2320 = y
-endif
-
-ifneq ($(findstring bme280,${drivers}), )
-	CONFIG_driver_bme280 = y
-endif
-
-ifneq ($(findstring bme680,${drivers}), )
-	CONFIG_driver_bme680 = y
-endif
-
-ifneq ($(findstring ccs811,${drivers}), )
-	CONFIG_driver_ccs811 = y
-endif
-
-ifneq ($(findstring eeprom24lc64,${drivers}), )
-	CONFIG_driver_eeprom24lc64 = y
-endif
-
-ifneq ($(findstring max44006,${drivers}), )
-	CONFIG_driver_max44006 = y
-endif
-
-ifneq ($(findstring max44009,${drivers}), )
-	CONFIG_driver_max44009 = y
-endif
-
-ifneq ($(findstring hdc1080,${drivers}), )
-	CONFIG_driver_hdc1080 = y
-endif
-
-ifneq ($(findstring mpu9250,${drivers}), )
-	CONFIG_driver_mpu9250 = y
-endif
-
-ifneq ($(findstring mmsimple,${drivers}), )
-	CONFIG_driver_mmsimple = y
-endif
-
-ifneq ($(findstring mmsubstate,${drivers}), )
-	CONFIG_driver_mmsubstate = y
-endif
-
-ifneq ($(findstring nrf24l01,${drivers}), )
-	CONFIG_driver_nrf24l01 = y
-endif
-
-ifneq ($(findstring sharp96,${drivers}), )
-	CONFIG_driver_sharp96 = y
-endif
-
-ifneq ($(findstring ssd1306,${drivers}), )
-	CONFIG_driver_ssd1306 = y
-endif
-
-ifneq ($(findstring tsl2591,${drivers}), )
-	CONFIG_driver_tsl2591 = y
-endif
-
-ifneq ($(findstring scd4x,${drivers}), )
-	CONFIG_driver_scd4x = y
-endif
-
-ifneq ($(findstring resistive_load,${drivers}), )
-	CONFIG_driver_resistive_load = y
-endif
-
-ifneq ($(findstring aemr_transition_sync,${drivers}), )
-	CONFIG_driver_aemr_transition_sync = y
-endif
-
-ifneq ($(findstring softi2c,${drivers}), )
-	CONFIG_driver_softi2c = y
-endif
-
-# Load drivers
-
 ifdef CONFIG_driver_dummy
 	CXX_TARGETS += src/driver/dummy.cc
-	COMMON_FLAGS += -DDRIVER_DUMMY
 endif
 
 ifdef CONFIG_driver_lm75
 	CXX_TARGETS += src/driver/lm75.cc
-	COMMON_FLAGS += -DDRIVER_LM75
 endif
 
 ifdef CONFIG_driver_s5851a
 	CXX_TARGETS += src/driver/s5851a.cc
-	COMMON_FLAGS += -DDRIVER_S5851A
 endif
 
 ifdef CONFIG_driver_am2320
 	CXX_TARGETS += src/driver/am2320.cc
-	COMMON_FLAGS += -DDRIVER_AM2320
 endif
 
 ifdef CONFIG_driver_bme280
 	CXX_TARGETS += src/driver/bme280.cc src/driver/bme680_util.cc
-	COMMON_FLAGS += -DDRIVER_BME280
 endif
 
 ifdef CONFIG_driver_bme680
 	CXX_TARGETS += src/driver/bme680.cc src/driver/bme680_util.cc
-	COMMON_FLAGS += -DDRIVER_BME680
 endif
 
 ifdef CONFIG_driver_ccs811
 	CXX_TARGETS += src/driver/ccs811.cc
-	COMMON_FLAGS += -DDRIVER_CCS811
 endif
 
 ifdef CONFIG_driver_eeprom24lc64
 	CXX_TARGETS += src/driver/eeprom24lc64.cc
-	COMMON_FLAGS += -DDRIVER_EEPROM24LC64
 endif
 
 ifdef CONFIG_driver_max44006
 	CXX_TARGETS += src/driver/max44006.cc
-	COMMON_FLAGS += -DDRIVER_MAX44006
 endif
 
 ifdef CONFIG_driver_max44009
 	CXX_TARGETS += src/driver/max44009.cc
-	COMMON_FLAGS += -DDRIVER_MAX44009
 endif
 
 ifdef CONFIG_driver_hdc1080
 	CXX_TARGETS += src/driver/hdc1080.cc
-	COMMON_FLAGS += -DDRIVER_HDC1080
 endif
 
 ifdef CONFIG_driver_mpu9250
 	CXX_TARGETS += src/driver/mpu9250.cc
-	COMMON_FLAGS += -DDRIVER_MPU9250
 endif
 
 ifdef CONFIG_driver_mmsimple
 	CXX_TARGETS += src/driver/mmsimple.cc
-	COMMON_FLAGS += -DDRIVER_MMSIMPLE
 endif
 
 ifdef CONFIG_driver_mmsubstate
 	CXX_TARGETS += src/driver/mmsubstate.cc
-	COMMON_FLAGS += -DDRIVER_MMSUBSTATE
 endif
 
 ifdef CONFIG_driver_tsl2591
 	CXX_TARGETS += src/driver/tsl2591.cc
-	COMMON_FLAGS += -DDRIVER_TSL2591
 endif
 
 ifdef CONFIG_driver_scd4x
 	CXX_TARGETS += src/driver/scd4x.cc
-	COMMON_FLAGS += -DDRIVER_SCD4X
 endif
 
 ifdef CONFIG_driver_nrf24l01
@@ -233,7 +125,6 @@ ifdef CONFIG_driver_nrf24l01
 		nrf24l01_cs_pin ?= pc0
 		nrf24l01_irq_pin ?= pc2
 	endif
-	COMMON_FLAGS += -DDRIVER_NRF24L01
 	COMMON_FLAGS += -DNRF24L01_EN_PIN=GPIO::${nrf24l01_en_pin}
 	COMMON_FLAGS += -DNRF24L01_CS_PIN=GPIO::${nrf24l01_cs_pin}
 	COMMON_FLAGS += -DNRF24L01_IRQ_PIN=GPIO::${nrf24l01_irq_pin}
@@ -259,7 +150,7 @@ endif
 
 ifdef CONFIG_driver_ssd1306
 	CXX_TARGETS += src/driver/ssd1306.cc
-	COMMON_FLAGS += -DDRIVER_SSD1306 -DSSD1306_WIDTH=${CONFIG_driver_ssd1306_width} -DSSD1306_HEIGHT=${CONFIG_driver_ssd1306_height}
+	COMMON_FLAGS += -DSSD1306_WIDTH=${CONFIG_driver_ssd1306_width} -DSSD1306_HEIGHT=${CONFIG_driver_ssd1306_height}
 endif
 
 ifdef CONFIG_driver_resistive_load
@@ -268,7 +159,6 @@ ifdef CONFIG_driver_resistive_load
 	resistor2_pin ?= p3_1
 	resistor3_pin ?= p3_2
 	resistor4_pin ?= p3_3
-	COMMON_FLAGS += -DDRIVER_RESISTIVE_LOAD
 	COMMON_FLAGS += -DRESISTIVE_LOAD_PIN1=GPIO::${resistor1_pin}
 	COMMON_FLAGS += -DRESISTIVE_LOAD_PIN2=GPIO::${resistor2_pin}
 	COMMON_FLAGS += -DRESISTIVE_LOAD_PIN3=GPIO::${resistor3_pin}
@@ -281,7 +171,6 @@ endif
 
 ifdef CONFIG_driver_softi2c
 	CXX_TARGETS += src/driver/soft_i2c.cc
-	COMMON_FLAGS += -DCONFIG_driver_softi2c
 endif
 
 ifdef CONFIG_meta_driver_hardware_i2c

@@ -11,19 +11,19 @@
 #else
 #include "driver/soft_i2c.h"
 #endif
-#ifdef DRIVER_LM75
+#ifdef CONFIG_driver_lm75
 #include "driver/lm75.h"
 #endif
-#ifdef DRIVER_AM2320
+#ifdef CONFIG_driver_am2320
 #include "driver/am2320.h"
 #endif
 #ifdef DRIVER_EEPROM24LC64
 #include "driver/eeprom24lc64.h"
 #endif
-#ifdef DRIVER_MAX44009
+#ifdef CONFIG_driver_max44009
 #include "driver/max44009.h"
 #endif
-#ifdef DRIVER_MMSIMPLE
+#ifdef CONFIG_driver_mmsimple
 #include "driver/mmsimple.h"
 #endif
 
@@ -33,12 +33,12 @@
 
 void loop(void)
 {
-#ifdef DRIVER_LM75
+#ifdef CONFIG_driver_lm75
 	kout.printf_float(lm75.getTemp());
 	kout << endl;
 	//lm75.setOS(I2CBENCH_SETOS);
 #endif
-#ifdef DRIVER_AM2320
+#ifdef CONFIG_driver_am2320
 	am2320.read();
 	if (am2320.getStatus() == 0) {
 		kout.printf_float(am2320.getTemp());
@@ -49,7 +49,7 @@ void loop(void)
 		kout << "AM2320 error " << dec << am2320.getStatus() << endl;
 	}
 #endif
-#ifdef DRIVER_MAX44009
+#ifdef CONFIG_driver_max44009
 	kout.printf_float(max44009.getLux());
 	kout << endl;
 #endif
@@ -59,7 +59,7 @@ void loop(void)
 	kout << "Address " << page << endl;
 	page = (page + 32) % (256*32);
 #endif
-#ifdef DRIVER_MMSIMPLE
+#ifdef CONFIG_driver_mmsimple
 	moody.toggleBlue();
 #endif
 }

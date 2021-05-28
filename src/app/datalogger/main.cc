@@ -13,57 +13,57 @@
 #include "driver/soft_i2c.h"
 #endif
 
-#ifdef DRIVER_LM75
+#ifdef CONFIG_driver_lm75
 #include "driver/lm75.h"
 #endif
-#ifdef DRIVER_S5851A
+#ifdef CONFIG_driver_s5851a
 #include "driver/s5851a.h"
 #endif
-#ifdef DRIVER_AM2320
+#ifdef CONFIG_driver_am2320
 #include "driver/am2320.h"
 #endif
-#ifdef DRIVER_BME280
+#ifdef CONFIG_driver_bme280
 #include "driver/bme280.h"
 #include "driver/bme680_util.h"
 #endif
-#ifdef DRIVER_BME680
+#ifdef CONFIG_driver_bme680
 #include "driver/bme680.h"
 #include "driver/bme680_util.h"
 #endif
-#ifdef DRIVER_CCS811
+#ifdef CONFIG_driver_ccs811
 #include "driver/ccs811.h"
 #endif
-#ifdef DRIVER_MAX44009
+#ifdef CONFIG_driver_max44009
 #include "driver/max44009.h"
 #endif
-#ifdef DRIVER_HDC1080
+#ifdef CONFIG_driver_hdc1080
 #include "driver/hdc1080.h"
 #endif
-#ifdef DRIVER_MPU9250
+#ifdef CONFIG_driver_mpu9250
 #include "driver/mpu9250.h"
 #endif
-#ifdef DRIVER_TSL2591
+#ifdef CONFIG_driver_tsl2591
 #include "driver/tsl2591.h"
 #endif
-#ifdef DRIVER_SCD4X
+#ifdef CONFIG_driver_scd4x
 #include "driver/scd4x.h"
 #endif
 
 void loop(void)
 {
-#ifdef DRIVER_LM75
+#ifdef CONFIG_driver_lm75
 	kout << "temperature_celsius: ";
 	kout.printf_float(lm75.getTemp());
 	kout << endl;
 #endif
 
-#ifdef DRIVER_S5851A
+#ifdef CONFIG_driver_s5851a
 	kout << "temperature_celsius: ";
 	kout.printf_float(s5851a.getTemp());
 	kout << endl;
 #endif
 
-#ifdef DRIVER_AM2320
+#ifdef CONFIG_driver_am2320
 	am2320.read();
 	if (am2320.getStatus() == 0) {
 		kout.printf_float(am2320.getTemp());
@@ -75,7 +75,7 @@ void loop(void)
 	}
 #endif
 
-#ifdef DRIVER_BME280
+#ifdef CONFIG_driver_bme280
 	struct bme280_data comp_data;
 	int8_t rslt = bme280.getSensorData(BME280_ALL, &comp_data);
 	kout << "BME280 read " << rslt << endl;
@@ -84,7 +84,7 @@ void loop(void)
 	kout << "BME280 pressure " << (float)comp_data.pressure / 100 << " Pa" << endl;
 #endif
 
-#ifdef DRIVER_BME680
+#ifdef CONFIG_driver_bme680
 	struct bme680_field_data data;
 	bme680.setSensorMode();
 	arch.delay_ms(250);
@@ -95,7 +95,7 @@ void loop(void)
 	kout << "BME680 gas resistance " << data.gas_resistance << endl;
 #endif
 
-#ifdef DRIVER_CCS811
+#ifdef CONFIG_driver_ccs811
 	ccs811.read();
 	kout << bin;
 	kout << "CCS811 status / error: " << ccs811.status << " / " << ccs811.error_id << endl;
@@ -103,7 +103,7 @@ void loop(void)
 	kout << "CCS811 tVOC / eCO₂ : " << ccs811.tvoc << " ppb / " << ccs811.eco2 << " ppm" << endl;
 #endif
 
-#ifdef DRIVER_HDC1080
+#ifdef CONFIG_driver_hdc1080
 	/*
 	hdc1080.heater(1);
 	for (unsigned char i = 0; i < 50; i++) {
@@ -114,7 +114,7 @@ void loop(void)
 	kout << "HDC1080 humidity " << hdc1080.getRH() << " %H" << endl;
 #endif
 
-#ifdef DRIVER_MPU9250
+#ifdef CONFIG_driver_mpu9250
 	int mx, my, mz;
 	kout << "Temperature: " << mpu9250.getTemperature() << endl;
 	kout << "Accel X " << mpu9250.getAccelX() << endl;
@@ -129,18 +129,18 @@ void loop(void)
 	kout << "Magnet Z " << mz << endl;
 #endif
 
-#ifdef DRIVER_MAX44009
+#ifdef CONFIG_driver_max44009
 	kout.printf_float(max44009.getLux());
 	kout << endl;
 #endif
 
-#ifdef DRIVER_TSL2591
+#ifdef CONFIG_driver_tsl2591
 	tsl2591.read();
 	kout << dec << "TSL2591 CH0: " << tsl2591.ch0 << " / CH1: " << tsl2591.ch1;
 	kout << hex << "   (status: 0x" << tsl2591.getStatus() << ")" << endl;
 #endif
 
-#ifdef DRIVER_SCD4X
+#ifdef CONFIG_driver_scd4x
 	scd4x.read();
 	kout << dec << "CO₂: " << scd4x.co2 << " ppm" << endl;
 	kout << "Temperature: ";
@@ -167,7 +167,7 @@ int main(void)
 	kout << "I2C setup OK" << endl;
 #endif
 
-#ifdef DRIVER_BME280
+#ifdef CONFIG_driver_bme280
 	bme280.intf = BME280_I2C_INTF;
 	bme280.read = bme680_i2c_read;
 	bme280.write = bme680_i2c_write;
@@ -186,7 +186,7 @@ int main(void)
 	bme280.enterNormalMode();
 #endif
 
-#ifdef DRIVER_BME680
+#ifdef CONFIG_driver_bme680
 	bme680.intf = BME680_I2C_INTF;
 	bme680.read = bme680_i2c_read;
 	bme680.write = bme680_i2c_write;
@@ -209,7 +209,7 @@ int main(void)
 	bme680.setSensorSettings(BME680_OST_SEL | BME680_OSP_SEL | BME680_OSH_SEL | BME680_GAS_SENSOR_SEL);
 #endif
 
-#ifdef DRIVER_CCS811
+#ifdef CONFIG_driver_ccs811
 	kout << hex;
 	kout << "CCS811 HWID: " << ccs811.getManufacturerID() << endl;
 	arch.delay_ms(65);
@@ -223,22 +223,22 @@ int main(void)
 	arch.delay_ms(50);
 #endif
 
-#ifdef DRIVER_HDC1080
+#ifdef CONFIG_driver_hdc1080
 	hdc1080.init();
 	if (hdc1080.getManufacturerID() != 0x5449) {
 		kout << "[!] invalid HDC1080 manufacturer ID: " << hex << hdc1080.getManufacturerID() << endl;
 	}
 #endif
 
-#ifdef DRIVER_MPU9250
+#ifdef CONFIG_driver_mpu9250
 	mpu9250.init();
 #endif
 
-#ifdef DRIVER_TSL2591
+#ifdef CONFIG_driver_tsl2591
 	tsl2591.init();
 #endif
 
-#ifdef DRIVER_SCD4X
+#ifdef CONFIG_driver_scd4x
 	scd4x.start();
 #endif
 

@@ -7,6 +7,7 @@
 ifdef app
 	override arch_drivers += i2c,timer
 	CONFIG_driver_ssd1306 = y
+	COMMON_FLAGS += -DCONFIG_driver_ssd1306
 	CONFIG_driver_ssd1306_width = 128
 	CONFIG_driver_ssd1306_height = 64
 	CONFIG_lib_inflate = y

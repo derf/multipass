@@ -9,6 +9,7 @@ ifdef app
 	override timer_s = 1
 	override arch_drivers += ,spi
 	CONFIG_driver_nrf24l01 = y
+	COMMON_FLAGS += -DCONFIG_driver_nrf24l01
 endif
 
 ifeq (${tx}, 1)

@@ -8,4 +8,5 @@ ifdef app
 	loop = 1
 	override arch_drivers += ,spi
 	CONFIG_driver_sharp96 = y
+	COMMON_FLAGS += -DCONFIG_driver_sharp96
 endif

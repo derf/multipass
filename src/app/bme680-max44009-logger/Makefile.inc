@@ -9,6 +9,7 @@ ifdef app
 	override arch_drivers += ,i2c
 	CONFIG_driver_bme680 = y
 	CONFIG_driver_max44009 = y
+	COMMON_FLAGS += -DCONFIG_driver_bme680 -DCONFIG_driver_max44009
 endif
 
 COMMON_FLAGS += -DBME680_FLOAT_POINT_COMPENSATION
