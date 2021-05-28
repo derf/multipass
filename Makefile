@@ -2,12 +2,15 @@
 #
 # SPDX-License-Identifier: BSD-2-Clause
 
+COMMON_FLAGS = -g -Os -Wall -Wextra
+
 # Only load .config when app/arch are not specified on commandline
 ifneq (${app}, )
 	CONFIG_app = ${app}
 	CONFIG_arch = ${arch}
 else
 	-include .config
+	COMMON_FLAGS += -include include/config.h
 endif
 
 # Make cannot include "foo"/Makefile.inc, so remove quotes from config entries
@@ -16,7 +19,6 @@ app_dir = $(subst ${quote},,${CONFIG_app})
 arch_dir = $(subst ${quote},,${CONFIG_arch})
 
 INCLUDES = -Iinclude -Iinclude/arch/${arch_dir}
-COMMON_FLAGS = -g -Os -Wall -Wextra
 CFLAGS = -std=c99
 CXXFLAGS = -std=c++14 -fno-rtti -fno-threadsafe-statics -fno-exceptions
 
@@ -349,24 +351,15 @@ ifeq (${timer_us}, 1)
 endif
 
 ifeq (${loop}, 1)
-	COMMON_FLAGS += -DWITH_LOOP
-endif
-ifdef CONFIG_loop
-	COMMON_FLAGS += -DWITH_LOOP
+	COMMON_FLAGS += -DCONFIG_loop
 endif
 
 ifeq (${wakeup}, 1)
-	COMMON_FLAGS += -DWITH_WAKEUP
-endif
-ifdef CONFIG_wakeup
-	COMMON_FLAGS += -DWITH_WAKEUP
+	COMMON_FLAGS += -DCONFIG_wakeup
 endif
 
 ifeq (${ostream}, 1)
-	COMMON_FLAGS += -DWITH_OSTREAM
-endif
-ifdef CONFIG_ostream
-	COMMON_FLAGS += -DWITH_OSTREAM
+	COMMON_FLAGS += -DCONFIG_ostream
 endif
 
 ifeq (${trace_malloc}, 1)
@@ -381,7 +374,7 @@ endif
 default: build/system.elf
 
 include/config.h: .config
-	${QUIET}awk -f script/conf2h.awk .config > include/config.h
+	${QUIET}test -z "${app}" && awk -f script/conf2h.awk .config > include/config.h || : > include/config.h
 
 stack: default
 	${QUIET}test -n "${OBJDUMP}"

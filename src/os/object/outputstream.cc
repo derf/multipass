@@ -145,7 +145,7 @@ OutputStream & OutputStream::operator<<(OutputStream & (*fkt) (OutputStream &))
 	return fkt(*this);
 }
 
-#ifdef WITH_OSTREAM
+#ifdef CONFIG_ostream
 OutputStream & OutputStream::operator<<(std::string s)
 {
 	for (auto c : s) {

@@ -48,7 +48,7 @@ void Arch::setup(void)
 #error Unsupported F_CPU
 #endif
 
-#ifdef WITH_LOOP
+#ifdef CONFIG_loop
 	CSCTL2 = SELA__LFXTCLK | SELS__DCOCLK | SELM__DCOCLK;
 #else
 	CSCTL2 = SELA__VLOCLK | SELS__DCOCLK | SELM__DCOCLK;
@@ -57,7 +57,7 @@ void Arch::setup(void)
 	CSCTL0_H = 0;
 
 
-#if defined(WITH_LOOP) || F_CPU == 32768UL
+#if defined(CONFIG_loop) || F_CPU == 32768UL
 	// enable LXFT for RTC
 	CSCTL0_H = CSKEY >> 8;
 	CSCTL4 &= ~LFXTOFF;
@@ -100,7 +100,7 @@ void Arch::setup(void)
 #endif
 	// SELA__LFXTCLK falls back to VLOCLK if LFXT is not available, but set
 	// LFXT_FAULT (LFXTOFFG) in the process. We don't want that.
-#if defined(WITH_LOOP) || F_CPU == 32768UL
+#if defined(CONFIG_loop) || F_CPU == 32768UL
 	CSCTL2 = SELA__LFXTCLK | SELS__HFXTCLK | SELM__HFXTCLK;
 #else
 	CSCTL2 = SELA__VLOCLK | SELS__HFXTCLK | SELM__HFXTCLK;
@@ -133,7 +133,7 @@ void Arch::setup(void)
 	CSCTL0_H = 0;
 #endif
 
-#if defined(WITH_LOOP) || defined(TIMER_S)
+#if defined(CONFIG_loop) || defined(TIMER_S)
 	// 1s per wakeup for loop. Independent of SMCLK/F_CPU
 	TA1CTL = TASSEL__ACLK | ID__8 | MC__UP;
 	TA1EX0 = 0;
@@ -142,11 +142,11 @@ void Arch::setup(void)
 #endif
 }
 
-#ifdef WITH_WAKEUP
+#ifdef CONFIG_wakeup
 extern void wakeup();
 #endif
 
-#if defined(WITH_LOOP)
+#if defined(CONFIG_loop)
 extern void loop();
 volatile char run_loop = 0;
 #endif
@@ -231,13 +231,13 @@ void Arch::idle_loop(void)
 		__bis_SR_register(GIE | LPM2_bits);
 		asm volatile("nop");
 		__dint();
-#if defined(WITH_LOOP)
+#if defined(CONFIG_loop)
 		if (run_loop) {
 			loop();
 			run_loop = 0;
 		}
 #endif
-#ifdef WITH_WAKEUP
+#ifdef CONFIG_wakeup
 		wakeup();
 #endif
 	}
@@ -249,14 +249,14 @@ void Arch::idle(void)
 	__bis_SR_register(GIE | LPM2_bits);
 	asm volatile("nop");
 	__dint();
-#ifdef WITH_WAKEUP
+#ifdef CONFIG_wakeup
 	wakeup();
 #endif
 }
 
 Arch arch;
 
-#if defined(WITH_LOOP) || defined(TIMER_S)
+#if defined(CONFIG_loop) || defined(TIMER_S)
 
 #include "driver/uptime.h"
 
@@ -265,7 +265,7 @@ Arch arch;
 __attribute__((interrupt(TIMER1_A1_VECTOR))) __attribute__((wakeup)) void handle_timer1_overflow()
 {
 	if (TA1IV == 0x0e) {
-#ifdef WITH_LOOP
+#ifdef CONFIG_loop
 		run_loop = 1;
 #endif
 #ifdef TIMER_S
@@ -275,7 +275,7 @@ __attribute__((interrupt(TIMER1_A1_VECTOR))) __attribute__((wakeup)) void handle
 }
 #endif
 
-#endif /* defined(WITH_LOOP) || defined(TIMER_S) */
+#endif /* defined(CONFIG_loop) || defined(TIMER_S) */
 
 #ifndef __acweaving
 // CCR0 interrupts are exclusive to A0

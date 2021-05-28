@@ -5,7 +5,7 @@
  */
 #include "driver/counter.h"
 
-#if defined(TIMER_S) || defined(WITH_LOOP)
+#if defined(TIMER_S) || defined(CONFIG_loop)
 #warn "timer/loop and counter are mutually exclusive. Expect odd behaviour."
 #endif
 

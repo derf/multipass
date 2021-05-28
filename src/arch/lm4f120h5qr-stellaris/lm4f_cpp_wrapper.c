@@ -17,7 +17,7 @@ void arch_clock_init()
 	rcc_sysclk_config(OSCSRC_MOSC, XTAL_16M, 5);
 }
 
-#ifdef WITH_LOOP
+#ifdef CONFIG_loop
 volatile char run_loop = 1;
 
 void arch_init_loop()

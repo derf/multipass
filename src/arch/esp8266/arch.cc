@@ -22,7 +22,7 @@ extern void (*__init_array_end)();
 #define user_procTaskPrio        0
 #define user_procTaskQueueLen    1
 
-#ifdef WITH_LOOP
+#ifdef CONFIG_loop
 LOCAL os_timer_t loop_timer;
 
 extern void loop(void);
@@ -40,7 +40,7 @@ void ICACHE_FLASH_ATTR jump_to_main(void)
 	for (void (**p)() = &__init_array_start; p != &__init_array_start; p++) {
 		(*p)();
 	}
-#ifdef WITH_LOOP
+#ifdef CONFIG_loop
 	os_timer_disarm(&loop_timer);
 	os_timer_setfn(&loop_timer, (os_timer_func_t *)jump_to_loop, (void *)0);
 	os_timer_arm(&loop_timer, 1000, 1);

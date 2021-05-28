@@ -5,7 +5,7 @@
 # SPDX-License-Identifier: CC0-1.0
 
 ifdef app
-	override undefine CONFIG_loop
-	CONFIG_wakeup = y
+	override undefine loop
+	wakeup = 1
 	override arch_drivers += ,stdin
 endif

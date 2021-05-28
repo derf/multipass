@@ -38,7 +38,7 @@ void ets_isr_unmask(uint16_t idx);
 #define UCTOE 31
 
 
-#ifdef WITH_WAKEUP
+#ifdef CONFIG_wakeup
 void wakeup();
 #endif
 
@@ -50,7 +50,7 @@ void uart_isr()
 		}
 	}
 	USIC = USIS;
-#ifdef WITH_WAKEUP
+#ifdef CONFIG_wakeup
 	wakeup();
 #endif
 }

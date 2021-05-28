@@ -7,5 +7,5 @@
 ifdef app
 	override arch_drivers += ,i2c
 	CONFIG_driver_ccS811 = y
-	CONFIG_loop = y
+	loop = 1
 endif

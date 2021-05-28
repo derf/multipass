@@ -7,7 +7,7 @@
 #define OUTPUTSTREAM_H
 
 #include <stdint.h>
-#ifdef WITH_OSTREAM
+#ifdef CONFIG_ostream
 #include <ostream>
 #endif
 
@@ -47,7 +47,7 @@ class OutputStream {
 	OutputStream & operator<<(double number);
 	OutputStream & operator<<(OutputStream & (*fun) (OutputStream &));
 
-#ifdef WITH_OSTREAM
+#ifdef CONFIG_ostream
 	OutputStream & operator<<(std::string s);
 #endif
 

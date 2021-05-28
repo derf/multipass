@@ -20,16 +20,16 @@ extern "C" {
 void Arch::setup(void)
 {
 	arch_clock_init();
-#if defined(WITH_LOOP)
+#if defined(CONFIG_loop)
 	arch_init_loop();
 #endif
 }
 
-#ifdef WITH_WAKEUP
+#ifdef CONFIG_wakeup
 extern void wakeup();
 #endif
 
-#if defined(WITH_LOOP)
+#if defined(CONFIG_loop)
 extern void loop();
 extern volatile char run_loop;
 #endif
@@ -56,7 +56,7 @@ void Arch::idle_loop(void)
 {
 	while (1) {
 		__asm__("wfi");
-#ifdef WITH_LOOP
+#ifdef CONFIG_loop
 		if (run_loop) {
 #ifdef TIMER_S
 			uptime.tick_s();
@@ -71,7 +71,7 @@ void Arch::idle_loop(void)
 void Arch::idle(void)
 {
 	__asm__("wfi");
-#ifdef WITH_WAKEUP
+#ifdef CONFIG_wakeup
 	wakeup();
 #endif
 }

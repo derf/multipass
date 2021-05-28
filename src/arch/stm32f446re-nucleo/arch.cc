@@ -39,7 +39,7 @@ void Arch::setup(void)
 	timer_set_period(TIM2, 4294967295);
 	timer_enable_irq(TIM2, TIM_DIER_UIE);
 
-#ifdef WITH_LOOP
+#ifdef CONFIG_loop
 	rcc_periph_clock_enable(RCC_TIM3);
 	nvic_enable_irq(NVIC_TIM3_IRQ);
 	rcc_periph_reset_pulse(RST_TIM3);
@@ -59,11 +59,11 @@ void Arch::setup(void)
 #endif
 }
 
-#ifdef WITH_WAKEUP
+#ifdef CONFIG_wakeup
 extern void wakeup();
 #endif
 
-#if defined(WITH_LOOP)
+#if defined(CONFIG_loop)
 extern void loop();
 volatile char run_loop = 0;
 #endif
@@ -91,7 +91,7 @@ void Arch::idle_loop(void)
 	while (1) {
 		pwr_set_standby_mode();
 		__asm__("wfi");
-#ifdef WITH_LOOP
+#ifdef CONFIG_loop
 		if (run_loop) {
 			loop();
 			run_loop = 0;
@@ -102,14 +102,14 @@ void Arch::idle_loop(void)
 
 void Arch::idle(void)
 {
-#ifdef WITH_WAKEUP
+#ifdef CONFIG_wakeup
 	wakeup();
 #endif
 }
 
 Arch arch;
 
-#if defined(WITH_LOOP) || defined(TIMER_S)
+#if defined(CONFIG_loop) || defined(TIMER_S)
 
 #include "driver/uptime.h"
 
@@ -117,7 +117,7 @@ void tim3_isr(void)
 {
 	if (timer_get_flag(TIM3, TIM_SR_UIF)) {
 		timer_clear_flag(TIM3, TIM_SR_UIF);
-#ifdef WITH_LOOP
+#ifdef CONFIG_loop
 		run_loop = 1;
 #endif
 #ifdef TIMER_S

@@ -5,7 +5,7 @@
 # SPDX-License-Identifier: CC0-1.0
 
 ifdef app
-	CONFIG_loop = y
+	loop = 1
 	override timer_s = 1
 	override arch_drivers += ,timer
 endif

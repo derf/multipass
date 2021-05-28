@@ -43,7 +43,7 @@ void Arch::setup(void)
 #error Unsupported F_CPU
 #endif
 
-#if defined(WITH_LOOP) || defined(TIMER_S)
+#if defined(CONFIG_loop) || defined(TIMER_S)
 	TCCR1A = 0;
 	TCCR1B = _BV(WGM12) | _BV(CS12) | _BV(CS10); // /1024
 	OCR1A = F_CPU / 1024;
@@ -61,17 +61,17 @@ void Arch::setup(void)
 	sei();
 }
 
-#ifdef WITH_WAKEUP
+#ifdef CONFIG_wakeup
 void wakeup();
 #endif
 
-#if defined(WITH_LOOP) || defined(TIMER_S)
+#if defined(CONFIG_loop) || defined(TIMER_S)
 
 #include "driver/uptime.h"
 
 #endif
 
-#if defined(WITH_LOOP)
+#if defined(CONFIG_loop)
 extern void loop();
 volatile char run_loop = 0;
 #endif
@@ -83,13 +83,13 @@ void Arch::idle_loop(void)
 		asm("sleep");
 		SMCR = 0;
 		asm("wdr");
-#ifdef WITH_LOOP
+#ifdef CONFIG_loop
 		if (run_loop) {
 			loop();
 			run_loop = 0;
 		}
 #endif
-#ifdef WITH_WAKEUP
+#ifdef CONFIG_wakeup
 		wakeup();
 #endif
 	}
@@ -119,12 +119,12 @@ void Arch::delay_ms(unsigned int const ms)
 
 Arch arch;
 
-#if defined(WITH_LOOP) || defined(TIMER_S)
+#if defined(CONFIG_loop) || defined(TIMER_S)
 
 #ifndef __acweaving
 ISR(TIMER1_COMPA_vect)
 {
-#ifdef WITH_LOOP
+#ifdef CONFIG_loop
 	run_loop = 1;
 #endif
 #ifdef TIMER_S
