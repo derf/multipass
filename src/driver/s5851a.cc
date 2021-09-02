@@ -15,7 +15,7 @@ float S5851A::getTemp()
 	txbuf[0] = 0;
 	rxbuf[0] = 0;
 	rxbuf[1] = 0;
-	i2c.xmit(address, 1, txbuf, 2, rxbuf);
+	i2c.xmit(address, 0, txbuf, 2, rxbuf);
 
 	return rxbuf[0] + (rxbuf[1] / 256.0);
 }
