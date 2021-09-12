@@ -6,6 +6,8 @@
 #ifndef ADC_H
 #define ADC_H
 
+#include <stdint.h>
+
 class AVRADC {
 	private:
 		AVRADC(AVRADC const &copy);
