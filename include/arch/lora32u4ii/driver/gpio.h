@@ -3,6 +3,14 @@
 
 #include <avr/io.h>
 
+/*
+ * lora32u4ii v1.3 pin map:
+ *
+ * PB0 -> Charger and Vbat/2 measurement voltage divider enable
+ * PB5 -> User LED
+ * PB5 <- Vbat/2
+ */
+
 class GPIO {
 	private:
 		GPIO(const GPIO &copy);
@@ -40,7 +48,8 @@ class GPIO {
 		};
 
 		inline void setup() {
-			DDRB = _BV(PB5);
+			// PB5 is both output (user LED) and input (Vbat/2 to ADC).
+			// Leave it as input by default.
 		}
 		inline volatile uint8_t * pinToPort(uint8_t pin) {
 			if (pin <= pb7) {

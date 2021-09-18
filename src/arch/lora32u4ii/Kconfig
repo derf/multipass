@@ -1,0 +1,19 @@
+# Copyright 2021 Daniel Friesel
+#
+# SPDX-License-Identifier: CC0-1.0
+
+config arch_lora32u4ii_cpufreq
+int "CPU Frequency"
+#!accept [62500, 125000, 250000, 500000, 1000000, 2000000, 4000000, 8000000]
+range 62500 8000000
+default 8000000
+help
+  Assumes an externel 8MHz crystal to be present
+
+config arch_lora32u4ii_driver_adc
+bool "ADC (Analog-Digital-Converter)"
+select meta_driver_adc
+
+config arch_lora32u4ii_driver_uptime
+bool "Uptime Counter"
+select meta_driver_uptime

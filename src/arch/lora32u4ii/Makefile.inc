@@ -44,7 +44,15 @@ ifeq (${timer_s}, 1)
 	CONFIG_arch_lora32u4ii_driver_uptime = y
 endif
 
+ifneq ($(findstring adc,${arch_drivers}), )
+	CONFIG_arch_lora32u4ii_driver_adc = y
+endif
+
 # Kconfig driver selection
+
+ifdef CONFIG_arch_lora32u4ii_driver_adc
+	CXX_TARGETS += src/arch/lora32u4ii/driver/adc.cc
+endif
 
 ifdef CONFIG_arch_lora32u4ii_driver_uptime
 	COMMON_FLAGS += -DTIMER_S
