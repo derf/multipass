@@ -1,3 +1,8 @@
+/*
+ * Copyright 2021 Daniel Friesel
+ *
+ * SPDX-License-Identifier: BSD-2-Clause
+ */
 #include "driver/spi.h"
 #include "driver/gpio.h"
 #include "arch.h"
@@ -11,7 +16,7 @@ signed char SPI::setup()
 	// Configure SCK and MOSI as output
 	DDRB |= _BV(PB2) | _BV(PB1);
 	// up to 2 MHz SPI clock
-	SPCR = _BV(SPE) | _BV(MSTR) | _BV(SPR0);
+	SPCR = _BV(SPE) | _BV(MSTR);
 }
 
 signed char SPI::xmit(
