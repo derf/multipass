@@ -26,7 +26,6 @@ signed char SPI::xmit(
 		} else {
 			SPDR = 0;
 		}
-		arch.delay_ms(1);
 		while (!(SPSR & _BV(SPIF))) ;
 		if (i < rx_len) {
 			rx_buf[i] = SPDR;
