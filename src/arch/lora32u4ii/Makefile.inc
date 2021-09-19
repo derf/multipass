@@ -48,10 +48,18 @@ ifneq ($(findstring adc,${arch_drivers}), )
 	CONFIG_arch_lora32u4ii_driver_adc = y
 endif
 
+ifneq ($(findstring spi,${arch_drivers}), )
+	CONFIG_arch_lora32u4ii_driver_spi = y
+endif
+
 # Kconfig driver selection
 
 ifdef CONFIG_arch_lora32u4ii_driver_adc
 	CXX_TARGETS += src/arch/lora32u4ii/driver/adc.cc
+endif
+
+ifdef CONFIG_arch_lora32u4ii_driver_spi
+	CXX_TARGETS += src/arch/lora32u4ii/driver/spi.cc
 endif
 
 ifdef CONFIG_arch_lora32u4ii_driver_uptime

@@ -14,6 +14,10 @@ config arch_lora32u4ii_driver_adc
 bool "ADC (Analog-Digital-Converter)"
 select meta_driver_adc
 
+config arch_lora32u4ii_driver_spi
+bool "SPI"
+select meta_driver_spi
+
 config arch_lora32u4ii_driver_uptime
 bool "Uptime Counter"
 select meta_driver_uptime
