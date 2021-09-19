@@ -1,0 +1,6 @@
+# Copyright 2021 Daniel Friesel
+#
+# SPDX-License-Identifier: CC0-1.0
+
+prompt "LoRa32u4 II v1.3 Test App"
+depends on loop && !wakeup
