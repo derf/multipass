@@ -1,5 +1,4 @@
-#ifndef GPIO_H
-#define GPIO_H
+#pragma once
 
 #include <avr/io.h>
 
@@ -48,8 +47,7 @@ class GPIO {
 		};
 
 		inline void setup() {
-			// PB5 is both output (user LED) and input (Vbat/2 to ADC).
-			// Leave it as input by default.
+			DDRC |= _BV(PC7);
 		}
 		inline volatile uint8_t * pinToPort(uint8_t pin) {
 			if (pin <= pb7) {
@@ -201,5 +199,3 @@ class GPIO {
 };
 
 extern GPIO gpio;
-
-#endif
