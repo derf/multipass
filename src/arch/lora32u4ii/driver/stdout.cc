@@ -1,6 +1,5 @@
 #include "driver/stdout.h"
 #include <avr/io.h>
-#include <avr/interrupt.h>
 
 #ifndef BAUD
 #define BAUD 9600UL
@@ -23,6 +22,17 @@ void StandardOutput::setup()
 	UCSR1C = _BV(UCSZ11) | _BV(UCSZ10); // async UART, 8N1
 	//UCSR1D = 0;
 }
+
+OutputStream & StandardOutput::pprint(const char *text)
+{
+	PGM_P p = reinterpret_cast<PGM_P>(text);
+	char c;
+	while ((c = pgm_read_byte(p++))) {
+		put(c);
+	}
+	return *this;
+}
+
 
 void StandardOutput::put(char c)
 {
