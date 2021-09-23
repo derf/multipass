@@ -20,9 +20,9 @@ class GPIO {
 		};
 
 		void setup();
-		void led_on(unsigned char id);
-		void led_off(unsigned char id);
-		void led_toggle(unsigned char id);
+		void led_on(unsigned char id = 0);
+		void led_off(unsigned char id = 0);
+		void led_toggle(unsigned char id = 0);
 		void input(unsigned char const pin);
 		void input(unsigned char const pin, bool pullup);
 		void output(unsigned char const pin);

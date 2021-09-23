@@ -47,21 +47,21 @@ class GPIO {
 			P4REN = 0xff & ~BIT6; // red LED
 			PJREN = BIT6 | BIT7; // HFXT (not populated)
 		}
-		inline void led_on(unsigned char id) {
+		inline void led_on(unsigned char id = 0) {
 			if (id == 0) {
 				P1OUT |= BIT0;
 			} else {
 				P4OUT |= BIT6;
 			}
 		}
-		inline void led_off(unsigned char id) {
+		inline void led_off(unsigned char id = 0) {
 			if (id == 0) {
 				P1OUT &= ~BIT0;
 			} else {
 				P4OUT &= ~BIT6;
 			}
 		}
-		inline void led_toggle(unsigned char id) {
+		inline void led_toggle(unsigned char id = 0) {
 			if (id == 0) {
 				P1OUT ^= BIT0;
 			} else {

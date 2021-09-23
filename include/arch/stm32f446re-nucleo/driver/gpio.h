@@ -35,13 +35,13 @@ class GPIO {
 			gpio_mode_setup(GPIOA, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, GPIO5);
 		}
 #pragma GCC diagnostic ignored "-Wunused-parameter"
-		inline void led_on(unsigned char id) {
+		inline void led_on(unsigned char id = 0) {
 			gpio_set(GPIOA, GPIO5);
 		}
-		inline void led_off(unsigned char id) {
+		inline void led_off(unsigned char id = 0) {
 			gpio_clear(GPIOA, GPIO5);
 		}
-		inline void led_toggle(unsigned char id) {
+		inline void led_toggle(unsigned char id = 0) {
 			gpio_toggle(GPIOA, GPIO5);
 		}
 #pragma GCC diagnostic pop

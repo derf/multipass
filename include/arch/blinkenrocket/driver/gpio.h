@@ -51,13 +51,13 @@ class GPIO {
 			PORTD = 0x7f;
 			DDRD = 0xff;
 		}
-		inline void led_on(unsigned char id) {
+		inline void led_on(unsigned char id = 0) {
 			PORTB |= _BV(id);
 		}
-		inline void led_off(unsigned char id) {
+		inline void led_off(unsigned char id = 0) {
 			PORTB &= ~_BV(id);
 		}
-		inline void led_toggle(unsigned char id) {
+		inline void led_toggle(unsigned char id = 0) {
 			PORTB ^= _BV(id);
 		}
 		inline void input(unsigned char const pin) {

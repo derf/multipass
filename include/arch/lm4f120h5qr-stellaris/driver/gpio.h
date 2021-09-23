@@ -30,13 +30,13 @@ class GPIO {
 		inline void setup() {
 			mp_gpio_setup();
 		}
-		inline void led_on(unsigned char id) {
+		inline void led_on(unsigned char id = 0) {
 			mp_gpio_write(pf_1 + id, 1);
 		}
-		inline void led_off(unsigned char id) {
+		inline void led_off(unsigned char id = 0) {
 			mp_gpio_write(pf_1 + id, 0);
 		}
-		inline void led_toggle(unsigned char id) {
+		inline void led_toggle(unsigned char id = 0) {
 			mp_gpio_write(pf_1 + id, !mp_gpio_read(pf_1 + id));
 		}
 		inline void input(unsigned char const pin) {

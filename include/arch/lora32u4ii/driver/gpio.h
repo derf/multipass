@@ -62,13 +62,13 @@ class GPIO {
 			return _BV(pin % 8);
 		}
 #pragma GCC diagnostic ignored "-Wunused-parameter"
-		inline void led_on(unsigned char id) {
+		inline void led_on(unsigned char id = 0) {
 			PORTC |= _BV(PC7);
 		}
-		inline void led_off(unsigned char id) {
+		inline void led_off(unsigned char id = 0) {
 			PORTC &= ~_BV(PC7);
 		}
-		inline void led_toggle(unsigned char id) {
+		inline void led_toggle(unsigned char id = 0) {
 			PINC = _BV(PC7);
 		}
 		inline void input(unsigned char const pin) {

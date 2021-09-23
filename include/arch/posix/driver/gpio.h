@@ -66,19 +66,19 @@ class GPIO {
 		inline void setup() {
 			pin_dir |= 0x0000ff;
 		}
-		inline void led_on(unsigned char id) {
+		inline void led_on(unsigned char id = 0) {
 			if (id <= pl7) {
 				pin_out |= (1 << id);
 			}
 			print_pinstate();
 		}
-		inline void led_off(unsigned char id) {
+		inline void led_off(unsigned char id = 0) {
 			if (id <= pl7) {
 				pin_out &= ~(1 << id);
 			}
 			print_pinstate();
 		}
-		inline void led_toggle(unsigned char id) {
+		inline void led_toggle(unsigned char id = 0) {
 			if (id <= pl7) {
 				if (pin_out & (1 << id)) {
 					led_off(id);
