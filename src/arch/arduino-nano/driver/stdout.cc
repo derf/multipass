@@ -5,7 +5,6 @@
  */
 #include "driver/stdout.h"
 #include <avr/io.h>
-#include <avr/interrupt.h>
 
 #ifndef BAUD
 #define BAUD 9600UL
@@ -26,6 +25,16 @@ void StandardOutput::setup()
 
 	UCSR0B |= _BV(RXEN0) | _BV(TXEN0);
 	UCSR0C = _BV(UCSZ01) | _BV(UCSZ00);
+}
+
+OutputStream & StandardOutput::pprint(const char *text)
+{
+	PGM_P p = reinterpret_cast<PGM_P>(text);
+	char c;
+	while ((c = pgm_read_byte(p++))) {
+		put(c);
+	}
+	return *this;
 }
 
 void StandardOutput::put(char c)
