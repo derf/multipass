@@ -12,6 +12,7 @@ signed char SPI::setup()
 {
 	// configure SS as output to avoid unintened switches to slave mode
 	gpio.output(GPIO::pb2, 0);
+	// TODO configure MOSI and SCK as output
 	// up to 1 MHz SPI clock
 #if F_CPU == 16000000UL
 	SPCR = _BV(SPE) | _BV(MSTR) | _BV(SPR0);
@@ -26,7 +27,7 @@ signed char SPI::xmit(
 		unsigned char tx_len, unsigned char *tx_buf,
 		unsigned char rx_len, unsigned char *rx_buf)
 {
-	unsigned char i;
+	unsigned char i = 0;
 
 	while ((i < tx_len) || (i < rx_len)) {
 		if (i < tx_len) {
