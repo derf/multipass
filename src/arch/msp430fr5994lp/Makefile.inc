@@ -13,7 +13,7 @@ SERIAL_PORT ?= ttyACM1
 cpu_freq ?= 16000000
 uart_freq ?= 115200
 
-MSP430_FLASHER_DIR ?= /opt/msp430/MSP430Flasher_1.3.15
+MSP430_FLASHER_DIR ?= /opt/msp430/MSP430Flasher_1.3.20
 
 INCLUDES += -I/opt/msp430/ti/msp430-gcc-full-linux-5.1.2.0/include
 COMMON_FLAGS += -mcpu=${CPU} -mmcu=${MCU} -DMULTIPASS_ARCH_msp430fr5994lp
@@ -195,7 +195,7 @@ arch_help:
 	@echo "    SERIAL_PORT = ${SERIAL_PORT}"
 	@echo "    cpu_freq = ${cpu_freq} (desired CPU frequency in Hz)"
 	@echo "        supported frequencies: 1 / 4 / 8 / 16 MHz"
-	@echo "    MSP430_FLASHER_DIR = /home/derf/var/projects/msp430/MSP430Flasher_1.3.15"
+	@echo "    MSP430_FLASHER_DIR = /home/derf/var/projects/msp430/MSP430Flasher_1.3.20"
 	@echo "        (required for flashing, must contain libmsp430.so and MSP430Flasher)"
 
 arch_info:
