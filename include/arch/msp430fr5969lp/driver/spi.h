@@ -14,8 +14,8 @@ class SPI {
 		SPI () {}
 		void setup();
 		signed char xmit(
-				unsigned char tx_len, unsigned char *tx_buf,
-				unsigned char rx_len, unsigned char *rx_buf);
+				unsigned int tx_len, unsigned char *tx_buf,
+				unsigned int rx_len, unsigned char *rx_buf);
 };
 
 extern SPI spi;

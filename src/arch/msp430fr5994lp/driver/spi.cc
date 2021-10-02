@@ -41,8 +41,8 @@ static inline unsigned char clean_rxbuf()
 	return UCB1RXBUF;
 }
 
-signed char SPI::xmit(unsigned char tx_len, unsigned char *tx_buf,
-		unsigned char rx_len, unsigned char *rx_buf)
+signed char SPI::xmit(unsigned int tx_len, unsigned char *tx_buf,
+		unsigned int rx_len, unsigned char *rx_buf)
 {
 	if (tx_len < 1) {
 		return -1;
