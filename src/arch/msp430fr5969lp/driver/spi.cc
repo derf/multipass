@@ -57,8 +57,8 @@ signed char SPI::xmit(unsigned int tx_len, unsigned char *tx_buf,
 	UCB0IFG &= ~UCRXIFG;
 	UCB0TXBUF = tx_buf[0];
 
-	unsigned char tx_pos = 1;
-	unsigned char rx_pos = 0;
+	unsigned int tx_pos = 1;
+	unsigned int rx_pos = 0;
 
 	while (tx_pos < tx_len || rx_pos < rx_len) {
 		if ((tx_pos < tx_len) && (UCB0IFG & UCTXIFG)) {
