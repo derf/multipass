@@ -2,6 +2,9 @@
  * Copyright 2020 Daniel Friesel
  *
  * SPDX-License-Identifier: BSD-2-Clause
+ *
+ * Driver for Sharp LS013B4DN04 transflective LCD, also available as
+ * "430BOOST-SHARP96" addon for the MSP430 LaunchPad series.
  */
 #include "driver/sharp96.h"
 #include "driver/spi.h"

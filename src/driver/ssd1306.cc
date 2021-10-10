@@ -2,6 +2,9 @@
  * Copyright 2021 Daniel Friesel
  *
  * SPDX-License-Identifier: BSD-2-Clause
+ *
+ * Driver for Solomon Systech SSD1306 OLED controller. Tested with
+ * 128x64 and 128x32 Displays.
  */
 #include "driver/ssd1306.h"
 #if defined(MULTIPASS_ARCH_HAS_I2C) && !defined(CONFIG_driver_softi2c)
