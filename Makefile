@@ -321,4 +321,7 @@ info: arch_info
 	@echo "CXXFLAGS: ${CXXFLAGS}"
 	@echo "Selected (common/arch) drivers: ${drivers} / ${arch_drivers}"
 
-.PHONY: clean config default randconfig stack stackm help info
+nfpkeys:
+	@echo '{"OS Image": {"ROM": {"unit": "B", "description": "ROM size", "minimize": true}, "RAM": {"unit": "B", "description": "RAM size", "minimize": true}}}'
+
+.PHONY: clean config default randconfig stack stackm help info nfpkeys

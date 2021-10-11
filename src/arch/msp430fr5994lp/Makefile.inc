@@ -215,9 +215,13 @@ gdb:
 ifdef CONFIG_arch_msp430fr5994lp_large_mode
 attributes: build/system.elf
 	${QUIET}script/size.py ${SIZE} text,lower.text,upper.text,data,lower.data,upper.data data,lower.data,upper.data,bss,lower.bss,upper.bss
+nfpvalues: build/system.elf
+	${QUIET}script/nfpvalues.py ${SIZE} text,lower.text,upper.text,data,lower.data,upper.data data,lower.data,upper.data,bss,lower.bss,upper.bss
 else
 attributes: build/system.elf
 	${QUIET}script/size.py ${SIZE} text,data data,bss
+nfpvalues: build/system.elf
+	${QUIET}script/nfpvalues.py ${SIZE} text,data data,bss
 endif
 
 .PHONY: arch_clean arch_help arch_info attributes cat monitor program

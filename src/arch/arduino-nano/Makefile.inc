@@ -187,4 +187,7 @@ arch_info:
 attributes: build/system.elf
 	${QUIET}script/size.py avr-size text,data data,bss
 
+nfpvalues: build/system.elf
+	${QUIET}script/nfpvalues.py avr-size text,data data,bss
+
 .PHONY: arch_clean arch_help arch_info attributes cat monitor program size

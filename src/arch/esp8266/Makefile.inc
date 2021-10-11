@@ -121,4 +121,7 @@ arch_info:
 attributes: build/system.elf
 	${QUIET}script/size.py ${SIZE} text,irom0.text data,bss
 
+nfpvalues: build/system.elf
+	${QUIET}script/nfpvalues.py ${SIZE} text,irom0.text data,bss
+
 .PHONY: arch_clean arch_help arch_info attributes cat monitor program
