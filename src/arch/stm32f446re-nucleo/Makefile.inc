@@ -86,12 +86,6 @@ OBJECTS = ${CXX_TARGETS:.cc=.o} ${C_TARGETS:.c=.o} ${ASM_TARGETS:.S=.o}
 %.o : %.s | include/config.h
 	${QUIET}${CC} ${INCLUDES} ${COMMON_FLAGS} -c -o $@ ${@:.o=.S}
 
-ext/libopencm3/Makefile:
-	git submodule update --init
-
-ext/libopencm3/lib/libopencm3_stm32f4.a: ext/libopencm3/Makefile
-	${MAKE} -C ext/libopencm3
-
 build/system.elf: ${OBJECTS} ext/libopencm3/lib/libopencm3_stm32f4.a
 	${QUIET}mkdir -p build
 	${QUIET}${CXX} ${INCLUDES} ${COMMON_FLAGS} ${CXXFLAGS} \
@@ -101,6 +95,12 @@ build/system.elf: ${OBJECTS} ext/libopencm3/lib/libopencm3_stm32f4.a
 		${OBJECTS} -lopencm3_stm32f4 \
 		-o $@
 	${QUIET}${SIZE} build/system.elf | tail -n1 | awk '{ print "  ROM: " ($$1+$$2) " (" int(($$1+$$2)*100/524288) "%)     RAM: " ($$2 + $$3) " (" int(($$2+$$3)*100/131072) "%)" }'
+
+ext/libopencm3/Makefile:
+	git submodule update --init
+
+ext/libopencm3/lib/libopencm3_stm32f4.a: ext/libopencm3/Makefile
+	${MAKE} -C ext/libopencm3
 
 program: build/system.elf
 	openocd -c 'source [find interface/stlink-v2-1.cfg]' \
