@@ -72,6 +72,10 @@ config driver_nrf24l01
 bool "nRF24L01+ 2.4GHz Radio"
 depends on meta_driver_spi
 
+config driver_pervasive_aurora_mb
+bool "Pervasive Aurora Mb"
+depends on ( arch_msp430fr5969lp || arch_msp430fr5994lp ) && meta_driver_spi
+
 # resistive_load is AEMR-specific and not included in Kconfig
 
 # s5851a is broken and incomplete
