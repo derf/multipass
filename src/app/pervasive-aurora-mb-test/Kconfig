@@ -1,0 +1,6 @@
+# Copyright 2021 Daniel Friesel
+#
+# SPDX-License-Identifier: CC0-1.0
+
+prompt "Pervasive Aurora Mb Test"
+depends on framebuffer && driver_pervasive_aurora_mb && loop && !wakeup

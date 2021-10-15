@@ -37,6 +37,27 @@ range 1 10000
 default 10
 depends on meta_driver_timer
 
+config framebuffer
+bool "Framebuffer"
+default n
+
+config framebuffer_in_text_segment
+bool "Place Framebuffer in text segment"
+default y
+depends on framebuffer
+
+config framebuffer_width
+int "Framebuffer Width"
+default 300
+range 8 800
+depends on framebuffer
+
+config framebuffer_height
+int "Framebuffer Height"
+default 400
+range 8 800
+depends on framebuffer
+
 endmenu
 
 choice Architecture
