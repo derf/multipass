@@ -91,7 +91,6 @@ range "37500" "37500" if arch_msp430fr5994lp_selm = "2" && arch_msp430fr5994lp_d
 range arch_msp430fr5994lp_dco_frequency arch_msp430fr5994lp_dco_frequency if arch_msp430fr5994lp_selm = "3" && arch_msp430fr5994lp_divm = "1"
 range "4800000" "4800000" if arch_msp430fr5994lp_selm = "4" && arch_msp430fr5994lp_divm = "1"
 range arch_msp430fr5994lp_hfxt_frequency arch_msp430fr5994lp_hfxt_frequency if arch_msp430fr5994lp_selm = "5" && arch_msp430fr5994lp_divm = "1"
-help
 
 config arch_msp430fr5994lp_large_mode
 bool "Large Memory Model (20bit pointers, 256kB FRAM)"
