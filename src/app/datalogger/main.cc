@@ -33,6 +33,9 @@
 #ifdef CONFIG_driver_ccs811
 #include "driver/ccs811.h"
 #endif
+#ifdef CONFIG_driver_ds2482
+#include "driver/ds2482.h"
+#endif
 #ifdef CONFIG_driver_max44009
 #include "driver/max44009.h"
 #endif
@@ -101,6 +104,20 @@ void loop(void)
 	kout << "CCS811 status / error: " << ccs811.status << " / " << ccs811.error_id << endl;
 	kout << dec;
 	kout << "CCS811 tVOC / eCO₂ : " << ccs811.tvoc << " ppb / " << ccs811.eco2 << " ppm" << endl;
+#endif
+
+#ifdef CONFIG_driver_ds2482
+	unsigned char addr[8];
+	ds2482.readROM(addr, 8);
+	kout << hex << "DS2482 ROM address: ";
+	for (unsigned char i = 0; i < 8; i++) {
+		kout << (unsigned int)addr[i];
+	}
+	kout << " / ";
+	for (signed char i = 7; i >= 0; i--) {
+		kout << (unsigned int)addr[i];
+	}
+	kout << endl;
 #endif
 
 #ifdef CONFIG_driver_hdc1080
@@ -221,6 +238,10 @@ int main(void)
 	kout << dec;
 	ccs811.setMode(1);
 	arch.delay_ms(50);
+#endif
+
+#ifdef CONFIG_driver_ds2482
+	ds2482.setup();
 #endif
 
 #ifdef CONFIG_driver_hdc1080

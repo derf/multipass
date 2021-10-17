@@ -37,6 +37,10 @@ depends on meta_driver_i2c && !driver_bme280 && (arch_arduino_nano || arch_msp43
 
 # ccs811 is broken and incomplete
 
+config driver_ds2482
+bool "DS2482-100 Single-Channel 1-Wire Master"
+depends on meta_driver_i2c
+
 # dummy is AEMR-specific and not included in Kconfig
 
 config driver_eeprom24lc64
