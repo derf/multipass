@@ -130,6 +130,23 @@ ifdef CONFIG_driver_nrf24l01
 	COMMON_FLAGS += -DNRF24L01_IRQ_PIN=GPIO::${nrf24l01_irq_pin}
 endif
 
+ifdef CONFIG_driver_pervasive_aurora_mb
+	CXX_TARGETS += src/driver/pervasive_aurora_mb.cc
+	ifeq (${arch_dir}, msp430fr5994lp)
+		pervasive_aurora_mb_reset_pin ?= p7_0
+		pervasive_aurora_mb_cs_pin ?= p5_7
+		pervasive_aurora_mb_dc_pin ?= p7_1
+		pervasive_aurora_mb_vcc_pin ?= p8_1
+		pervasive_aurora_mb_busy_pin ?= p6_3
+	endif
+	COMMON_FLAGS += -DDRIVER_PERVASIVE_AURORA_MB
+	COMMON_FLAGS += -DPERVASIVE_AURORA_RESET_PIN=GPIO::${pervasive_aurora_mb_reset_pin}
+	COMMON_FLAGS += -DPERVASIVE_AURORA_CS_PIN=GPIO::${pervasive_aurora_mb_cs_pin}
+	COMMON_FLAGS += -DPERVASIVE_AURORA_DC_PIN=GPIO::${pervasive_aurora_mb_dc_pin}
+	COMMON_FLAGS += -DPERVASIVE_AURORA_VCC_PIN=GPIO::${pervasive_aurora_mb_vcc_pin}
+	COMMON_FLAGS += -DPERVASIVE_AURORA_BUSY_PIN=GPIO::${pervasive_aurora_mb_busy_pin}
+endif
+
 ifdef CONFIG_driver_sharp96
 	CXX_TARGETS += src/driver/sharp96.cc
 	ifeq (${arch_dir}, msp430fr5969lp)
@@ -175,6 +192,10 @@ endif
 
 ifdef CONFIG_meta_driver_hardware_i2c
 	COMMON_FLAGS += -DDRIVER_HARDWARE_I2C
+endif
+
+ifdef CONFIG_framebuffer
+	CXX_TARGETS += src/os/object/framebuffer.cc
 endif
 
 ifdef CONFIG_lib_inflate
