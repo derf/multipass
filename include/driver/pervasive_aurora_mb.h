@@ -20,7 +20,7 @@ class PervasiveAuroraMb {
 		void setup();
 		void powerOn();
 		void initialize(signed char temperature = 20);
-		void sendImage(unsigned char *frame);
+		void sendImage(unsigned char *frame, unsigned int x = 0, unsigned int y = 0, unsigned int w = 0, unsigned int h = 0);
 		void sendUpdate();
 		void powerOff();
 };

@@ -56,7 +56,7 @@ void PervasiveAuroraMb::initialize(signed char temperature)
 	spiWrite(0xe3, (const unsigned char[]){0x88}, 1);
 }
 
-void PervasiveAuroraMb::sendImage(unsigned char *frame)
+void PervasiveAuroraMb::sendImage(unsigned char *frame, unsigned int x, unsigned int y, unsigned int w, unsigned int h)
 {
 	unsigned char null_int[2] = {0x00, 0x00};
 	spiWrite(0x10, 0, 0);
@@ -71,8 +71,30 @@ void PervasiveAuroraMb::sendImage(unsigned char *frame)
 	 */
 	spiWrite(0x13, 0, 0);
 	gpio.write(PERVASIVE_AURORA_CS_PIN, 0);
-	for (unsigned int i = 0; i < 300*(400/16); i++) {
-		spi.xmit(2, null_int, 0, frame);
+	if (w == 0 || h == 0) {
+		for (unsigned int i = 0; i < 300*(400/16); i++) {
+			spi.xmit(2, null_int, 0, frame);
+		}
+	} else {
+		unsigned int y1_mod = y % 8;
+		unsigned int y2_mod = (y + h) % 8;
+		for (unsigned int x_pos = 0; x_pos < 300; x_pos++) {
+			for (unsigned int y_pos = 0; y_pos < 400/8; y_pos++) {
+				if (x_pos < x || x_pos >= x+w || y_pos < y/8 || y_pos > (y+h)/8) {
+					// outside of update area
+					null_int[0] = 0xff;
+				} else  if (y/8 == (y+h)/8) {
+					null_int[0] = (0xff << y2_mod) | (0xff >> (8-y1_mod));
+				} else if (y_pos == y/8) {
+					null_int[0] = 0xff << y1_mod;
+				} else if (y_pos == (y+h)/8) {
+					null_int[0] = 0xff >> (8-y2_mod);
+				} else {
+					null_int[0] = 0x00;
+				}
+				spi.xmit(1, null_int, 0, frame);
+			}
+		}
 	}
 	gpio.write(PERVASIVE_AURORA_CS_PIN, 1);
 }
