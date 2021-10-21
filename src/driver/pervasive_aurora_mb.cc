@@ -3,8 +3,10 @@
  *
  * SPDX-License-Identifier: BSD-2-Clause
  *
- * Driver for Pervasive Aurora Mb E-Paper displays with internal Timing
- * Controller (iTC). Configured for the 300x400px 4.2" variant.
+ * Driver for 4.2" Pervasive Aurora Mb (V230/V231) E-Paper displays with
+ * internal Timing Controller (iTC) connected to a Pervasive EPD Extension
+ * Board Gen 2 (EXT2)-02. Configured for the 300x400px 4.2" E-Paper variant;
+ * register contents and LUTs for other resolutions and revisions may differ.
  */
 #include "driver/pervasive_aurora_mb.h"
 #include "driver/spi.h"
