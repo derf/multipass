@@ -32,6 +32,7 @@ void PervasiveAuroraMb::powerOn()
 	gpio.write(PERVASIVE_AURORA_CS_PIN, 1);
 }
 
+// see also: EPD Extension Board Gen2 (EXT2)_v1.35/EPD_drivers/src/FPL_drivers/iTC_420_Mb_LUT.c
 void PervasiveAuroraMb::initialize(signed char temperature, bool flashless)
 {
 	// "Input Temperature"
@@ -64,8 +65,20 @@ void PervasiveAuroraMb::initialize(signed char temperature, bool flashless)
 	spiWrite(0xe3, (const unsigned char[]){0x88}, 1);
 
 	if (flashless) {
-		// PLL
-		spiWrite(0x30, (const unsigned char[]){0x3d}, 1);
+		/*
+		 * PLL / Frame Rate (normally depends on temperature)
+		 * Approximate sendUpdate times depending on configuration:
+		 * 0x16 (  <10    °c) → 2393 ms
+		 * 0x2f (10 .. 22 °c) → 1140 ms
+		 * 0x3f (22 .. 30 °c) →  828 ms
+		 * 0x3d (30 .. 40 °c) →  605 ms
+		 * 0x3c (  >40    °c) →  493 ms
+		 * 0x3b ( unspecced ) →  381 ms
+		 * 0x3a ( unspecced ) →  270 ms
+		 * 0x39 ( unspecced ) →  158 ms
+		 * 0x38 ( unspecced ) →  158 ms
+		 */
+		spiWrite(0x30, (const unsigned char[]){0x16}, 1);
 
 		// VCom DC
 		spiWrite(0x82, (const unsigned char[]){0x0e}, 1);
