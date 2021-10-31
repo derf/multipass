@@ -21,7 +21,17 @@ class PervasiveAuroraMb {
 
 		void setup();
 		void powerOn();
-		void initialize(signed char temperature = 20);
+
+		/**
+		 * Initializes the display
+		 * @param temperature specify ambient temperature, defaults to 20 deg C
+		 * @param flashless perform (fast) flashless updates. Note that this
+		 *        is not officially documented and, as far as I know,
+		 *        _perminantly_ alters the display's internal look-up tables. It
+		 *        may damage your display in the long run. Use at your own risk.
+		 */
+		void initialize(signed char temperature = 20, bool flashless = false);
+
 		void sendImage(unsigned char *frame, unsigned int x = 0, unsigned int y = 0, unsigned int w = 0, unsigned int h = 0);
 		void sendUpdate();
 		void powerOff();
