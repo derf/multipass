@@ -1,0 +1,6 @@
+# Copyright 2020 Daniel Friesel
+#
+# SPDX-License-Identifier: CC0-1.0
+
+prompt "Pervasive Aurora Mb Bad Apple"
+depends on framebuffer && driver_pervasive_aurora_mb && !wakeup

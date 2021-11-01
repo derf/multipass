@@ -1,0 +1,38 @@
+#!/usr/bin/env python3
+
+from PIL import Image
+import sys
+import zlib
+
+
+def load_image(filename):
+    im = Image.open(filename)
+    w, h = im.size
+    buf = [0 for i in range(w * h // 8)]
+    for y in range(h):
+        for x in range(w):
+            if im.getpixel((x, y)):
+                buf[x * (h//8) + y // 8] |= 1 << (7 - (y % 8))
+    return buf
+
+
+for i in range(1, len(sys.argv)):
+    buf = (
+        load_image(sys.argv[i])
+    )
+    c_buf = ",".join(map(str, buf))
+    z_buf = zlib.compress(bytes(buf), 9)
+    z_buf = z_buf[2:-4]
+    out_buf = ",".join(map(str, z_buf))
+    print(
+        f'__attribute__((section(".text"))) unsigned char const frame{i:04d}[] = {{ {out_buf} }};'
+    )
+
+frames = list()
+for i in range(1, len(sys.argv)):
+    frames.append(f"(unsigned char*)frame{i:04d}")
+
+prefix = "unsigned char* const frames[] = {"
+postfix = "};"
+
+print(prefix + ", ".join(frames) + postfix)
