@@ -78,7 +78,7 @@ void PervasiveAuroraMb::initialize(signed char temperature, bool flashless)
 		 * 0x39 ( unspecced ) →  158 ms
 		 * 0x38 ( unspecced ) →  158 ms
 		 */
-		spiWrite(0x30, (const unsigned char[]){0x16}, 1);
+		spiWrite(0x30, (const unsigned char[]){0x3f}, 1);
 
 		// VCom DC
 		spiWrite(0x82, (const unsigned char[]){0x0e}, 1);
