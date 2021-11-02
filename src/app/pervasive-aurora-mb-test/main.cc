@@ -8,7 +8,7 @@
 #include "driver/stdout.h"
 #include "driver/pervasive_aurora_mb.h"
 #include "object/framebuffer.h"
-#include "lib/pixelfont/pixeloperator.h"
+#include "lib/pixelfont/pixeloperator_mirrored.h"
 
 
 __attribute__ ((section(".text"))) unsigned char lynx[12 * 96] = {
@@ -114,7 +114,7 @@ __attribute__ ((section(".text"))) unsigned char lynx[12 * 96] = {
 void loop(void)
 {
 	static unsigned int i = 0;
-	fb << "i = " << i++ << "  " << endl;
+	fb << "i = " << i++ << "  ";
 	pervasiveAuroraMb.powerOn();
 	pervasiveAuroraMb.initialize();
 	pervasiveAuroraMb.sendImage((unsigned char*)fb.data);
@@ -129,7 +129,7 @@ int main(void)
 	spi.setup();
 	pervasiveAuroraMb.setup();
 
-	fb.setFont(pixeloperator);
+	fb.setFont(pixeloperator_mirrored);
 	fb.clear();
 	fb.drawAt(200, 300, 96, 96, lynx);
 	fb << "Hello, World!" << endl << endl;;
