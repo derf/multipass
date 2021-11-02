@@ -67,4 +67,33 @@ void Framebuffer::drawAt(unsigned int x, unsigned int y, unsigned int w, unsigne
 	}
 }
 
+void Framebuffer::put(char c)
+{
+	if (font == 0) {
+		return;
+	}
+	if (c == '\n') {
+		fontX = 0;
+		fontY += 8;
+		return;
+	}
+	if ((c < 32) || (c > 126)) {
+		c = '?';
+	}
+	glyph_t glyph = font[c - 32];
+	const unsigned char glyph_w = glyph[0];
+
+	if (fontX + glyph_w + 1 >= width) {
+		put('\n');
+	}
+	if (fontY >= height) {
+		return;
+	}
+	for (unsigned char i = 0; i < glyph_w; i++) {
+		data[(height/8) * (fontX + i) + fontY/8] = glyph[i+1];
+	}
+	data[(height/8) * (fontX + glyph_w + 1) + fontY/8] = 0;
+	fontX += glyph_w + 2;
+}
+
 Framebuffer fb(framebuffer);

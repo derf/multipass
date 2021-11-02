@@ -8,6 +8,7 @@
 #include "driver/stdout.h"
 #include "driver/pervasive_aurora_mb.h"
 #include "object/framebuffer.h"
+#include "lib/pixelfont/pixeloperator.h"
 
 
 __attribute__ ((section(".text"))) unsigned char lynx[12 * 96] = {
@@ -113,17 +114,11 @@ __attribute__ ((section(".text"))) unsigned char lynx[12 * 96] = {
 void loop(void)
 {
 	static unsigned int i = 0;
-	fb.drawAt(i*20, i*20, 96, 96, lynx);
-	i = (i+1) % 6;
-	kout << "powerOn" << endl;
+	fb << "i = " << i++ << "  " << endl;
 	pervasiveAuroraMb.powerOn();
-	kout << "initialize" << endl;
 	pervasiveAuroraMb.initialize();
-	kout << "sendImage" << endl;
 	pervasiveAuroraMb.sendImage((unsigned char*)fb.data);
-	kout << "sendUpdate" << endl;
 	pervasiveAuroraMb.sendUpdate();
-	kout << "poweroff" << endl;
 	pervasiveAuroraMb.powerOff();
 }
 
@@ -133,6 +128,16 @@ int main(void)
 	kout.setup();
 	spi.setup();
 	pervasiveAuroraMb.setup();
+
+	fb.setFont(pixeloperator);
+	fb.clear();
+	fb.drawAt(200, 300, 96, 96, lynx);
+	fb << "Hello, World!" << endl << endl;;
+	pervasiveAuroraMb.powerOn();
+	pervasiveAuroraMb.initialize();
+	pervasiveAuroraMb.sendImage((unsigned char*)fb.data);
+	pervasiveAuroraMb.sendUpdate();
+	pervasiveAuroraMb.powerOff();
 
 	arch.idle_loop();
 
