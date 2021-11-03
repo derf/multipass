@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: BSD-2-Clause
  */
 #include "arch.h"
+#include "driver/adc.h"
 #include "driver/gpio.h"
 #include "driver/stdout.h"
 
@@ -61,6 +62,9 @@ void loop(void)
 		dew_count = 0;
 		gpio.input(GPIO::pc5, 0);
 		gpio.input(GPIO::pc4, 0);
+
+		kout << "Voltage = " << adc.getVCC_mV() << endl;
+		kout << "Temperature = " << adc.getTemp_mdegC() << endl;
 	}
 }
 
