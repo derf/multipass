@@ -82,7 +82,9 @@ depends on ( arch_msp430fr5969lp || arch_msp430fr5994lp ) && meta_driver_spi
 
 # resistive_load is AEMR-specific and not included in Kconfig
 
-# s5851a is broken and incomplete
+config driver_s5851a
+bool "S5851 Temperature Sensor"
+depends on meta_driver_i2c
 
 config driver_sharp96
 bool "sharp LS013B4DN 96x96px Transflective LC Display"
@@ -120,6 +122,28 @@ bool "Software I2C"
 select meta_driver_i2c
 
 endmenu
+
+config driver_softi2c_name
+string "Instance Name"
+default "i2c"
+
+config driver_softi2c_scl
+string "SCL Pin"
+default "d7" if arch_esp8266
+default "pc5" if arch_arduino_nano
+default "p1_7" if arch_msp430fr5969lp
+default "p5_1" if arch_msp430fr5994lp
+default "px01" if arch_posix
+depends on driver_softi2c
+
+config driver_softi2c_sda
+string "SDA Pin"
+default "d6" if arch_esp8266
+default "pc4" if arch_arduino_nano
+default "p1_6" if arch_msp430fr5969lp
+default "p5_0" if arch_msp430fr5994lp
+default "px00" if arch_posix
+depends on driver_softi2c
 
 choice driver_softi2c_pullup
 
