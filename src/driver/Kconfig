@@ -102,6 +102,18 @@ int "Display height"
 default 64
 depends on driver_ssd1306
 
+choice driver_ssd1306_mode
+bool "Addressing Mode"
+depends on driver_ssd1306
+
+config driver_ssd1306_mode_vertical
+bool "Vertical"
+
+config driver_ssd1306_mode_horizontal
+bool "Horizontal bytes, Vertical bits"
+
+endchoice
+
 config driver_softi2c
 bool "Software I2C"
 #depends on !driver_i2c
