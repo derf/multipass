@@ -72,6 +72,10 @@ ifdef CONFIG_driver_ccs811
 	CXX_TARGETS += src/driver/ccs811.cc
 endif
 
+ifdef CONFIG_driver_ds2482
+	CXX_TARGETS += src/driver/ds2482.cc
+endif
+
 ifdef CONFIG_driver_eeprom24lc64
 	CXX_TARGETS += src/driver/eeprom24lc64.cc
 endif
