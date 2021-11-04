@@ -60,6 +60,26 @@ depends on framebuffer
 
 endmenu
 
+menu "Libraries"
+
+config lib_inflate
+bool "Inflate: deflate and zlib decompression"
+default n
+
+config lib_inflate_checksum
+bool "Verify checksum after decompression"
+default n
+depends on lib_inflate
+
+config lib_inflate_lut
+bool "Store LUT in intermediate variables"
+help
+  Increases speed at the cost of 636 Bytes of additional RAM usage.
+default n
+depends on lib_inflate
+
+endmenu
+
 choice Architecture
 bool "Architecture"
 
