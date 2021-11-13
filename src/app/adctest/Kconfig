@@ -1,0 +1,6 @@
+# Copyright 2021 Daniel Friesel
+#
+# SPDX-License-Identifier: CC0-1.0
+
+prompt "ADC Test"
+depends on meta_driver_adc && arch_arduino_nano && loop && !wakeup
