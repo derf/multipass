@@ -8,6 +8,10 @@ config arch_posix_driver_counter
 bool "Cycle counter"
 select meta_driver_counter
 
+config arch_posix_driver_i2c
+bool "I2C via /dev/i2c"
+select meta_driver_i2c
+
 config arch_posix_driver_uptime
 bool "Uptime counter"
 select meta_driver_uptime

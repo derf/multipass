@@ -5,6 +5,7 @@
 # SPDX-License-Identifier: BSD-2-Clause
 
 COMMON_FLAGS += -DMULTIPASS_ARCH_posix
+COMMON_FLAGS += -DMULTIPASS_ARCH_HAS_I2C
 
 CC = gcc
 CXX = g++
@@ -25,6 +26,10 @@ endif
 
 ifeq (${timer_s}, 1)
 	CONFIG_arch_posix_driver_uptime = y
+endif
+
+ifdef CONFIG_arch_posix_driver_i2c
+	CXX_TARGETS += src/arch/posix/driver/i2c.cc
 endif
 
 ifdef CONFIG_arch_posix_driver_counter
