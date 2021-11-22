@@ -71,6 +71,19 @@ void Framebuffer::drawAt(unsigned int x, unsigned int y, unsigned int w, unsigne
 	}
 }
 
+void Framebuffer::scroll()
+{
+	for (unsigned int pos_x = 0; pos_x < width; pos_x++) {
+		for (unsigned int pos_y = 1; pos_y < height/8; pos_y++) {
+			data[pos_x * (height/8) + pos_y - 1] = data[pos_x * (height/8) + pos_y];
+		}
+		data[pos_x * (height/8) + height/8 - 1] = 0;
+	}
+	if (fontY >= 8) {
+		fontY -= 8;
+	}
+}
+
 void Framebuffer::put(char c)
 {
 	if (font == 0) {
@@ -96,7 +109,7 @@ void Framebuffer::put(char c)
 		put('\n');
 	}
 	if (fontY >= height) {
-		return;
+		scroll();
 	}
 	for (unsigned char i = 0; i < glyph_w; i++) {
 #ifdef MULTIPASS_ARCH_arduino_nano

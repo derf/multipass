@@ -20,6 +20,7 @@ class Framebuffer : public OutputStream
 		constexpr static unsigned int const height = CONFIG_framebuffer_height;
 
 		void clear();
+		void scroll();
 		void fillBox(unsigned int x, unsigned int y, unsigned int w, unsigned int h);
 		void drawAt(unsigned int x, unsigned int y, unsigned int w, unsigned int h, unsigned char *image);
 		void setFont(const glyph_t *font) { this->font = font; }
