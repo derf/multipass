@@ -23,6 +23,7 @@ class Framebuffer : public OutputStream
 		void scroll();
 		void fillBox(unsigned int x, unsigned int y, unsigned int w, unsigned int h);
 		void drawAt(unsigned int x, unsigned int y, unsigned int w, unsigned int h, unsigned char *image);
+		void drawBattery(unsigned int x, unsigned int y, unsigned char percent);
 		void setFont(const glyph_t *font) { this->font = font; }
 		void setPos(unsigned int newX, unsigned int newY) { fontX = newX; fontY = newY; }
 		virtual void put(char c) override;

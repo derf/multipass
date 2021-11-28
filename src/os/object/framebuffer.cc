@@ -71,6 +71,17 @@ void Framebuffer::drawAt(unsigned int x, unsigned int y, unsigned int w, unsigne
 	}
 }
 
+void Framebuffer::drawBattery(unsigned int x, unsigned int y, unsigned char percent)
+{
+	for (unsigned char i = 0; i < 13; i++) {
+		data[(x+i) * (height/8) + y] = 0x81 | (0xff * (percent >= (i*8)));
+	}
+	data[(x+11) * (height/8) + y/8] |= 0xe7;
+	data[(x+12) * (height/8) + y/8] &= ~0x81;
+	data[(x+12) * (height/8) + y/8] |= 0x24;
+	data[(x+13) * (height/8) + y/8] = 0x3c;
+}
+
 void Framebuffer::scroll()
 {
 	for (unsigned int pos_x = 0; pos_x < width; pos_x++) {
