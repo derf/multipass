@@ -12,6 +12,11 @@ config arch_posix_driver_i2c
 bool "I2C via /dev/i2c"
 select meta_driver_i2c
 
+config arch_posix_driver_i2c_bus
+string "I2C bus (/dev/i2c-* device)"
+default "/dev/i2c-1"
+depends on arch_posix_driver_i2c
+
 config arch_posix_driver_uptime
 bool "Uptime counter"
 select meta_driver_uptime

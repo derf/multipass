@@ -13,6 +13,9 @@
 #include <linux/i2c-dev.h>
 #include <i2c/smbus.h>
 
+#define STRINGIFY(x) #x
+#define TOSTRING(x) STRINGIFY(x)
+#define I2C_BUS TOSTRING(CONFIG_arch_posix_driver_i2c_bus)
 
 signed char I2C::setup()
 {
@@ -57,4 +60,4 @@ signed char I2C::xmit(unsigned char address,
 	return 0;
 }
 
-I2C i2c("/dev/i2c-1");
+I2C i2c(I2C_BUS);
