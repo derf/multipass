@@ -94,13 +94,15 @@ void Framebuffer::drawBattery(unsigned int x, unsigned int y, unsigned char perc
 void Framebuffer::scroll()
 {
 	for (unsigned int pos_x = 0; pos_x < width; pos_x++) {
-		for (unsigned int pos_y = 1; pos_y < height/8; pos_y++) {
-			data[pos_x * (height/8) + pos_y - 1] = data[pos_x * (height/8) + pos_y];
+		for (unsigned int pos_y = fontSize; pos_y < height/8; pos_y++) {
+			data[pos_x * (height/8) + pos_y - fontSize] = data[pos_x * (height/8) + pos_y];
 		}
-		data[pos_x * (height/8) + height/8 - 1] = 0;
+		for (unsigned int pos_y = 1; pos_y <= fontSize; pos_y++) {
+			data[pos_x * (height/8) + height/8 - pos_y] = 0;
+		}
 	}
-	if (fontY >= 8) {
-		fontY -= 8;
+	if (fontY >= 8*fontSize) {
+		fontY -= 8*fontSize;
 	}
 }
 
@@ -111,7 +113,7 @@ void Framebuffer::put(char c)
 	}
 	if (c == '\n') {
 		fontX = 0;
-		fontY += 8;
+		fontY += 8*fontSize;
 		return;
 	}
 	if ((c < 32) || (c > 126)) {
@@ -128,18 +130,22 @@ void Framebuffer::put(char c)
 	if (fontX + glyph_w + 1 >= width) {
 		put('\n');
 	}
-	if (fontY >= height) {
+	if (fontY + fontSize > height) {
 		scroll();
 	}
 	for (unsigned char i = 0; i < glyph_w; i++) {
+		unsigned char x = i / fontSize;
+		unsigned char y = i % fontSize;
 #ifdef MULTIPASS_ARCH_arduino_nano
-		data[(height/8) * (fontX + i) + fontY/8] = pgm_read_byte(&glyph_addr[i+1]);
+		data[(height/8) * (fontX + x) + fontY/8 + y] = pgm_read_byte(&glyph_addr[i+1]);
 #else
-		data[(height/8) * (fontX + i) + fontY/8] = glyph[i+1];
+		data[(height/8) * (fontX + x) + fontY/8 + y] = glyph[i+1];
 #endif
 	}
-	data[(height/8) * (fontX + glyph_w + 1) + fontY/8] = 0;
-	fontX += glyph_w + 2;
+	for (unsigned char i = 0; i < fontSize; i++) {
+		data[(height/8) * (fontX + glyph_w + 1) + fontY/8] = 0;
+	}
+	fontX += (glyph_w / fontSize) + 2;
 }
 
 Framebuffer fb(framebuffer);
