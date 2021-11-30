@@ -130,7 +130,7 @@ void Framebuffer::put(char c)
 	if (fontX + glyph_w + 1 >= width) {
 		put('\n');
 	}
-	if (fontY + fontSize > height) {
+	if (fontY + 8*fontSize > height) {
 		scroll();
 	}
 	for (unsigned char i = 0; i < glyph_w; i++) {
