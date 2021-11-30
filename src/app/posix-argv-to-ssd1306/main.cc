@@ -13,6 +13,7 @@
 #include "driver/ssd1306.h"
 #include "object/framebuffer.h"
 #include "lib/pixelfont/pixeloperator_mirrored.h"
+#include "lib/pixelfont/terminus16.h"
 #include <stdlib.h>
 
 int main(int argc, char **argv)
@@ -23,13 +24,19 @@ int main(int argc, char **argv)
 
 	fb.clear();
 	fb.setFont(pixeloperator_mirrored);
-	if (argc > 2) {
-		fb.drawBattery(114, 0, atoi(argv[1]), atoi(argv[2]));
-		for (unsigned char i = 3; i < argc; i++) {
+	if (argc > 1) {
+		for (unsigned char i = 1; i < argc && i < 13; i++) {
+			if (i == 9) {
+				fb.setFont(terminus16, 2);
+				fb.setPos(0, 0);
+			}
 			fb << argv[i] << endl;
 		}
 	} else {
 		ssd1306.init();
+	}
+	if (argc > 14) {
+		fb.drawBattery(114, 0, atoi(argv[13]), atoi(argv[14]));
 	}
 	ssd1306.showImage(fb.data, fb.width * fb.height / 8);
 

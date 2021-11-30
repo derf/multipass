@@ -2,5 +2,5 @@
 #
 # SPDX-License-Identifier: CC0-1.0
 
-prompt "POSIX Dust Monitor"
+prompt "POSIX argv to SSD1306"
 depends on arch_posix && driver_ssd1306 && !loop && !wakeup
