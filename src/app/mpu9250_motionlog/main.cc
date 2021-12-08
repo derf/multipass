@@ -12,33 +12,28 @@
 #include "driver/soft_i2c.h"
 #endif
 #include "driver/mpu9250.h"
+#ifdef CONFIG_driver_hdc1080
+#include "driver/hdc1080.h"
+#endif
 
-#define INIT0(val) int val = 0, min_ ## val = 0, max_ ## val = 0;
+#define INITI0(val) int val = 0, min_ ## val = 30000, max_ ## val = -30000;
+#define INITF0(val) float val = 0; double min_ ## val = 9999, max_ ## val = -9999;
 #define UPDATE_MIN(min_val, val) if ((val) < (min_val)) { (min_val) = (val); }
 #define UPDATE_MAX(max_val, val) if ((val) > (max_val)) { (max_val) = (val); }
 
 int main(void)
 {
-	INIT0(ax);
-	INIT0(ay);
-	INIT0(az);
-	INIT0(mx);
-	INIT0(my);
-	INIT0(mz);
+	INITF0(ax);
+	INITF0(ay);
+	INITF0(az);
+	INITI0(mx);
+	INITI0(my);
+	INITI0(mz);
 	unsigned short i = 0;
 
 	arch.setup();
 	gpio.setup();
 	kout.setup();
-
-	// One ADC conversion per four seconds
-	TCCR1A = 0;
-	TCCR1B = _BV(CS12) | _BV(CS10);
-
-	// Measure internal 1.1V bandgap using VCC as reference on each Timer 1 overflow
-	ADMUX = _BV(REFS0) | 0x0e;
-	ADCSRB = _BV(ADTS2) | _BV(ADTS1);
-	ADCSRA = _BV(ADEN) | _BV(ADATE) | _BV(ADPS2) | _BV(ADPS1);
 
 	if (i2c.setup() != 0) {
 		kout << "I2C setup failed" << endl;
@@ -47,12 +42,19 @@ int main(void)
 
 	kout << "I2C setup OK" << endl;
 
+#ifdef CONFIG_driver_hdc1080
+	hdc1080.init();
+	if (hdc1080.getManufacturerID() != 0x5449) {
+		kout << "[!] invalid HDC1080 manufacturer ID: " << hex << hdc1080.getManufacturerID() << endl;
+	}
+#endif
+
 	mpu9250.init();
 	mpu9250.nineAxis();
 	mpu9250.setGyroEnable(false, false, false);
 
 	while (1) {
-		mpu9250.getRawAccel(&ax, &ay, &az);
+		mpu9250.getAccel(&ax, &ay, &az);
 
 		UPDATE_MIN(min_ax, ax);
 		UPDATE_MIN(min_ay, ay);
@@ -71,30 +73,23 @@ int main(void)
 		}
 
 		if (i++ == 2000) {
-			kout << "Min Accel: " << min_ax << " / " << min_ay << " / " << min_az << endl;
-			kout << "Max Accel: " << max_ax << " / " << max_ay << " / " << max_az << endl;
-			kout << "Min Magnet: " << min_mx << " / " << min_my << " / " << min_mz << endl;
-			kout << "Max Magnet: " << max_mx << " / " << max_my << " / " << max_mz << endl;
-			kout << "Temp: " << mpu9250.getTemperature() << endl;
-			min_ax = min_ay = min_az = 30000;
-			max_ax = max_ay = max_az = -30000;
-			min_mx = min_my = min_mz = 30000;
-			max_mx = max_my = max_mz = -30000;
-			i = 0;
-			if (ADCSRA & _BV(ADIF)) {
-				uint8_t adcr_l = ADCL;
-				uint8_t adcr_h = ADCH;
-				uint16_t adcr = adcr_l + (adcr_h << 8);
-				uint16_t vcc = 1100L * 1023 / adcr;
+			kout << "Accel X: " << max_ax - min_ax << endl;
+			kout << "Accel Y: " << max_ay - min_ay << endl;
+			kout << "Accel Z: " << max_az - min_az << endl;
+			kout << "Magnet X: " << max_mx - min_mx << endl;
+			kout << "Magnet Y: " << max_my - min_my << endl;
+			kout << "Magnet Z: " << max_mz - min_mz << endl;
+			kout << "MPU Temperature: " << mpu9250.getTemperature() << endl;
+			mpu9250.sleep();
 
-				TIFR1 |= _BV(TOV1);
-				ADCSRA |= _BV(ADIF);
-
-				kout << "VCC: " << vcc << endl;
-			}
+#ifdef CONFIG_driver_hdc1080
+			hdc1080.measure();
+			arch.delay_ms(10);
+			kout << "HDC Temperature: " << hdc1080.getTemp() << endl;
+			kout << "HDC Humidity: " << hdc1080.getRH() << endl;
+#endif
+			return 0;
 		}
 		arch.delay_ms(1);
 	}
-
-	return 0;
 }

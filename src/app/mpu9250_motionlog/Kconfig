@@ -3,4 +3,4 @@
 # SPDX-License-Identifier: CC0-1.0
 
 prompt "Motion Logger"
-depends on arch_arduino_nano && driver_mpu9250 && !loop && !wakeup
+depends on driver_mpu9250 && !loop && !wakeup
