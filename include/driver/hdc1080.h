@@ -20,6 +20,7 @@ class HDC1080 {
 		float getRH();
 		unsigned int getManufacturerID();
 		void init();
+		void measure();
 		void heater(bool on);
 };
 

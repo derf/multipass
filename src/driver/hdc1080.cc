@@ -11,14 +11,15 @@
 #include "driver/soft_i2c.h"
 #endif
 
+void HDC1080::measure()
+{
+	txbuf[0] = 0x00;
+	i2c.xmit(address, 1, txbuf, 0, rxbuf);
+}
+
 float HDC1080::getTemp()
 {
 	txbuf[0] = 0x00;
-
-	i2c.xmit(address, 1, txbuf, 0, rxbuf);
-
-	arch.delay_ms(10);
-
 	i2c.xmit(address, 0, txbuf, 2, rxbuf);
 
 	return (((unsigned int)rxbuf[0] << 8) | rxbuf[1]) * .00251770019531250000 - 40.;
@@ -27,11 +28,6 @@ float HDC1080::getTemp()
 float HDC1080::getRH()
 {
 	txbuf[0] = 0x01;
-
-	i2c.xmit(address, 1, txbuf, 0, rxbuf);
-
-	arch.delay_ms(10);
-
 	i2c.xmit(address, 0, txbuf, 2, rxbuf);
 
 	return (((unsigned int)rxbuf[0] << 8) | rxbuf[1]) * .00152587890625000000;

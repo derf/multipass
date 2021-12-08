@@ -127,6 +127,8 @@ void loop(void)
 		hdc1080.getTemp();
 	}
 	*/
+	hdc1080.measure();
+	arch.delay_ms(10);
 	kout << "HDC1080 temperature " << hdc1080.getTemp() << " degC" << endl;
 	kout << "HDC1080 humidity " << hdc1080.getRH() << " %H" << endl;
 #endif
@@ -253,6 +255,7 @@ int main(void)
 
 #ifdef CONFIG_driver_mpu9250
 	mpu9250.init();
+	mpu9250.nineAxis();
 #endif
 
 #ifdef CONFIG_driver_tsl2591
