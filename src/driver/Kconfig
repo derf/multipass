@@ -47,7 +47,7 @@ config driver_eeprom24lc64
 bool "24LC64 EEPROM"
 depends on meta_driver_i2c
 
-config driver_hcd1080
+config driver_hdc1080
 bool "HDC1080 TH Sensor with Heated Plate"
 depends on meta_driver_i2c
 
