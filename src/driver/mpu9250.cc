@@ -89,6 +89,7 @@ void MPU9250::setGyroFSR(MPU9250::gyro_fsr_e fsr)
 	txbuf[0] = MPU9250_GYRO_CONFIG;
 	txbuf[1] = fsr << GYRO_CONFIG_GYRO_FS_SEL;
 	i2c.xmit(address, 2, txbuf, 0, rxbuf);
+	gyro_fsr = fsr;
 }
 
 void MPU9250::setAccelFSR(MPU9250::accel_fsr_e fsr)
@@ -96,6 +97,7 @@ void MPU9250::setAccelFSR(MPU9250::accel_fsr_e fsr)
 	txbuf[0] = MPU9250_ACCEL_CONFIG;
 	txbuf[1] = fsr << ACCEL_CONFIG_ACCEL_FS_SEL;
 	i2c.xmit(address, 2, txbuf, 0, rxbuf);
+	accel_fsr = fsr;
 }
 
 void MPU9250::AGSleep()
