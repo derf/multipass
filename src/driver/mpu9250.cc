@@ -5,6 +5,7 @@
 #else
 #include "driver/soft_i2c.h"
 #endif
+#include <stdint.h>
 
 /*
 Copyright (c) 2016 SparkFun Electronics, Inc.
@@ -143,7 +144,7 @@ signed int MPU9250::getWordReg(unsigned char const regBase)
 	txbuf[0] = regBase;
 	i2c.xmit(address, 1, txbuf, 2, rxbuf);
 
-	return ((signed int)rxbuf[0] << 8) + rxbuf[1];
+	return (int16_t)((rxbuf[0] << 8) + rxbuf[1]);
 }
 
 float MPU9250::getTemperature()
@@ -156,9 +157,9 @@ void MPU9250::getRawGyro(int *x, int *y, int *z)
 	txbuf[0] = 67;
 	i2c.xmit(address, 1, txbuf, 6, rxbuf);
 
-	*x = ((signed int) rxbuf[0] << 8) + rxbuf[1];
-	*y = ((signed int) rxbuf[2] << 8) + rxbuf[3];
-	*z = ((signed int) rxbuf[4] << 8) + rxbuf[5];
+	*x = (int16_t)(( rxbuf[0] << 8) + rxbuf[1]);
+	*y = (int16_t)(( rxbuf[2] << 8) + rxbuf[3]);
+	*z = (int16_t)(( rxbuf[4] << 8) + rxbuf[5]);
 }
 
 void MPU9250::getRawAccel(int *x, int *y, int *z)
@@ -166,9 +167,9 @@ void MPU9250::getRawAccel(int *x, int *y, int *z)
 	txbuf[0] = 59;
 	i2c.xmit(address, 1, txbuf, 6, rxbuf);
 
-	*x = ((signed int) rxbuf[0] << 8) + rxbuf[1];
-	*y = ((signed int) rxbuf[2] << 8) + rxbuf[3];
-	*z = ((signed int) rxbuf[4] << 8) + rxbuf[5];
+	*x = (int16_t)(( rxbuf[0] << 8) + rxbuf[1]);
+	*y = (int16_t)(( rxbuf[2] << 8) + rxbuf[3]);
+	*z = (int16_t)(( rxbuf[4] << 8) + rxbuf[5]);
 }
 
 void MPU9250::getAccel(float *g_x, float *g_y, float *g_z)
@@ -211,9 +212,9 @@ bool MPU9250::getRawMagnet(int *x, int *y, int *z)
 	i2c.xmit(0x0c, 1, txbuf, 8, rxbuf);
 
 	if ((rxbuf[0] & 0x01) && !(rxbuf[7] & 0x08)) {
-		*x = ((signed int)rxbuf[2] << 8) + rxbuf[1];
-		*y = ((signed int)rxbuf[4] << 8) + rxbuf[3];
-		*z = ((signed int)rxbuf[6] << 8) + rxbuf[5];
+		*x = (int16_t)((rxbuf[2] << 8) + rxbuf[1]);
+		*y = (int16_t)((rxbuf[4] << 8) + rxbuf[3]);
+		*z = (int16_t)((rxbuf[6] << 8) + rxbuf[5]);
 		return true;
 	}
 	else {
