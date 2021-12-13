@@ -274,7 +274,7 @@ class MPU9250 {
 		bool getRawMagnet(int *x, int *y, int *z);
 		void getAccel(float *g_x, float *g_y, float *g_z);
 		void getGyro(float *dps_x, float *dps_y, float *dps_z);
-		void getMagnet(int *x, int *y, int *z);
+		bool getMagnet(float *ut_x, float *ut_y, float *ut_z);
 		float getTemperature();
 		void setAccelEnable(bool x, bool y, bool z);
 		void setGyroEnable(bool x, bool y, bool z);

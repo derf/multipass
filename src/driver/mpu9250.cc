@@ -222,6 +222,21 @@ bool MPU9250::getRawMagnet(int *x, int *y, int *z)
 	}
 }
 
+bool MPU9250::getMagnet(float *ut_x, float *ut_y, float *ut_z)
+{
+	int x, y, z;
+	bool success = getRawMagnet(&x, &y, &z);
+
+	if (!success) {
+		return false;
+	}
+
+	*ut_x = x * 0.15;
+	*ut_y = y * 0.15;
+	*ut_z = z * 0.15;
+	return true;
+}
+
 // mpu9250.dfa
 
 void MPU9250::nineAxis()
