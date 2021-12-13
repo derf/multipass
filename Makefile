@@ -306,6 +306,9 @@ Kconfig: script/mkconfig
 config: Kconfig
 	${QUIET}kconfig-qconf Kconfig
 
+nconfig: Kconfig
+	${QUIET}kconfig-nconf Kconfig
+
 randconfig: Kconfig
 	${QUIET}script/randconfig
 
