@@ -65,6 +65,11 @@ void CCS811::setEnv(unsigned char humi, unsigned char humi_fraction, unsigned ch
 	i2c.xmit(address, 5, txbuf, 0, rxbuf);
 }
 
+void CCS811::setEnv(float humi, float temp)
+{
+	setEnv(humi * 2, 0, (temp - 25) * 2, 0);
+}
+
 unsigned char CCS811::getStatus()
 {
 	txbuf[0] = 0x00;

@@ -31,6 +31,7 @@ class CCS811 {
 		void setMode(unsigned char mode);
 		void read();
 		void setEnv(unsigned char humi, unsigned char humi_fraction, unsigned char temp, unsigned char temp_fraction);
+		void setEnv(float humi, float temp);
 		void reset();
 };
 
