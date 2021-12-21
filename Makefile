@@ -32,10 +32,6 @@ ifdef verbose
 	QUIET =
 endif
 
-ifeq (${aspectc}, 1)
-	CONFIG_aspectc = y
-endif
-
 ifneq (${app_dir}, )
 	include src/app/${app_dir}/Makefile.inc
 endif
@@ -264,16 +260,9 @@ ifeq (${timer_us}, 1)
 	COMMON_FLAGS += -DTIMER_US
 endif
 
+# still used in makefiles
 ifeq (${loop}, 1)
 	COMMON_FLAGS += -DCONFIG_loop
-endif
-
-ifeq (${wakeup}, 1)
-	COMMON_FLAGS += -DCONFIG_wakeup
-endif
-
-ifeq (${ostream}, 1)
-	COMMON_FLAGS += -DCONFIG_ostream
 endif
 
 ifeq (${trace_malloc}, 1)
@@ -330,7 +319,6 @@ help: arch_help
 	@echo "    i2c_pullup -- When using arch i2c driver: configure SDA/SCL pull-ups"
 	@echo "        gpio: Use external pull-ups connected to two separate CPU pins. Pull-Ups are always enabled"
 	@echo "    kout_nop -- Do not write output to stdout / serial console"
-	@echo "    ostream -- include C++ ostream standard library"
 	@echo "    trace_malloc -- trace mpmalloc/mpcalloc/mprealloc calls on stdout"
 	@echo "    stack_usage -- Generate .su files for stack usage estimation (-> make stack)"
 	@echo
