@@ -17,13 +17,6 @@ void Arch::setup(void)
 	TIMSK1 = _BV(OCIE1A);
 #endif
 
-/*
-#ifdef TIMER_US
-	// 16MHz/8 -> 2MHz timer
-	TCCR1A = 0;
-	TCCR2B = _BV(CS21);
-#endif
-*/
 	sei();
 }
 

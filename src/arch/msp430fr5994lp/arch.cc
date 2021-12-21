@@ -108,25 +108,6 @@ void Arch::setup(void)
 	CSCTL0_H = 0;
 #endif
 
-#ifdef TIMER_US
-#if F_CPU == 16000000UL
-	TA0CTL = TASSEL__SMCLK | ID__8 | MC__CONTINUOUS; // /8
-	TA0EX0 = 1; // /2 -> /16
-#elif F_CPU == 8000000UL
-	TA0CTL = TASSEL__SMCLK | ID__8 | MC__CONTINUOUS; // /8
-	TA0EX0 = 0; // /1 -> /8
-#elif F_CPU == 4000000UL
-	TA0CTL = TASSEL__SMCLK | ID__4 | MC__CONTINUOUS; // /4
-	TA0EX0 = 0; // /1 -> /8
-#elif F_CPU == 1000000UL
-	TA0CTL = TASSEL__SMCLK | ID__1 | MC__CONTINUOUS; // /1
-	TA0EX0 = 0; // /1 -> /8
-#else
-#error Unsupported F_CPU
-#endif /* F_CPU */
-	TA0CTL |= TACLR;
-#endif /* TIMER_US */
-
 #if F_CPU == 32768UL
 	CSCTL0_H = CSKEY >> 8;
 	CSCTL2 = SELA__LFXTCLK | SELS__LFXTCLK | SELM__LFXTCLK;

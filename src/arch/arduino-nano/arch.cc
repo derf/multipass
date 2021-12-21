@@ -50,14 +50,6 @@ void Arch::setup(void)
 	TIMSK1 = _BV(OCIE1A);
 #endif
 
-#ifdef TIMER_US
-#if F_CPU != 16000000UL
-#error TIMER_US is only supported with F_CPU = 16MHz
-#endif
-	// 16MHz/8 -> 2MHz timer
-	TCCR2A = 0;
-	TCCR2B = _BV(CS21);
-#endif
 	sei();
 }
 

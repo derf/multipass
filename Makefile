@@ -256,10 +256,6 @@ ifeq (${softi2c_timer}, 1)
 	COMMON_FLAGS += -DSOFTI2C_TIMER
 endif
 
-ifeq (${timer_us}, 1)
-	COMMON_FLAGS += -DTIMER_US
-endif
-
 # still used in makefiles
 ifeq (${loop}, 1)
 	COMMON_FLAGS += -DCONFIG_loop
@@ -307,7 +303,6 @@ clean: arch_clean
 help: arch_help
 	@echo
 	@echo "common flags:"
-	@echo "    timer_us timer_s -- enable specific timers. May be mutually exclusive"
 	@echo "    loop -- enable loop() function"
 	@echo "    i2c_freq -- I2C Frequency in Hz"
 	@echo "    timer_freq -- Timer frequency in Hz"
