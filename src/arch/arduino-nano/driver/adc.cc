@@ -8,6 +8,42 @@
 #include "arch.h"
 #include "driver/adc.h"
 
+uint16_t AVRADC::getPin_mV(uint8_t pin, uint16_t avcc)
+{
+	if (avcc) {
+		// measure with AVCC reference
+		ADMUX = _BV(REFS0) | pin;
+	} else {
+		// measure with internal 1.1V bandgap refernce
+		ADMUX = _BV(REFS1) | _BV(REFS0) | pin;
+	}
+
+	// Enable ADC with /64 prescaler
+	ADCSRA = _BV(ADEN) | _BV(ADPS2);
+
+	// Wait for bandgap to stabilise (70us according to datasheet table 28-3)
+	arch.delay_ms(1);
+
+	// Start conversion
+	ADCSRA |= _BV(ADSC);
+
+	// wait until conversion is complete
+	while (ADCSRA & _BV(ADSC)) ;
+
+	uint8_t adcr_l = ADCL;
+	uint8_t adcr_h = ADCH;
+	uint16_t adcr = adcr_l + (adcr_h << 8);
+
+	// Disable ADC
+	ADCSRA &= ~_BV(ADEN);
+
+	if (avcc) {
+		return (uint32_t)avcc * adcr / 1023L;
+	} else {
+		return 1100L * adcr / 1023L;
+	}
+}
+
 int16_t AVRADC::getTemp_mdegC(int16_t offset)
 {
 	// Measure temperature probe with 1.1V bandgap reference

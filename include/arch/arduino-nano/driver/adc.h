@@ -17,6 +17,7 @@ class AVRADC {
 
 		int16_t getTemp_mdegC(int16_t offset = 205);
 		uint16_t getVCC_mV();
+		uint16_t getPin_mV(uint8_t pin, uint16_t avcc = 0);
 };
 
 extern AVRADC adc;
