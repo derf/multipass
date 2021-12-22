@@ -6,7 +6,7 @@
 #include "arch.h"
 #include "driver/gpio.h"
 #include "driver/stdout.h"
-#if defined(CONFIG_meta_driver_i2c)
+#if defined(CONFIG_meta_driver_hardware_i2c)
 #include "driver/i2c.h"
 #elif defined(CONFIG_driver_softi2c)
 #include "driver/soft_i2c.h"
