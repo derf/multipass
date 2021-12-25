@@ -2,6 +2,8 @@
  * Copyright 2020 Daniel Friesel
  *
  * SPDX-License-Identifier: BSD-2-Clause
+ *
+ * Driver for LM75B Digital Temperature Sensor and Thermal Watchdog.
  */
 #include "driver/lm75.h"
 #if defined(MULTIPASS_ARCH_HAS_I2C) && !defined(CONFIG_driver_softi2c)
@@ -40,7 +42,7 @@ unsigned int LM75::getHyst()
 	return rxbuf[0];
 }
 
-void LM75::setOS(unsigned char os)
+void LM75::setOS(signed char os)
 {
 	txbuf[0] = 0x03;
 	txbuf[1] = os;
@@ -48,7 +50,7 @@ void LM75::setOS(unsigned char os)
 	i2c.xmit(address, 3, txbuf, 0, rxbuf);
 }
 
-void LM75::setHyst(unsigned char hyst)
+void LM75::setHyst(signed char hyst)
 {
 	txbuf[0] = 0x02;
 	txbuf[1] = hyst;
