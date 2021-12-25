@@ -26,7 +26,7 @@ QUIET = @
 
 ASM_TARGETS =
 C_TARGETS =
-CXX_TARGETS = src/app/${app_dir}/main.cc src/os/object/cpp_helpers.cc src/os/object/outputstream.cc
+CXX_TARGETS = src/app/${app_dir}/main.cc src/object/cpp_helpers.cc src/object/outputstream.cc
 
 ifdef verbose
 	QUIET =
@@ -195,7 +195,7 @@ ifdef CONFIG_meta_driver_hardware_i2c
 endif
 
 ifdef CONFIG_framebuffer
-	CXX_TARGETS += src/os/object/framebuffer.cc
+	CXX_TARGETS += src/object/framebuffer.cc
 endif
 
 ifdef CONFIG_lib_inflate
