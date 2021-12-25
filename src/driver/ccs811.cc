@@ -11,10 +11,6 @@
 #include "driver/soft_i2c.h"
 #endif
 
-#ifdef MULTIPASS_ARCH_esp8266
-#define nWAKE GPIO::d5
-#endif
-
 void CCS811::init()
 {
 	startFirmware();

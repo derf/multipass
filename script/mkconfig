@@ -19,7 +19,7 @@ default n
 config ostream
 bool "C++ ostream support in stdout"
 default n
-depends on arch_esp8266 || arch_msp430fr5969lp || arch_msp430fr5994lp || arch_posix
+depends on arch_msp430fr5969lp || arch_msp430fr5994lp || arch_posix
 
 config aspectc
 bool "Build with AspectC++"

@@ -4,16 +4,6 @@ stages:
   - build
   - test
 
-build_esp8266:
-  stage: build
-  before_script:
-  - export TOOLCHAIN_BASE=/opt/xtensa-lx106-elf/bin
-  - export SDK_BASE=/opt/xtensa-lx106-elf/xtensa-lx106-elf/sysroot/usr
-  script:
-  - curl -s https://ess.cs.uos.de/static/.gitlab-ci/xtensa-lx106-elf.tar.xz | tar -C /opt -xJf -
-  - mkdir -p build
-  - sh -x tests/build-esp8266
-
 build_posix:
   stage: build
   script:

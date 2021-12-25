@@ -246,9 +246,7 @@ SoftI2C i2c(GPIO::p5_0, GPIO::p5_1, GPIO::p8_2, GPIO::p8_3);
 #error "softi2c_pullup = external not supported on this architecture"
 #endif /* MULTIPASS_ARCH_* */
 #else
-#ifdef MULTIPASS_ARCH_esp8266
-SoftI2C i2c(GPIO::d6, GPIO::d7);
-#elif MULTIPASS_ARCH_arduino_nano
+#if MULTIPASS_ARCH_arduino_nano
 SoftI2C i2c(GPIO::pc4, GPIO::pc5);
 #elif MULTIPASS_ARCH_blinkenrocket
 SoftI2C i2c(GPIO::pc4, GPIO::pc5);
