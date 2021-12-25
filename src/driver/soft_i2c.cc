@@ -237,26 +237,6 @@ ON_TIMER_INTERRUPT_tail
 
 #ifndef DRIVER_HARDWARE_I2C
 
-#if CONFIG_driver_softi2c_pullup_dynamic_external
-#ifdef MULTIPASS_ARCH_msp430fr5969lp
-SoftI2C i2c(GPIO::p1_6, GPIO::p1_7, GPIO::p1_4, GPIO::p1_5);
-#elif MULTIPASS_ARCH_msp430fr5994lp
-SoftI2C i2c(GPIO::p5_0, GPIO::p5_1, GPIO::p8_2, GPIO::p8_3);
-#else
-#error "softi2c_pullup = external not supported on this architecture"
-#endif /* MULTIPASS_ARCH_* */
-#else
-#if MULTIPASS_ARCH_arduino_nano
-SoftI2C i2c(GPIO::pc4, GPIO::pc5);
-#elif MULTIPASS_ARCH_blinkenrocket
-SoftI2C i2c(GPIO::pc4, GPIO::pc5);
-#elif MULTIPASS_ARCH_msp430fr5969lp
-SoftI2C i2c(GPIO::p1_6, GPIO::p1_7);
-#elif MULTIPASS_ARCH_msp430fr5994lp
-SoftI2C i2c(GPIO::p5_0, GPIO::p5_1);
-#elif MULTIPASS_ARCH_posix
-SoftI2C i2c(GPIO::px00, GPIO::px01);
-#endif /* MULTIPASS_ARCH_* */
-#endif /* !CONFIG_driver_softi2c_pullup_dynamic_external */
+SoftI2C i2c(GPIO::CONFIG_driver_softi2c_sda, GPIO::CONFIG_driver_softi2c_scl);
 
 #endif /* !DRIVER_HARDWARE_I2C */
