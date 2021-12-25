@@ -21,9 +21,9 @@ int main(void)
 	gpio.setup();
 	kout.setup();
 
-	if (i2c.setup() != 0) {
+	while (i2c.setup() != 0) {
 		kout << "I2C setup FAILED" << endl;
-		return 1;
+		arch.delay_ms(1000);
 	}
 
 	kout << "I2C setup OK" << endl;
