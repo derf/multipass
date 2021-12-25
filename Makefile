@@ -226,31 +226,6 @@ ifdef CONFIG_timer_freq
 	COMMON_FLAGS += -DF_TIMER=${CONFIG_timer_freq}
 endif
 
-ifdef CONFIG_driver_softi2c_pullup_dynamic_internal
-	softi2c_pullup=internal
-endif
-ifeq (${softi2c_pullup}, internal)
-	COMMON_FLAGS += -DCONFIG_driver_softi2c_pullup_dynamic_internal
-endif
-
-ifdef CONFIG_driver_softi2c_pullup_dynamic_external
-	softi2c_pullup=external
-endif
-ifeq (${softi2c_pullup}, external)
-	COMMON_FLAGS += -DCONFIG_driver_softi2c_pullup_dynamic_external
-endif
-
-ifdef CONFIG_driver_softi2c_pullup_external
-	softi2c_pullup=gpio
-endif
-ifeq (${softi2c_pullup}, gpio)
-	COMMON_FLAGS += -DCONFIG_driver_softi2c_pullup_external
-endif
-
-ifeq (${i2c_pullup}, gpio)
-	COMMON_FLAGS += -DCONFIG_I2C_PULLUP_FIXED_GPIO
-endif
-
 ifeq (${softi2c_timer}, 1)
 	override arch_drivers += ,timer
 	COMMON_FLAGS += -DSOFTI2C_TIMER
@@ -306,13 +281,7 @@ help: arch_help
 	@echo "    loop -- enable loop() function"
 	@echo "    i2c_freq -- I2C Frequency in Hz"
 	@echo "    timer_freq -- Timer frequency in Hz"
-	@echo "    softi2c_pullup -- When using softi2c driver: configure SDA/SCL pull-ups"
-	@echo "        internal: Use internal pull-ups. Pull-ups are disabled when transmitting a LOW signal"
-	@echo "        external: Use external pull-ups connected to two separate CPU pins. Pull-Ups are disabled when transmitting a LOW signal"
-	@echo "        gpio: Use external pull-ups connected to two separate CPU pins. Pull-Ups are always enabled"
 	@echo "    softi2c_timer -- Use hardware timer instead of busy waiting for I2C timing"
-	@echo "    i2c_pullup -- When using arch i2c driver: configure SDA/SCL pull-ups"
-	@echo "        gpio: Use external pull-ups connected to two separate CPU pins. Pull-Ups are always enabled"
 	@echo "    kout_nop -- Do not write output to stdout / serial console"
 	@echo "    trace_malloc -- trace mpmalloc/mpcalloc/mprealloc calls on stdout"
 	@echo "    stack_usage -- Generate .su files for stack usage estimation (-> make stack)"
