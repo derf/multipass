@@ -129,13 +129,15 @@ select meta_driver_i2c
 
 endmenu
 
+menu "SoftI2C Configuration"
+depends on driver_softi2c
+
 config driver_softi2c_scl
 string "SCL Pin"
 default "pc5" if arch_arduino_nano
 default "p1_7" if arch_msp430fr5969lp
 default "p5_1" if arch_msp430fr5994lp
 default "px01" if arch_posix
-depends on driver_softi2c
 
 config driver_softi2c_sda
 string "SDA Pin"
@@ -143,7 +145,6 @@ default "pc4" if arch_arduino_nano
 default "p1_6" if arch_msp430fr5969lp
 default "p5_0" if arch_msp430fr5994lp
 default "px00" if arch_posix
-depends on driver_softi2c
 
 choice driver_softi2c_pullup
 
@@ -159,3 +160,5 @@ help
     Internal Pull-Up, disabled when transmitting LOW
 
 endchoice
+
+endmenu
