@@ -138,6 +138,7 @@ default "pc5" if arch_arduino_nano
 default "p1_7" if arch_msp430fr5969lp
 default "p5_1" if arch_msp430fr5994lp
 default "px01" if arch_posix
+default "pb8" if arch_stm32f446re_nucleo
 
 config driver_softi2c_sda
 string "SDA Pin"
@@ -145,6 +146,7 @@ default "pc4" if arch_arduino_nano
 default "p1_6" if arch_msp430fr5969lp
 default "p5_0" if arch_msp430fr5994lp
 default "px00" if arch_posix
+default "pb9" if arch_stm32f446re_nucleo
 
 choice driver_softi2c_pullup
 
