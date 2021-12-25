@@ -10,6 +10,8 @@
 #include "driver/soft_i2c.h"
 #endif
 
+#include <stdint.h>
+
 float LM75::getTemp()
 {
 	txbuf[0] = 0;
@@ -17,7 +19,7 @@ float LM75::getTemp()
 	rxbuf[1] = 0;
 	i2c.xmit(address, 1, txbuf, 2, rxbuf);
 
-	return rxbuf[0] + (rxbuf[1] / 256.0);
+	return (int8_t)rxbuf[0] + (rxbuf[1] / 256.0);
 }
 
 unsigned int LM75::getOS()
