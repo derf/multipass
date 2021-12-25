@@ -10,7 +10,7 @@ MCU = msp430fr5969
 DEBUG_PORT ?= ttyACM0
 SERIAL_PORT ?= ttyACM1
 
-cpu_freq ?= 8000000
+cpu_freq ?= 16000000
 uart_freq ?= 115200
 
 MSP430_FLASHER_DIR ?= /opt/msp430/MSP430Flasher_1.3.20
