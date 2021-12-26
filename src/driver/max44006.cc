@@ -59,6 +59,7 @@ uint16_t MAX44006::getTemperature()
 		return 0;
 	}
 
+	// independent of AMBPGA setting, depends on AMBTIM
 	return (((uint16_t)rxbuf[0] << 8) + rxbuf[1]);
 }
 
@@ -78,6 +79,19 @@ bool MAX44006::getLight(float *red, float *green, float *blue, float *clear, flo
 	}
 	else if ((ambientConfig & AMBPGA_MASK) == AMBPGA_11) {
 		multiplier = 0.512;
+	}
+
+	if ((ambientConfig & AMBTIM_MASK) == AMBTIM_001) {
+		multiplier *= 4;
+	}
+	else if ((ambientConfig & AMBTIM_MASK) == AMBTIM_010) {
+		multiplier *= 16;
+	}
+	else if ((ambientConfig & AMBTIM_MASK) == AMBTIM_011) {
+		multiplier *= 64;
+	}
+	else if ((ambientConfig & AMBTIM_MASK) == AMBTIM_100) {
+		multiplier *= 0.25;
 	}
 
 	*clear = (float)(((uint16_t)rxbuf[0] << 8) + rxbuf[1]) * multiplier;
