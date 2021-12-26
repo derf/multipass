@@ -38,7 +38,7 @@ uint8_t MAX44006::init()
 	}
 
 	txbuf[0] = ambientConfigReg;
-	txbuf[1] = TEMPEN; // TEMPEN = 1
+	txbuf[1] = ambientConfig;
 	if (i2c.xmit(address, 2, txbuf, 0, rxbuf) != 0) {
 		return 1;
 	}
@@ -69,11 +69,22 @@ bool MAX44006::getLight(float *red, float *green, float *blue, float *clear, flo
 		return false;
 	}
 
-	*clear = (float)(((uint16_t)rxbuf[0] << 8) + rxbuf[1]) * 0.002;
-	*red   = (float)(((uint16_t)rxbuf[2] << 8) + rxbuf[3]) * 0.002;
-	*green = (float)(((uint16_t)rxbuf[4] << 8) + rxbuf[5]) * 0.002;
-	*blue  = (float)(((uint16_t)rxbuf[6] << 8) + rxbuf[7]) * 0.004;
-	*ir    = (float)(((uint16_t)rxbuf[8] << 8) + rxbuf[9]) * 0.002;
+	float multiplier = 0.002;
+	if ((ambientConfig & AMBPGA_MASK) == AMBPGA_01) {
+		multiplier = 0.008;
+	}
+	else if ((ambientConfig & AMBPGA_MASK) == AMBPGA_10) {
+		multiplier = 0.032;
+	}
+	else if ((ambientConfig & AMBPGA_MASK) == AMBPGA_11) {
+		multiplier = 0.512;
+	}
+
+	*clear = (float)(((uint16_t)rxbuf[0] << 8) + rxbuf[1]) * multiplier;
+	*red   = (float)(((uint16_t)rxbuf[2] << 8) + rxbuf[3]) * multiplier;
+	*green = (float)(((uint16_t)rxbuf[4] << 8) + rxbuf[5]) * multiplier;
+	*blue  = (float)(((uint16_t)rxbuf[6] << 8) + rxbuf[7]) * multiplier * 2;
+	*ir    = (float)(((uint16_t)rxbuf[8] << 8) + rxbuf[9]) * multiplier;
 
 	return true;
 }

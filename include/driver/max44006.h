@@ -15,20 +15,20 @@
 class MAX44006 {
 	public:
 
-		enum registers {
+		enum Registers {
 			interruptStatusReg = 0x00,
 			mainConfigReg = 0x01,
 			ambientConfigReg = 0x02,
 		};
 
-		enum interruptStatus {
+		enum InterruptStatus {
 			AMBINTS = 0b00000001,
 			PWRON   = 0b00000010,
 			SHDN    = 0b00001000,
 			RESET   = 0b00010000,
 		};
 
-		enum mainConfig {
+		enum MainConfig {
 			AMBINTE   = 0b00000001,
 			AMBSEL_00 = 0b00000000,
 			AMBSEL_01 = 0b00000100,
@@ -39,7 +39,7 @@ class MAX44006 {
 			MODE_10   = 0b00100000,
 		};
 
-		enum ambientConfig {
+		enum AmbientConfig {
 			AMBPGA_00  = 0b00000000,
 			AMBPGA_01  = 0b00000001,
 			AMBPGA_10  = 0b00000010,
@@ -51,8 +51,11 @@ class MAX44006 {
 			AMBTIM_100 = 0b00010000,
 			TEMPEN     = 0b00100000,
 			COMPPEN    = 0b01000000,
-			TRIm       = 0b10000000,
+			TRIM       = 0b10000000,
 		};
+
+		const unsigned char AMBPGA_MASK = 0b00000011;
+		const unsigned char AMBTIM_MASK = 0b00011100;
 
 	private:
 		MAX44006(const MAX44006 &copy);
@@ -60,14 +63,13 @@ class MAX44006 {
 		unsigned char txbuf[2];
 		unsigned char rxbuf[10];
 
-		unsigned char ambtim;
-		unsigned char ambpga;
+		AmbientConfig ambientConfig;
 
 		uint16_t clear, red, green, blue, ir;
 
 	public:
 
-		MAX44006(unsigned char const addr = 0x45) : address(addr) {}
+		MAX44006(unsigned char const addr = 0x45) : address(addr), ambientConfig(TEMPEN) {}
 
 		uint8_t init();
 
