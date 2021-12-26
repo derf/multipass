@@ -178,7 +178,7 @@ int main(void)
 	gpio.setup();
 	kout.setup();
 
-#if defined(DRIVER_I2C) || defined(CONFIG_driver_softi2c)
+#if defined(CONFIG_meta_driver_i2c)
 	if (i2c.setup() != 0) {
 		kout << "I2C setup FAILED" << endl;
 		return 1;
