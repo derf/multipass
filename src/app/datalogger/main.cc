@@ -36,6 +36,9 @@
 #ifdef CONFIG_driver_ds2482
 #include "driver/ds2482.h"
 #endif
+#ifdef CONFIG_driver_max44006
+#include "driver/max44006.h"
+#endif
 #ifdef CONFIG_driver_max44009
 #include "driver/max44009.h"
 #endif
@@ -149,8 +152,31 @@ void loop(void)
 #endif
 
 #ifdef CONFIG_driver_max44009
+	kout << "MAX44006 Temperature: " << max44006.getTemperature() << " counts" << endl;
+	float r, g, b, c, ir;
+	if (max44006.getLight(&r, &g, &b, &c, &ir)) {
+		kout << "MAX44006   Red: ";
+		kout.printf_float(r);
+		kout << " µW/cm²" << endl;
+		kout << "MAX44006 Green: ";
+		kout.printf_float(g);
+		kout << " µW/cm²" << endl;
+		kout << "MAX44006  Blue: ";
+		kout.printf_float(b);
+		kout << " µW/cm²" << endl;
+		kout << "MAX44006 Clear: ";
+		kout.printf_float(c);
+		kout << " µW/cm²" << endl;
+		kout << "MAX44006    IR: ";
+		kout.printf_float(ir);
+		kout << " µW/cm²" << endl;
+	}
+#endif
+
+#ifdef CONFIG_driver_max44009
+	kout << "MAX44009 Brightness: ";
 	kout.printf_float(max44009.getLux());
-	kout << endl;
+	kout << " lx" << endl;
 #endif
 
 #ifdef CONFIG_driver_tsl2591
@@ -250,6 +276,13 @@ int main(void)
 	hdc1080.init();
 	if (hdc1080.getManufacturerID() != 0x5449) {
 		kout << "[!] invalid HDC1080 manufacturer ID: " << hex << hdc1080.getManufacturerID() << endl;
+	}
+#endif
+
+#ifdef CONFIG_driver_max44006
+	unsigned char ret;
+	if ((ret = max44006.init()) != 0) {
+		kout << "MAX44006 Initialization failed: " << ret << endl;
 	}
 #endif
 
