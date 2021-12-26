@@ -2,6 +2,9 @@
  * Copyright 2020 Daniel Friesel
  *
  * SPDX-License-Identifier: BSD-2-Clause
+ *
+ * Driver for MAX44009 Ambient Light Sensor.
+ * Does not support interrupts.
  */
 #ifndef MAX44009_H
 #define MAX44009_H

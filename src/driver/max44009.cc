@@ -2,6 +2,9 @@
  * Copyright 2020 Daniel Friesel
  *
  * SPDX-License-Identifier: BSD-2-Clause
+ *
+ * Driver for MAX44009 Ambient Light Sensor.
+ * Does not support interrupts.
  */
 #include "driver/max44009.h"
 #if defined(MULTIPASS_ARCH_HAS_I2C) && !defined(CONFIG_driver_softi2c)
@@ -36,6 +39,11 @@ float MAX44009::getLux()
 	* The highest 4 bit of luxHigh are the 4 bit exponent
 	*/
 	exponent = (luxHigh & 0xF0) >> 4;
+
+	if (exponent == 0x0f) {
+		// overrange condition
+		return -1;
+	}
 
 	/*
 	* Cast base and mantissa to float to avoid calculation errors
