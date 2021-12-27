@@ -95,6 +95,10 @@ config driver_scd4x
 bool "Sensirion SCD4x CO2 Sensor"
 depends on meta_driver_i2c
 
+config driver_veml6075
+bool "VEML6075 UV Sensor"
+depends on meta_driver_i2c
+
 config driver_sharp96
 bool "sharp LS013B4DN 96x96px Transflective LC Display"
 depends on ( arch_msp430fr5969lp || arch_msp430fr5994lp ) && meta_driver_spi

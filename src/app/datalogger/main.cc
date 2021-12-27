@@ -54,6 +54,9 @@
 #ifdef CONFIG_driver_scd4x
 #include "driver/scd4x.h"
 #endif
+#ifdef CONFIG_driver_veml6075
+#include "driver/veml6075.h"
+#endif
 
 void loop(void)
 {
@@ -195,6 +198,17 @@ void loop(void)
 	kout.printf_float((100.0 * scd4x.rawHumidity) / 65536);
 	kout << " %" << endl;
 #endif
+
+#ifdef CONFIG_driver_veml6075
+	float uva, uvb;
+	if (veml6075.readUV(&uva, &uvb)) {
+		kout << "VEML6075 UVA: " << uva << " µW / cm²" << endl;
+		kout << "VEML6075 UVB: " << uvb << " µW / cm²" << endl;
+	}
+	if (veml6075.readUVI(&uva, &uvb)) {
+		kout << "VEML6075 UV Index: " << (uva + uvb)/2 << endl;
+	}
+#endif
 }
 
 int main(void)
@@ -297,6 +311,10 @@ int main(void)
 
 #ifdef CONFIG_driver_scd4x
 	scd4x.start();
+#endif
+
+#ifdef CONFIG_driver_veml6075
+	veml6075.init();
 #endif
 
 	arch.idle_loop();
