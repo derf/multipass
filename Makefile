@@ -108,6 +108,10 @@ ifdef CONFIG_driver_scd4x
 	CXX_TARGETS += src/driver/scd4x.cc
 endif
 
+ifdef CONFIG_driver_veml6075
+	CXX_TARGETS += src/driver/veml6075.cc
+endif
+
 ifdef CONFIG_driver_nrf24l01
 	CXX_TARGETS += src/driver/nrf24l01.cc
 	ifeq (${arch_dir}, msp430fr5994lp)
