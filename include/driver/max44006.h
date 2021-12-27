@@ -63,9 +63,7 @@ class MAX44006 {
 		unsigned char txbuf[2];
 		unsigned char rxbuf[10];
 
-		AmbientConfig ambientConfig;
-
-		uint16_t clear, red, green, blue, ir;
+		unsigned char ambientConfig;
 
 	public:
 

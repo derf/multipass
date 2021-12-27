@@ -59,6 +59,14 @@ uint16_t MAX44006::getTemperature()
 		return 0;
 	}
 
+	/*
+	 * 13543 counts @ ~21c
+	 * 13660 counts @ ~30c
+	 * 14280 counts @ ~48c
+	 * -> approx 27 counts / degc
+	 * -> approx 12970 counts @ 0c
+	 */
+
 	// independent of AMBPGA setting, depends on AMBTIM
 	return (((uint16_t)rxbuf[0] << 8) + rxbuf[1]);
 }
