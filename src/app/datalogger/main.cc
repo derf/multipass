@@ -154,7 +154,7 @@ void loop(void)
 	kout << "Magnet Z " << mz << endl;
 #endif
 
-#ifdef CONFIG_driver_max44009
+#ifdef CONFIG_driver_max44006
 	kout << "MAX44006 Temperature: " << max44006.getTemperature() << " counts" << endl;
 	float r, g, b, c, ir;
 	if (max44006.getLight(&r, &g, &b, &c, &ir)) {
