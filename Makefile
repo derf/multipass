@@ -17,6 +17,7 @@ endif
 quote="
 app_dir = $(subst ${quote},,${CONFIG_app})
 arch_dir = $(subst ${quote},,${CONFIG_arch})
+bsec_dir = $(subst ${quote},,${CONFIG_driver_bme680_bsec_path})
 
 INCLUDES = -Iinclude -Iinclude/arch/${arch_dir}
 CFLAGS = -std=c99
@@ -27,6 +28,7 @@ QUIET = @
 ASM_TARGETS =
 C_TARGETS =
 CXX_TARGETS = src/app/${app_dir}/main.cc src/object/cpp_helpers.cc src/object/outputstream.cc
+SO_TARGETS =
 
 ifdef verbose
 	QUIET =
@@ -62,6 +64,10 @@ endif
 
 ifdef CONFIG_driver_bme680
 	CXX_TARGETS += src/driver/bme680.cc src/driver/bme680_util.cc
+endif
+
+ifdef CONFIG_driver_bme680_bsec
+	SO_TARGETS += include/arch/${arch_dir}/driver/${bsec_dir}/libalgobsec.a
 endif
 
 ifdef CONFIG_driver_ccs811

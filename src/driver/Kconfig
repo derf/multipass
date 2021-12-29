@@ -35,6 +35,16 @@ config driver_bme680
 bool "BME680 TPH+IAQ Sensor"
 depends on meta_driver_i2c && !driver_bme280
 
+config driver_bme680_bsec
+bool "with BSEC (proprietary library for IAQ calculation)"
+depends on driver_bme680
+
+config driver_bme680_bsec_path
+string "BSEC library path"
+default "bme680-bsec" if arch_msp430fr5994lp
+default "bme680-bsec-armv6" if arch_posix
+depends on driver_bme680_bsec && (arch_msp430fr5994lp || arch_posix)
+
 config driver_ccs811
 bool "CCS811 VOC Sensor"
 depends on meta_driver_i2c

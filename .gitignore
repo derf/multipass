@@ -18,3 +18,4 @@
 /src/app/prototest/prototest_local.cc.inc
 src/driver/dummy.cc
 include/driver/dummy.h
+include/arch/*/driver/bme680-*/*
