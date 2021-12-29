@@ -182,6 +182,12 @@ void OutputStream::printf_float(float num)
 		put('-');
 		num *= -1;
 	}
+	if (num > 100000) {
+		put('0' + (((unsigned int)num % 1000000) / 100000));
+	}
+	if (num > 10000) {
+		put('0' + (((unsigned int)num % 100000) / 10000));
+	}
 	if (num > 1000) {
 		put('0' + (((unsigned int)num % 10000) / 1000));
 	}
