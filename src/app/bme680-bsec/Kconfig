@@ -1,0 +1,6 @@
+# Copyright 2020 Daniel Friesel
+#
+# SPDX-License-Identifier: CC0-1.0
+
+prompt "BME680 BSEC logger"
+depends on driver_bme680_bsec && meta_driver_uptime && loop && !wakeup
