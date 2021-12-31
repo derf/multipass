@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Daniel Friesel
+ * Copyright 2021 Daniel Friesel
  *
  * SPDX-License-Identifier: BSD-2-Clause
  */
@@ -12,6 +12,7 @@
 #define F_I2C 100000UL
 #endif
 
+// TODO timeouts (e.g. stuck bus or missing pull-ups)
 inline void await_twint(unsigned char twcr_values)
 {
 	TWCR = twcr_values | _BV(TWINT) | _BV(TWIE);
@@ -21,7 +22,7 @@ inline void await_twint(unsigned char twcr_values)
 }
 
 /*
- * Send an I2C (re)start condition and the EEPROM address in read mode. Returns
+ * Send an I2C (re)start condition and the device address in read mode. Returns
  * after it has been transmitted successfully.
  */
 static signed char i2c_start_read(unsigned char addr)
@@ -30,7 +31,7 @@ static signed char i2c_start_read(unsigned char addr)
 	if (!(TWSR & 0x18)) // 0x08 == START ok, 0x10 == RESTART ok
 		return -1;
 
-	// Note: The R byte ("... | 1") causes the TWI momodule to switch to
+	// Note: The R byte ("... | 1") causes the TWI module to switch to
 	// Master Receive mode
 	TWDR = (addr << 1) | 1;
 	await_twint(_BV(TWEN));
@@ -41,7 +42,7 @@ static signed char i2c_start_read(unsigned char addr)
 }
 
 /*
- * Send an I2C (re)start condition and the EEPROM address in write mode.
+ * Send an I2C (re)start condition and the device address in write mode.
  * Returns after it has been transmitted successfully.
  */
 static signed char i2c_start_write(unsigned char addr)
@@ -68,7 +69,7 @@ static signed char i2c_stop()
 }
 
 /*
- * Sends len bytes to the EEPROM. Note that this method does NOT
+ * Sends len bytes to the device. Note that this method does NOT
  * send I2C start or stop conditions.
  */
 static signed char i2c_send(uint8_t len, uint8_t *data)
@@ -86,7 +87,7 @@ static signed char i2c_send(uint8_t len, uint8_t *data)
 }
 
 /*
- * Receives len bytes from the EEPROM into data. Note that this method does
+ * Receives len bytes from the device into data. Note that this method does
  * NOT send I2C start or stop conditions.
  */
 static signed char i2c_receive(uint8_t len, uint8_t *data)
@@ -97,7 +98,7 @@ static signed char i2c_receive(uint8_t len, uint8_t *data)
 		await_twint(_BV(TWEN) | ( _BV(TWEA) * (pos < len-1) ) );
 		data[pos] = TWDR;
 		/*
-		 * No error handling here -- We send the acks, the EEPROM only
+		 * No error handling here -- We send the acks, the device only
 		 * supplies raw data, so there's no way of knowing whether it's still
 		 * talking to us or we're just reading garbage.
 		 */
