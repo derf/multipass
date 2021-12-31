@@ -1,0 +1,8 @@
+# Copyright 2021 Daniel Friesel
+#
+# SPDX-License-Identifier: CC0-1.0
+
+config arch_atmega2560_driver_i2c
+bool "I2C"
+select meta_driver_hardware_i2c
+select meta_driver_i2c
