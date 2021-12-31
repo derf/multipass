@@ -9,7 +9,6 @@ SERIAL_PORT ?= /dev/ttyUSB0
 
 COMMON_FLAGS += -mmcu=${MCU} -DF_CPU=8000000UL -DMULTIPASS_ARCH_blinkenrocket
 COMMON_FLAGS += -flto
-COMMON_FLAGS += -DMULTIPASS_ARCH_HAS_I2C
 
 CC = avr-gcc
 CXX = avr-g++

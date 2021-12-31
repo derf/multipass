@@ -6,9 +6,9 @@
  * Driver for LM75B Digital Temperature Sensor and Thermal Watchdog.
  */
 #include "driver/lm75.h"
-#if defined(MULTIPASS_ARCH_HAS_I2C) && !defined(CONFIG_driver_softi2c)
+#if defined(CONFIG_meta_driver_hardware_i2c)
 #include "driver/i2c.h"
-#else
+#elif defined(CONFIG_driver_softi2c)
 #include "driver/soft_i2c.h"
 #endif
 

@@ -17,7 +17,6 @@ MSP430_FLASHER_DIR ?= /opt/msp430/MSP430Flasher_1.3.20
 
 INCLUDES += -I/opt/msp430/ti/msp430-gcc-full-linux-5.1.2.0/include
 COMMON_FLAGS += -mcpu=${CPU} -mmcu=${MCU} -DMULTIPASS_ARCH_msp430fr5969lp
-COMMON_FLAGS += -DMULTIPASS_ARCH_HAS_I2C
 
 # LTO seems to be broken.
 

@@ -17,7 +17,6 @@ MSP430_FLASHER_DIR ?= /opt/msp430/MSP430Flasher_1.3.20
 
 INCLUDES += -I/opt/msp430/ti/msp430-gcc-full-linux-5.1.2.0/include
 COMMON_FLAGS += -mcpu=${CPU} -mmcu=${MCU} -DMULTIPASS_ARCH_msp430fr5994lp
-COMMON_FLAGS += -DMULTIPASS_ARCH_HAS_I2C
 
 ifdef CONFIG_arch_msp430fr5994lp_large_mode
 	override msp430_large = 1

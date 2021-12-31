@@ -16,7 +16,6 @@ cpu_freq ?= 8000000
 COMMON_FLAGS += -Werror=overflow
 COMMON_FLAGS += -mmcu=${MCU} -DMULTIPASS_ARCH_lora32u4ii
 COMMON_FLAGS += -DF_CPU=${cpu_freq}UL
-COMMON_FLAGS += -DMULTIPASS_ARCH_HAS_I2C
 
 ifeq (${stack_usage}, )
 	COMMON_FLAGS += -flto
