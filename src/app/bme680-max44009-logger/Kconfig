@@ -1,0 +1,6 @@
+# Copyright 2020 Daniel Friesel
+#
+# SPDX-License-Identifier: CC0-1.0
+
+prompt "BME680 + MAX44009 data logger"
+depends on loop && !wakeup && meta_driver_i2c && driver_max44009 && driver_bme680
