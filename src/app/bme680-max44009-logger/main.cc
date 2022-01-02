@@ -139,9 +139,9 @@ int main(void)
 	ADCSRA = _BV(ADEN) | _BV(ADATE) | _BV(ADPS2) | _BV(ADPS1);
 #endif
 
-	if (i2c.setup() != 0) {
+	while (i2c.setup() != 0) {
 		kout << "# I2C setup failed" << endl;
-		return 1;
+		arch.delay_ms(100);
 	}
 
 	kout << "# I2C setup OK" << endl;
