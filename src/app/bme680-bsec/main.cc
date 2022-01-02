@@ -3,6 +3,15 @@
  *
  * SPDX-License-Identifier: BSD-2-Clause
  */
+
+#include "config.h"
+#ifdef CONFIG_driver_bme680_bsec_save_state
+#define STRINGIFY(x) #x
+#define TOSTRING(x) STRINGIFY(x)
+#define BSEC_STATE_PATH TOSTRING(CONFIG_driver_bme680_bsec_state_path)
+#include <stdio.h>
+#endif
+
 #include "arch.h"
 #include "driver/gpio.h"
 #include "driver/stdout.h"
@@ -20,9 +29,17 @@
 
 const char* accuracy[] = {"(unreliable)", "(calibration required)", "(auto-trim in progress)", ""};
 
+#ifdef CONFIG_driver_bme680_bsec_save_state
+// For (de)serialization of library state across application restarts
+uint8_t serialized_state[BSEC_MAX_STATE_BLOB_SIZE];
+uint8_t work_buffer[BSEC_MAX_STATE_BLOB_SIZE];
+#endif
+
 void loop(void)
 {
 	static bsec_bme_settings_t sensor_settings;
+
+	static uint16_t iteration = 0;
 
 	struct bme680_field_data data;
 	bsec_input_t bsec_inputs[BSEC_MAX_PHYSICAL_SENSOR];
@@ -177,6 +194,32 @@ void loop(void)
 			kout << endl;
 		}
 	}
+
+#ifdef CONFIG_driver_bme680_bsec_save_state
+	if (++iteration == 600) {
+		uint32_t  serialized_state_size;
+		status = bsec_get_state(0, serialized_state, BSEC_MAX_STATE_BLOB_SIZE, work_buffer, BSEC_MAX_STATE_BLOB_SIZE, &serialized_state_size);
+		if (status < 0) {
+			kout << "bsec_get_state error: " << status << endl;
+			return;
+		}
+		if (status > 0) {
+			kout << "bsec_get_state warning: " << status << endl;
+		}
+		FILE *f = fopen(BSEC_STATE_PATH, "w");
+		if (f == NULL) {
+			perror("fopen");
+			return;
+		}
+		if (fwrite(serialized_state, sizeof(uint8_t), serialized_state_size, f) < serialized_state_size) {
+			perror("fwrite");
+		}
+		if (fclose(f) == EOF) {
+			perror("fclose");
+		}
+		iteration = 0;
+	}
+#endif
 }
 
 int main(void)
@@ -214,6 +257,28 @@ int main(void)
 		arch.delay_ms(1000);
 	}
 	kout << "BSEC init OK" << endl;
+
+#ifdef CONFIG_driver_bme680_bsec_save_state
+	FILE *f = fopen(BSEC_STATE_PATH, "r");
+	if (f != NULL) {
+		size_t serialized_state_size = fread(serialized_state, BSEC_MAX_STATE_BLOB_SIZE, sizeof(uint8_t), f);
+		if (serialized_state_size > 0) {
+			bsec_status = bsec_set_state(serialized_state, BSEC_MAX_STATE_BLOB_SIZE, work_buffer, BSEC_MAX_STATE_BLOB_SIZE);
+			if (bsec_status < 0) {
+				kout << "bsec_set_state error: " << bsec_status << endl;
+			}
+			if (bsec_status > 0) {
+				kout << "bsec_set_state warning: " << bsec_status << endl;
+			}
+		}
+		if (fclose(f) == EOF) {
+			perror("fclose");
+		}
+	} else {
+		// file doesn't exist. that's harmless.
+		perror("fopen");
+	}
+#endif
 
 	/*
 	 * Output configuration. The BME680 BSEC library supports several virtual
