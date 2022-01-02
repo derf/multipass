@@ -3,4 +3,4 @@
 # SPDX-License-Identifier: CC0-1.0
 
 prompt "Deflate Test"
-depends on !loop && !wakeup
+depends on meta_driver_counter && lib_inflate && !loop && !wakeup
