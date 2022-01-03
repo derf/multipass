@@ -35,6 +35,15 @@ config arch_arduino_nano_driver_timer
 bool "Timer with Interrupts"
 select meta_driver_timer
 
+config arch_arduino_nano_driver_dmx
+bool "DMX"
+select meta_driver_dmx
+
+config arch_arduino_nano_driver_dmx_pin
+string "DMX Pin"
+default "pb5"
+depends on arch_arduino_nano_driver_dmx
+
 choice arch_arduino_nano_cpu
 bool "CPU Type"
 

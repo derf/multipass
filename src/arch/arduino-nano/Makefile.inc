@@ -88,6 +88,10 @@ ifdef CONFIG_arch_arduino_nano_driver_adc
 	CXX_TARGETS += src/arch/arduino-nano/driver/adc.cc
 endif
 
+ifdef CONFIG_arch_arduino_nano_driver_dmx
+	CXX_TARGETS += src/arch/arduino-nano/driver/dmx.cc
+endif
+
 ifdef CONFIG_arch_arduino_nano_driver_spi
 	CXX_TARGETS += src/arch/arduino-nano/driver/spi.cc
 endif
