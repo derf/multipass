@@ -3,4 +3,4 @@
 # SPDX-License-Identifier: CC0-1.0
 
 prompt "dmap WS2812b"
-depends on arch_arduino_nano && meta_driver_neopixel && meta_driver_stdin
+depends on arch_arduino_nano && meta_driver_neopixel

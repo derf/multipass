@@ -5,7 +5,6 @@
  */
 #include "arch.h"
 #include "driver/neopixel.h"
-#include "driver/stdin.h"
 #include "driver/stdout.h"
 #include <util/delay.h>
 #include <avr/io.h>
@@ -70,7 +69,6 @@ int main(void)
 	arch.setup();
 	gpio.setup();
 	kout.setup();
-	kin.setup();
 
 	np.setup();
 
