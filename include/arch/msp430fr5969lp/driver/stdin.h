@@ -9,8 +9,10 @@
 class StandardInput {
 	private:
 		StandardInput(const StandardInput &copy);
-		char buffer[8];
-		unsigned char write_pos, read_pos;
+		static unsigned char const bufsize = 16;
+		char buffer[bufsize];
+		volatile unsigned char write_pos;
+		unsigned char read_pos;
 
 	public:
 		StandardInput() : write_pos(0), read_pos(0) {}
@@ -20,7 +22,7 @@ class StandardInput {
 
 		inline void addKey(char key) {
 			buffer[write_pos++] = key;
-			write_pos %= 8;
+			write_pos %= bufsize;
 		}
 };
 

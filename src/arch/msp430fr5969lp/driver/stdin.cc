@@ -22,7 +22,7 @@ bool StandardInput::hasKey()
 char StandardInput::getKey()
 {
 	char ret = buffer[read_pos++];
-	read_pos %= 8;
+	read_pos %= bufsize;
 	return ret;
 }
 
