@@ -90,6 +90,10 @@ ifdef CONFIG_arch_msp430fr5994lp_driver_adc
 	CXX_TARGETS += src/arch/msp430fr5994lp/driver/adc.cc
 endif
 
+ifdef CONFIG_arch_msp430fr5994lp_driver_dmx
+	CXX_TARGETS += src/arch/msp430fr5994lp/driver/dmx.cc
+endif
+
 ifdef CONFIG_arch_msp430fr5994lp_driver_stdin
 	CXX_TARGETS += src/arch/msp430fr5994lp/driver/stdin.cc
 endif

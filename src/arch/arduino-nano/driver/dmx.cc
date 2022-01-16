@@ -23,7 +23,7 @@ void DMX::setup()
 #endif
 
 	UCSR0B |= _BV(TXEN0);
-	UCSR0C = _BV(USBS0) | _BV(UCSZ01) | _BV(UCSZ00); // 8 bits
+	UCSR0C = _BV(USBS0) | _BV(UCSZ01) | _BV(UCSZ00); // MSB first, 8 data bits, 2 stop bits, no parity
 }
 
 void DMX::write()
@@ -31,9 +31,9 @@ void DMX::write()
 	// Disable UART for reset and mark signals
 	UCSR0B &= ~_BV(TXEN0);
 	gpio.output(GPIO::pd1, 0);
-	arch.delay_us(88); // break
+	arch.delay_us(88); // break / reset
 	gpio.output(GPIO::pd1, 1);
-	arch.delay_us(8);
+	arch.delay_us(8); // mark
 	UCSR0B |= _BV(TXEN0); // causes line to go high
 	for (uint8_t i = 0; i < 16; i++) {
 		while (!(UCSR0A & _BV(UDRE0)));

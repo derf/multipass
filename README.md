@@ -46,6 +46,7 @@ Peripheral communication:
 * I²C (master only, interrupt-driven)
 * SPI (master only, polling)
 * UART (output polling, input interrupt-driven)
+* DMX (polling, via UART, overrides regular serial output)
 * NeoPixel/WS2812B (Adafruit driver)
 
 Hardware features:
@@ -56,9 +57,10 @@ Hardware features:
 
 Peripheral communication:
 
-* I²C on eUSCI\_B0 (master only, interrupt-driven)
-* SPI on eUSCI\_B0 (master only, polling)
-* UART on eUSCI\_A1 (output polling, input interrupt-driven)
+* I²C on eUSCI\_B0 (FR5969) / eUSCI\_B1 (FR5994) (master only, interrupt-driven)
+* SPI on eUSCI\_B0 (FR5969) / eUSCI\_B1 (FR5994) (master only, polling)
+* UART on eUSCI\_A0 (FR5969) / eUSCI\_A1 (FR5994) (output polling, input interrupt-driven)
+* DMX on eUSCI\_A1 (FR5969) / eUSCI\_A3 (FR5994) (polling)
 
 Hardware features:
 
