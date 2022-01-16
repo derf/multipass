@@ -6,4 +6,5 @@
 
 ifdef app
 	loop = 1
+	override arch_drivers += ,adc
 endif
