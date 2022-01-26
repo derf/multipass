@@ -168,6 +168,20 @@ class GPIO {
 				DDRC |= _BV(pin - 16);
 			} else if (pin < 32) {
 				DDRD |= _BV(pin - 24);
+			} else if (pin < 40) {
+				DDRE |= _BV(pin - 32);
+			} else if (pin < 48) {
+				DDRF |= _BV(pin - 40);
+			} else if (pin < 56) {
+				DDRG |= _BV(pin - 48);
+			} else if (pin < 64) {
+				DDRH |= _BV(pin - 56);
+			} else if (pin < 72) {
+				DDRJ |= _BV(pin - 64);
+			} else if (pin < 80) {
+				DDRK |= _BV(pin - 72);
+			} else if (pin < 88) {
+				DDRL |= _BV(pin - 80);
 			}
 		}
 		inline void output(unsigned char const pin, unsigned char const value) {
@@ -183,6 +197,27 @@ class GPIO {
 			} else if (pin < 32) {
 				PORTD = value ? (PORTD | _BV(pin - 24)) : (PORTD & ~_BV(pin - 24));
 				DDRD |= _BV(pin - 24);
+			} else if (pin < 40) {
+				PORTE = value ? (PORTE | _BV(pin - 32)) : (PORTE & ~_BV(pin - 32));
+				DDRE |= _BV(pin - 32);
+			} else if (pin < 48) {
+				PORTF = value ? (PORTF | _BV(pin - 40)) : (PORTF & ~_BV(pin - 40));
+				DDRF |= _BV(pin - 40);
+			} else if (pin < 56) {
+				PORTG = value ? (PORTG | _BV(pin - 48)) : (PORTG & ~_BV(pin - 48));
+				DDRG |= _BV(pin - 48);
+			} else if (pin < 64) {
+				PORTH = value ? (PORTH | _BV(pin - 56)) : (PORTH & ~_BV(pin - 56));
+				DDRH |= _BV(pin - 56);
+			} else if (pin < 72) {
+				PORTJ = value ? (PORTJ | _BV(pin - 64)) : (PORTJ & ~_BV(pin - 64));
+				DDRJ |= _BV(pin - 64);
+			} else if (pin < 80) {
+				PORTK = value ? (PORTK | _BV(pin - 72)) : (PORTK & ~_BV(pin - 72));
+				DDRK |= _BV(pin - 72);
+			} else if (pin < 88) {
+				PORTL = value ? (PORTL | _BV(pin - 80)) : (PORTL & ~_BV(pin - 80));
+				DDRL |= _BV(pin - 80);
 			}
 		}
 		inline unsigned char read(unsigned char const pin) {
