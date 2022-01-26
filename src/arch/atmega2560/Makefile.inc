@@ -83,6 +83,10 @@ ifdef CONFIG_arch_atmega2560_driver_adc
 	CXX_TARGETS += src/arch/atmega2560/driver/adc.cc
 endif
 
+ifdef CONFIG_arch_atmega2560_driver_dmx
+	CXX_TARGETS += src/arch/atmega2560/driver/dmx.cc
+endif
+
 ifdef CONFIG_arch_atmega2560_driver_spi
 	CXX_TARGETS += src/arch/atmega2560/driver/spi.cc
 endif
