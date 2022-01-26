@@ -1,0 +1,21 @@
+/*
+ * Copyright 2022 Daniel Friesel
+ *
+ * SPDX-License-Identifier: BSD-2-Clause
+ */
+
+class DMX {
+	private:
+		DMX(const DMX &copy);
+
+	public:
+		static unsigned char const num_frames = 32;
+		unsigned char frames[num_frames];
+
+		DMX() {}
+
+		void setup();
+		void write();
+};
+
+extern DMX dmx;
