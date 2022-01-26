@@ -17,13 +17,18 @@ class Timer {
 	public:
 		Timer() {}
 
-		inline void setup_khz(uint16_t const frequency) {
-			OCR0A = frequency ? 255 / frequency : 1;
+		inline void setup_khz(uint16_t const frequency) { // 16 MHz / 64 == 250 kHz base
+			OCR0A = frequency ? 250 / frequency : 1;
 			TCCR0A = _BV(WGM01);
 			prescaler = _BV(CS01) | _BV(CS00);
 		}
-		inline void setup_hz(uint16_t const frequency) {
-			OCR0A = frequency ? 255 / frequency : 1;
+		// lowest supported frequency: 62 Hz
+		inline void setup_hz(uint16_t const frequency) { // 16 MHz / 1024 == 15.625 kHz base
+			if (15625 / frequency > 255) {
+				OCR0A = 255;
+			} else {
+				OCR0A = 15625 / frequency;
+			}
 			TCCR0A = _BV(WGM01);
 			prescaler = _BV(CS02) | _BV(CS00);
 		}
