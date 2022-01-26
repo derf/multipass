@@ -19,8 +19,8 @@ class StandardInput {
 		char getKey();
 
 		inline void addKey(char key) {
-			buffer[write_pos++] = key;
-			write_pos %= 8;
+			buffer[write_pos] = key;
+			write_pos = (write_pos + 1) % 8;
 		}
 };
 
