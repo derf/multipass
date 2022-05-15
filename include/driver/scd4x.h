@@ -25,7 +25,7 @@ class SCD4x {
 
 		void startLowPower();
 
-		void read();
+		bool read();
 };
 
 extern SCD4x scd4x;

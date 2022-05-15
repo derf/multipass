@@ -189,14 +189,17 @@ void loop(void)
 #endif
 
 #ifdef CONFIG_driver_scd4x
-	scd4x.read();
-	kout << dec << "CO₂: " << scd4x.co2 << " ppm" << endl;
-	kout << "Temperature: ";
-	kout.printf_float(((175.0 * scd4x.rawTemperature) / 65536) - 45);
-	kout << " °c" << endl;
-	kout << "Humidity: ";
-	kout.printf_float((100.0 * scd4x.rawHumidity) / 65536);
-	kout << " %" << endl;
+	if (scd4x.read()) {
+		kout << dec << "CO₂: " << scd4x.co2 << " ppm" << endl;
+		kout << "Temperature: ";
+		kout.printf_float(((175.0 * scd4x.rawTemperature) / 65536) - 45);
+		kout << " °c" << endl;
+		kout << "Humidity: ";
+		kout.printf_float((100.0 * scd4x.rawHumidity) / 65536);
+		kout << " %" << endl;
+	} else {
+		kout << "SCD4x error" << endl;
+	}
 #endif
 
 #ifdef CONFIG_driver_veml6075
@@ -301,7 +304,9 @@ int main(void)
 #endif
 
 #ifdef CONFIG_driver_mpu9250
+	kout << "MPU9250 init" << endl;
 	mpu9250.init();
+	kout << "MPU9250 nineAxis" << endl;
 	mpu9250.nineAxis();
 #endif
 
