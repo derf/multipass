@@ -37,7 +37,7 @@ void SCD4x::read()
 	txbuf[0] = 0xec;
 	txbuf[1] = 0x05;
 
-	if (i2c.xmit(address, 1, txbuf, 9, rxbuf) == 0) {
+	if (i2c.xmit(address, 2, txbuf, 9, rxbuf) == 0) {
 		co2 = (rxbuf[0] << 8) + rxbuf[1];
 		rawTemperature = ((rxbuf[3] << 8) + rxbuf[4]);
 		rawHumidity = (rxbuf[6] << 8) + rxbuf[7];
