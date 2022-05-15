@@ -54,6 +54,9 @@
 #ifdef CONFIG_driver_scd4x
 #include "driver/scd4x.h"
 #endif
+#ifdef CONFIG_driver_sen5x
+#include "driver/sen5x.h"
+#endif
 #ifdef CONFIG_driver_veml6075
 #include "driver/veml6075.h"
 #endif
@@ -202,6 +205,38 @@ void loop(void)
 	}
 #endif
 
+#ifdef CONFIG_driver_sen5x
+	if (sen5x.read()) {
+		kout << dec;
+		if (sen5x.pm1 != sen5x.PM_INVALID) {
+			kout << "PM1.0: " << (sen5x.pm1 / 10) << "." << (sen5x.pm1 % 10) << " µg/m³" << endl;
+		}
+		if (sen5x.pm2_5 != sen5x.PM_INVALID) {
+			kout << "PM2.5: " << (sen5x.pm2_5 / 10) << "." << (sen5x.pm2_5 % 10) << " µg/m³" << endl;
+		}
+		if (sen5x.pm4 != sen5x.PM_INVALID) {
+			kout << "PM4.0: " << (sen5x.pm4 / 10) << "." << (sen5x.pm4 % 10) << " µg/m³" << endl;
+		}
+		if (sen5x.pm10 != sen5x.PM_INVALID) {
+			kout << "PM10 : " << (sen5x.pm10 / 10) << "." << (sen5x.pm10 % 10) << " µg/m³" << endl;
+		}
+		if (sen5x.humidity != sen5x.HUMIDITY_INVALID) {
+			kout << "Humidity: " << (sen5x.humidity / 100) << "." << ((sen5x.humidity % 100) / 10) << " %" << endl;
+		}
+		if (sen5x.temperature != sen5x.TEMPERATURE_INVALID) {
+			kout << "Temperature: " << (sen5x.temperature / 200) << "." << ((sen5x.temperature % 200) / 20) << " °c" << endl;
+		}
+		if (sen5x.voc != sen5x.VOC_INVALID) {
+			kout << "VOC index: " << (sen5x.voc / 10) << "." << (sen5x.voc % 10) << endl;
+		}
+		if (sen5x.nox != sen5x.NOX_INVALID) {
+			kout << "NOx index: " << (sen5x.nox / 10) << "." << (sen5x.nox % 10) << endl;
+		}
+	} else {
+		kout << "SEN5x error" << endl;
+	}
+#endif
+
 #ifdef CONFIG_driver_veml6075
 	float uva, uvb;
 	if (veml6075.readUV(&uva, &uvb)) {
@@ -316,6 +351,10 @@ int main(void)
 
 #ifdef CONFIG_driver_scd4x
 	scd4x.start();
+#endif
+
+#ifdef CONFIG_driver_sen5x
+	sen5x.start();
 #endif
 
 #ifdef CONFIG_driver_veml6075

@@ -119,6 +119,10 @@ config driver_scd4x
 bool "Sensirion SCD4x CO2 Sensor"
 depends on meta_driver_i2c
 
+config driver_sen5x
+bool "Sensirion SEN5x PM Sensor"
+depends on meta_driver_i2c
+
 config driver_veml6075
 bool "VEML6075 UV Sensor"
 depends on meta_driver_i2c
