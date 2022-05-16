@@ -11,22 +11,21 @@
 
 #include "tree.c.inc"
 
-void loop(void)
-{
-	counter.start();
-	counter.stop();
-	kout << "nop @ " << counter.value << "/" << counter.overflow << " cycles" << endl << endl;
-
-	run_benchmark();
-}
-
 int main(void)
 {
 	arch.setup();
 	gpio.setup();
 	kout.setup();
 
-	arch.idle_loop();
+	counter.start();
+	counter.stop();
+	kout << "nop @ " << counter.value << "/" << counter.overflow << " cycles" << endl << endl;
+
+	run_benchmark();
+
+	while (1) {
+		arch.idle();
+	}
 
 	return 0;
 }
