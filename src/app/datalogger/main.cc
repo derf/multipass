@@ -235,6 +235,26 @@ void loop(void)
 	} else {
 		kout << "SEN5x error" << endl;
 	}
+	if (sen5x.readStatus()) {
+		if (sen5x.fan_speed_warning) {
+			kout << "SEN5x warning: fan speed out of range" << endl;
+		}
+		if (sen5x.fan_cleaning_active) {
+			kout << "SEN5x info: fan cleaning active" << endl;
+		}
+		if (sen5x.gas_sensor_error) {
+			kout << "SEN5x error: gas sensor" << endl;
+		}
+		if (sen5x.rht_sensor_error) {
+			kout << "SEN5x error: RHT sensor" << endl;
+		}
+		if (sen5x.laser_failure) {
+			kout << "SEN5x error: laser current out of range" << endl;
+		}
+		if (sen5x.fan_failure) {
+			kout << "SEN5x error: fan failure" << endl;
+		}
+	}
 #endif
 
 #ifdef CONFIG_driver_veml6075

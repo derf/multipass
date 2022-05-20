@@ -22,6 +22,15 @@ class SEN5x {
 		signed short const VOC_INVALID = 0x7fff;
 		signed short const NOX_INVALID = 0x7fff;
 
+		struct {
+			unsigned int fan_speed_warning : 1;
+			unsigned int fan_cleaning_active : 1;
+			unsigned int gas_sensor_error : 1;
+			unsigned int rht_sensor_error : 1;
+			unsigned int laser_failure : 1;
+			unsigned int fan_failure : 1;
+		};
+
 		/*
 		 * PM1.0 value, scaled by 10.
 		 * PM1.0 [µg/m³] = pm10 / 10
@@ -73,7 +82,10 @@ class SEN5x {
 		void start();
 		void stop();
 
+		void cleanFan();
+
 		bool read();
+		bool readStatus();
 };
 
 extern SEN5x sen5x;

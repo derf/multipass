@@ -11,6 +11,13 @@
 #include "driver/soft_i2c.h"
 #endif
 
+void SEN5x::cleanFan()
+{
+	txbuf[0] = 0x56;
+	txbuf[1] = 0x07;
+	i2c.xmit(address, 2, txbuf, 0, rxbuf);
+}
+
 void SEN5x::start()
 {
 	txbuf[0] = 0x00;
@@ -45,6 +52,28 @@ bool SEN5x::read()
 	temperature = (rxbuf[15] << 8) + rxbuf[16];
 	voc = (rxbuf[18] << 8) + rxbuf[19];
 	nox = (rxbuf[21] << 8) + rxbuf[22];
+	return true;
+}
+
+bool SEN5x::readStatus()
+{
+	txbuf[0] = 0xd2;
+	txbuf[1] = 0x06;
+	if (i2c.xmit(address, 2, txbuf, 0, rxbuf)) {
+		return false;
+	}
+	arch.delay_ms(20);
+	if (i2c.xmit(address, 0, txbuf, 6, rxbuf)) {
+		return false;
+	}
+
+	fan_speed_warning = rxbuf[1] & 0x20;
+	fan_cleaning_active = rxbuf[1] & 0x08;
+	gas_sensor_error = rxbuf[4] & 0x80;
+	rht_sensor_error = rxbuf[4] & 0x40;
+	laser_failure = rxbuf[4] & 0x20;
+	fan_failure = rxbuf[4] & 0x10;
+
 	return true;
 }
 
