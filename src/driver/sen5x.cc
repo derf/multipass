@@ -44,6 +44,11 @@ bool SEN5x::read()
 	if (i2c.xmit(address, 0, txbuf, 24, rxbuf)) {
 		return false;
 	}
+
+	if (!crcValid(rxbuf, 24)) {
+		return false;
+	}
+
 	pm1 = (rxbuf[0] << 8) + rxbuf[1];
 	pm2_5 = (rxbuf[3] << 8) + rxbuf[4];
 	pm4 = (rxbuf[6] << 8) + rxbuf[7];
@@ -67,6 +72,10 @@ bool SEN5x::readStatus()
 		return false;
 	}
 
+	if (!crcValid(rxbuf, 6)) {
+		return false;
+	}
+
 	fan_speed_warning = rxbuf[1] & 0x20;
 	fan_cleaning_active = rxbuf[1] & 0x08;
 	gas_sensor_error = rxbuf[4] & 0x80;
@@ -74,6 +83,29 @@ bool SEN5x::readStatus()
 	laser_failure = rxbuf[4] & 0x20;
 	fan_failure = rxbuf[4] & 0x10;
 
+	return true;
+}
+
+unsigned char SEN5x::crcWord(unsigned char byte1, unsigned char byte2)
+{
+	unsigned char crc = 0xff ^ byte1;
+	for (unsigned char bit = 8; bit > 0; bit--) {
+		crc = (crc << 1) ^ (crc & 0x80 ? 0x31 : 0);
+	}
+	crc ^= byte2;
+	for (unsigned char bit = 8; bit > 0; bit--) {
+		crc = (crc << 1) ^ (crc & 0x80 ? 0x31 : 0);
+	}
+	return crc;
+}
+
+bool SEN5x::crcValid(unsigned char* data, unsigned char length)
+{
+	for (unsigned char i = 0; i < length; i += 3) {
+		if (crcWord(data[i], data[i+1]) != data[i+2]) {
+			return false;
+		}
+	}
 	return true;
 }
 

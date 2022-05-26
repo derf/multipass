@@ -13,6 +13,9 @@ class SEN5x {
 		unsigned char txbuf[2];
 		unsigned char rxbuf[24];
 
+		unsigned char crcWord(unsigned char byte1, unsigned char byte2);
+		bool crcValid(unsigned char* data, unsigned char length);
+
 	public:
 		SEN5x() {}
 
