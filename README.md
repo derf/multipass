@@ -93,5 +93,6 @@ See `make config` for an up-to-date list.
 * MPU9250 I²C Accelerometer, Gyroscope, and Magnetometer Sensor
 * Pervasive Aurora Mb V230/V231 4.2" iTC E-Paper Display via EPD Extension Board Gen 2
 * SCD40/SCD41 I²C CO₂ Sensor
+* SEN5x I²C particulate matter (PM1.0/PM2.5/PM4.0/PM10) and VOC sensor
 * SSD1306 I²C OLED Display Controller
 * VEML6075 I²C UVA/UVB Light Sensor
