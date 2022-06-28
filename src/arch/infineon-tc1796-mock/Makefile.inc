@@ -17,9 +17,9 @@ OBJCOPY = wine ${HOME}/.wine/drive_c/HighTec/toolchains/tricore/v4.9.3.0-infineo
 OBJDUMP = wine ${HOME}/.wine/drive_c/HighTec/toolchains/tricore/v4.9.3.0-infineon-1.0/bin/tricore-objdump.exe ${LICENSE}
 SIZE =    wine ${HOME}/.wine/drive_c/HighTec/toolchains/tricore/v4.9.3.0-infineon-1.0/bin/tricore-size.exe
 
-CXX_TARGETS += src/arch/infineon-tc1796-starter-kit/arch.cc
-CXX_TARGETS += src/arch/infineon-tc1796-starter-kit/driver/gpio.cc
-CXX_TARGETS += src/arch/infineon-tc1796-starter-kit/driver/stdout.cc
+CXX_TARGETS += src/arch/infineon-tc1796-mock/arch.cc
+CXX_TARGETS += src/arch/infineon-tc1796-mock/driver/gpio.cc
+CXX_TARGETS += src/arch/infineon-tc1796-mock/driver/stdout.cc
 
 ifneq (${cpu_freq}, )
 	COMMON_FLAGS += -DF_CPU=${cpu_freq}UL
@@ -28,11 +28,11 @@ else
 endif
 
 ifneq ($(findstring counter,${arch_drivers}), )
-	CONFIG_arch_infineon_tc1796_starter_kit_driver_counter = y
+	CONFIG_arch_infineon_tc1796_mock_driver_counter = y
 endif
 
-ifdef CONFIG_arch_infineon_tc1796_starter_kit_driver_counter
-	CXX_TARGETS += src/arch/infineon-tc1796-starter-kit/driver/counter.cc
+ifdef CONFIG_arch_infineon_tc1796_mock_driver_counter
+	CXX_TARGETS += src/arch/infineon-tc1796-mock/driver/counter.cc
 endif
 
 OBJECTS = ${CXX_TARGETS:.cc=.o} ${C_TARGETS:.c=.o} ${ASM_TARGETS:.S=.o}
