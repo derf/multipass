@@ -15,7 +15,7 @@ def main(size_executable, rom_sections, ram_sections):
     ram_sections = ram_sections.split(",")
 
     status = subprocess.run(
-        [size_executable, "-A", "build/system.elf"],
+        size_executable.split() + ["-A", "build/system.elf"],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
         universal_newlines=True,
