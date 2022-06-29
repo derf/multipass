@@ -141,13 +141,16 @@ endif
 
 COMMON_FLAGS += -DBAUD=${uart_baud}UL
 
-OBJECTS = ${CXX_TARGETS:.cc=.o} ${C_TARGETS:.c=.o}
+OBJECTS = ${SO_TARGETS:.a=.so} ${CXX_TARGETS:.cc=.o} ${C_TARGETS:.c=.o}
 
 %.o : %.cc | include/config.h
 	${QUIET}${CXX} ${INCLUDES} ${COMMON_FLAGS} ${CXXFLAGS} -c -o $@ ${@:.o=.cc}
 
 %.o : %.c | include/config.h
 	${QUIET}${CC} ${INCLUDES} ${COMMON_FLAGS} ${CFLAGS} -c -o $@ ${@:.o=.c}
+
+%.so : %.a | include/config.h
+	${QUIET}${CC} ${COMMON_FLAGS} -o $@ -Wl,--whole-archive ${@:.so=.a} -Wl,--no-whole-archive
 
 build/system.elf: ${OBJECTS}
 	${QUIET}mkdir -p build
