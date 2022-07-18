@@ -56,8 +56,13 @@ build/system.bin: build/system.elf
 	${QUIET}${OBJCOPY} -O binary $< $@
 
 program: build/system.bin
-	@echo "Not Implemented"
-	${QUIET}false
+	# Needs a Debian3.1 VM with ios:/ess/dortmund/proj/compiler/tricore-gcc-3.4.5 installed to /opt/trigcc345,
+	# http://archive.debian.org/debian-security/pool/updates/main/r/resmgr/libresmgr1_1.0-2sarge2_i386.deb http://archive.debian.org/debian-security/pool/updates/main/r/resmgr/resmgr_1.0-2sarge2_i386.deb installed,
+	# and SSH via localhost:2222. E.g.:
+	# > qemu-system-i386 -boot c -m 2048 -hda debian3-1.qcow2 -machine type=pc,accel=kvm:tcg --enable-kvm -net nic,model=ne2k_pci -net user,hostfwd=tcp::2022-:22 -smp cores=1,threads=2 -usb -device usb-host,vendorid=0x058b,productid=0x0028
+	# Must already be running in the background before 'make program' can be used.
+	${QUIET}scp -oKexAlgorithms=+diffie-hellman-group-exchange-sha1,diffie-hellman-group1-sha1 -oHostKeyAlgorithms=+ssh-rsa -P 2022 build/system.bin root@localhost:/tmp/system.bin
+	${QUIET}ssh -oKexAlgorithms=+diffie-hellman-group-exchange-sha1,diffie-hellman-group1-sha1 -oHostKeyAlgorithms=+ssh-rsa -p 2022 root@localhost "/opt/trigcc345/bin/tricore-jtag-usb-flash /opt/trigcc345/tricore/flash_driver/intern/tc1796/flashprg.elf /tmp/system.bin"
 
 arch_clean:
 	${QUIET}rm -f ${OBJECTS} build/system.elf
