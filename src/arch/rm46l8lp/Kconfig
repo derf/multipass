@@ -1,0 +1,10 @@
+# Copyright 2022 Daniel Friesel
+#
+# SPDX-License-Identifier: CC0-1.0
+config arch_rm46l8lp_driver_counter
+bool "Cycle Counter"
+select meta_driver_counter
+
+config arch_rm46l8lp_driver_uptime
+bool "Uptime Counter"
+select meta_driver_uptime
