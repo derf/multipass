@@ -18,12 +18,18 @@ class GPIO {
 		};
 
 		inline void setup() {
+			*((int*)0xf0000f10) = 0x80808080;
+			*((int*)0xf0000f14) = 0x80808080;
+			*((int*)0xf0000f00) = 0x000000ff;
 		}
 		inline void led_on(unsigned char id = 0) {
+			*((int*)0xf0000f00) &= ~(1 << id);
 		}
 		inline void led_off(unsigned char id = 0) {
+			*((int*)0xf0000f00) |= (1 << id);
 		}
 		inline void led_toggle(unsigned char id = 0) {
+			*((int*)0xf0000f00) ^= (1 << id);
 		}
 		inline void input(unsigned char const pin) {
 		}
