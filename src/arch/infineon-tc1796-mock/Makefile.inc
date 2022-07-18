@@ -13,7 +13,7 @@ ARCH_SHORTNAME = tc1796
 LICENSE = -mlicense-dir=${HOME}/var/source/aurix-infineon-hightec-tricore
 CC =      wine ${HOME}/.wine/drive_c/HighTec/toolchains/tricore/v4.9.3.0-infineon-1.0/bin/tricore-gcc.exe ${LICENSE}
 CXX =     wine ${HOME}/.wine/drive_c/HighTec/toolchains/tricore/v4.9.3.0-infineon-1.0/bin/tricore-g++.exe ${LICENSE}
-OBJCOPY = wine ${HOME}/.wine/drive_c/HighTec/toolchains/tricore/v4.9.3.0-infineon-1.0/bin/tricore-objcopy.exe ${LICENSE}
+OBJCOPY = wine ${HOME}/.wine/drive_c/HighTec/toolchains/tricore/v4.9.3.0-infineon-1.0/bin/tricore-objcopy.exe
 OBJDUMP = wine ${HOME}/.wine/drive_c/HighTec/toolchains/tricore/v4.9.3.0-infineon-1.0/bin/tricore-objdump.exe ${LICENSE}
 SIZE =    wine ${HOME}/.wine/drive_c/HighTec/toolchains/tricore/v4.9.3.0-infineon-1.0/bin/tricore-size.exe
 
@@ -52,7 +52,10 @@ build/system.elf: ${OBJECTS}
 		-Wl,--gc-sections \
 		-o $@ ${OBJECTS}
 
-program: build/system.elf
+build/system.bin: build/system.elf
+	${QUIET}${OBJCOPY} -O binary $< $@
+
+program: build/system.bin
 	@echo "Not Implemented"
 	${QUIET}false
 
