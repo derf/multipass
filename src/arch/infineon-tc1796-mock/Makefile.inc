@@ -6,6 +6,10 @@
 
 CPU = tc1796
 
+cpu_freq ?= 150000000
+SERIAL_PORT ?= ttyUSB0
+QEMU_PORT ?= 12345
+
 COMMON_FLAGS += -mcpu=${CPU} -DMULTIPASS_ARCH_tc1796
 
 ARCH_SHORTNAME = tc1796
@@ -22,9 +26,9 @@ CXX_TARGETS += src/arch/infineon-tc1796-mock/driver/gpio.cc
 CXX_TARGETS += src/arch/infineon-tc1796-mock/driver/stdout.cc
 
 ifneq (${cpu_freq}, )
-	COMMON_FLAGS += -DF_CPU=${cpu_freq}UL
+	COMMON_FLAGS += -DF_CPU=${cpu_freq}U
 else
-	COMMON_FLAGS += -DF_CPU=300000000UL
+	COMMON_FLAGS += -DF_CPU=150000000U
 endif
 
 ifneq ($(findstring counter,${arch_drivers}), )
@@ -55,21 +59,22 @@ build/system.elf: ${OBJECTS}
 build/system.bin: build/system.elf
 	${QUIET}${OBJCOPY} -O binary $< $@
 
+# Needs a Debian3.1 VM with ios:/ess/dortmund/proj/compiler/tricore-gcc-3.4.5 installed to /opt/trigcc345,
+# http://archive.debian.org/debian-security/pool/updates/main/r/resmgr/libresmgr1_1.0-2sarge2_i386.deb http://archive.debian.org/debian-security/pool/updates/main/r/resmgr/resmgr_1.0-2sarge2_i386.deb installed,
+# and SSH via localhost:2222. E.g.:
+# > qemu-system-i386 -boot c -m 2048 -hda debian3-1.qcow2 -machine type=pc,accel=kvm:tcg --enable-kvm -net nic,model=ne2k_pci -net user,hostfwd=tcp::2022-:22 -smp cores=1,threads=2 -usb -monitor telnet::${QEMU_PORT},server,nowait
+# Must already be running in the background before 'make program' can be used.
 program: build/system.bin
-	# Needs a Debian3.1 VM with ios:/ess/dortmund/proj/compiler/tricore-gcc-3.4.5 installed to /opt/trigcc345,
-	# http://archive.debian.org/debian-security/pool/updates/main/r/resmgr/libresmgr1_1.0-2sarge2_i386.deb http://archive.debian.org/debian-security/pool/updates/main/r/resmgr/resmgr_1.0-2sarge2_i386.deb installed,
-	# and SSH via localhost:2222. E.g.:
-	# > qemu-system-i386 -boot c -m 2048 -hda debian3-1.qcow2 -machine type=pc,accel=kvm:tcg --enable-kvm -net nic,model=ne2k_pci -net user,hostfwd=tcp::2022-:22 -smp cores=1,threads=2 -usb -device usb-host,vendorid=0x058b,productid=0x0028
-	# Must already be running in the background before 'make program' can be used.
+	${QUIET}echo 'device_add usb-host,vendorid=0x058b,productid=0x0028,id=tricore' | nc -q 1 localhost ${QEMU_PORT}
 	${QUIET}scp -oKexAlgorithms=+diffie-hellman-group-exchange-sha1,diffie-hellman-group1-sha1 -oHostKeyAlgorithms=+ssh-rsa -P 2022 build/system.bin root@localhost:/tmp/system.bin
 	${QUIET}ssh -oKexAlgorithms=+diffie-hellman-group-exchange-sha1,diffie-hellman-group1-sha1 -oHostKeyAlgorithms=+ssh-rsa -p 2022 root@localhost "/opt/trigcc345/bin/tricore-jtag-usb-flash /opt/trigcc345/tricore/flash_driver/intern/tc1796/flashprg.elf /tmp/system.bin"
+	${QUIET}echo 'device_del tricore' | nc -q 1 localhost ${QEMU_PORT}
+
+monitor:
+	${QUIET}screen /dev/${SERIAL_PORT} ${uart_freq}
 
 arch_clean:
 	${QUIET}rm -f ${OBJECTS} build/system.elf
-
-monitor:
-	@echo "Not Implemented"
-	${QUIET}false
 
 arch_help:
 	@true
