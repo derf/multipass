@@ -2,6 +2,6 @@
 #
 # SPDX-License-Identifier: CC0-1.0
 
-config arch_infineon_tc1796_mock_driver_counter
+config arch_tc1796_triboard_driver_counter
 bool "Cycle Counter"
 select meta_driver_counter
