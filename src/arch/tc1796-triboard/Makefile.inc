@@ -84,6 +84,8 @@ arch_help:
 arch_info:
 	@echo "CPU   Freq: ${cpu_freq} Hz"
 	@echo "Count Freq: ${counter_freq} Hz"
+	@echo "Counter Overflow: 4294967296/4294967295"
+	@echo "Monitor: /dev/${SERIAL_PORT} ${uart_freq}"
 
 attributes: build/system.elf
 	${QUIET}script/size.py "${SIZE}" text,rodata bss
