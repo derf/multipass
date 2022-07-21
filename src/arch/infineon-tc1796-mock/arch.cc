@@ -22,6 +22,9 @@ extern "C" {
 #define OF_VCOSEL 6
 #define OF_SYSFS 2
 
+#define STM_CLC (*(volatile unsigned int*)0xf0000200)
+#define STM_TIM5 (*(volatile unsigned int*)0xf0000224)
+
 void Arch::setup(void)
 {
 	/*
@@ -30,17 +33,13 @@ void Arch::setup(void)
 	 */
 	unlock_wdtcon();
 	(*(unsigned int*)0xf0000040) = (29 << OF_NDIV) | (0 << OF_PDIV) | (3 << OF_KDIV) | (2 << OF_VCOSEL);
-	//PMI_CON0.bits.CCBYP = 0;
+	STM_CLC = 0x00000100;
 	lock_wdtcon();
 }
 
-#ifdef CONFIG_wakeup
-extern void wakeup();
-#endif
-
 #if defined(CONFIG_loop)
 extern void loop();
-volatile char run_loop = 0;
+unsigned int old_tim5 = 0;
 #endif
 
 volatile bool sleep_done = false;
@@ -71,22 +70,17 @@ void Arch::idle_loop(void)
 {
 	while (1) {
 #if defined(CONFIG_loop)
-		if (run_loop) {
+		// STM_TIM5 will overflow once every 1.9 years.
+		if ((STM_TIM5 - old_tim5 > 70) || (old_tim5 > STM_TIM5)) {
+			old_tim5 = STM_TIM5;
 			loop();
-			run_loop = 0;
 		}
-#endif
-#ifdef CONFIG_wakeup
-		wakeup();
 #endif
 	}
 }
 
 void Arch::idle(void)
 {
-#ifdef CONFIG_wakeup
-	wakeup();
-#endif
 }
 
 Arch arch;

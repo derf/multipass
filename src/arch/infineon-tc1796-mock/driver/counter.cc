@@ -5,6 +5,5 @@
  */
 #include "arch.h"
 #include "driver/counter.h"
-#include "driver/gpio.h"
 
 Counter counter;

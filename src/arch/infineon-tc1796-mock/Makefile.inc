@@ -7,6 +7,8 @@
 CPU = tc1796
 
 cpu_freq ?= 150000000
+counter_freq ?= 75000000
+uart_freq ?= 115200
 SERIAL_PORT ?= ttyUSB0
 QEMU_PORT ?= 12345
 
@@ -81,6 +83,7 @@ arch_help:
 
 arch_info:
 	@echo "CPU   Freq: ${cpu_freq} Hz"
+	@echo "Count Freq: ${counter_freq} Hz"
 
 attributes: build/system.elf
 	${QUIET}script/size.py "${SIZE}" text,rodata bss
