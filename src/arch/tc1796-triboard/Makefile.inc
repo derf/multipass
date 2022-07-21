@@ -67,10 +67,10 @@ build/system.bin: build/system.elf
 # > qemu-system-i386 -boot c -m 2048 -hda debian3-1.qcow2 -machine type=pc,accel=kvm:tcg --enable-kvm -net nic,model=ne2k_pci -net user,hostfwd=tcp::2022-:22 -smp cores=1,threads=2 -usb -monitor telnet::${QEMU_PORT},server,nowait
 # Must already be running in the background before 'make program' can be used.
 program: build/system.bin
-	${QUIET}echo 'device_add usb-host,vendorid=0x058b,productid=0x0028,id=tricore' | nc -q 1 localhost ${QEMU_PORT}
+	${QUIET}echo 'device_add usb-host,vendorid=0x058b,productid=0x0028,id=tricore' | nc -q 1 localhost ${QEMU_PORT} > /dev/null
 	${QUIET}scp -oKexAlgorithms=+diffie-hellman-group-exchange-sha1,diffie-hellman-group1-sha1 -oHostKeyAlgorithms=+ssh-rsa -P 2022 build/system.bin root@localhost:/tmp/system.bin
 	${QUIET}ssh -oKexAlgorithms=+diffie-hellman-group-exchange-sha1,diffie-hellman-group1-sha1 -oHostKeyAlgorithms=+ssh-rsa -p 2022 root@localhost "/opt/trigcc345/bin/tricore-jtag-usb-flash /opt/trigcc345/tricore/flash_driver/intern/tc1796/flashprg.elf /tmp/system.bin"
-	${QUIET}echo 'device_del tricore' | nc -q 1 localhost ${QEMU_PORT}
+	${QUIET}echo 'device_del tricore' | nc -q 1 localhost ${QEMU_PORT} > /dev/null
 
 monitor:
 	${QUIET}screen /dev/${SERIAL_PORT} ${uart_freq}
