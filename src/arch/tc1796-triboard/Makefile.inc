@@ -76,7 +76,7 @@ monitor:
 	${QUIET}screen /dev/${SERIAL_PORT} ${uart_freq}
 
 arch_clean:
-	${QUIET}rm -f ${OBJECTS} build/system.elf
+	${QUIET}rm -f ${OBJECTS} build/system.elf build/system.bin
 
 arch_help:
 	@true
