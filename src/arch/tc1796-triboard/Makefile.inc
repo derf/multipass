@@ -63,7 +63,7 @@ build/system.bin: build/system.elf
 
 # Needs a Debian3.1 VM with ios:/ess/dortmund/proj/compiler/tricore-gcc-3.4.5 installed to /opt/trigcc345,
 # http://archive.debian.org/debian-security/pool/updates/main/r/resmgr/libresmgr1_1.0-2sarge2_i386.deb http://archive.debian.org/debian-security/pool/updates/main/r/resmgr/resmgr_1.0-2sarge2_i386.deb installed,
-# and SSH via localhost:2222. E.g.:
+# and SSH via localhost:2022. E.g.:
 # > qemu-system-i386 -boot c -m 2048 -hda debian3-1.qcow2 -machine type=pc,accel=kvm:tcg --enable-kvm -net nic,model=ne2k_pci -net user,hostfwd=tcp::2022-:22 -smp cores=1,threads=2 -usb -monitor telnet::${QEMU_PORT},server,nowait
 # Must already be running in the background before 'make program' can be used.
 program: build/system.bin
@@ -91,4 +91,4 @@ attributes: build/system.elf
 nfpvalues: build/system.elf
 	${QUIET}script/nfpvalues.py "${SIZE}" text,rodata bss
 
-.PHONY: arch_clean arch_help arch_info attributes monitor program
+.PHONY: arch_clean arch_help arch_info attributes monitor program nfpvalues
