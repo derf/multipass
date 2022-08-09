@@ -79,6 +79,7 @@ arch_help:
 
 arch_info:
 	@echo "Counter Overflow: 18446744073709551616/1"
+	@echo "Count Freq: 1000000000 Hz"
 	@echo "Monitor: run build/system.elf"
 
 attributes: build/system.elf
