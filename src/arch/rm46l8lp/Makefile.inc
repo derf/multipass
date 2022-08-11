@@ -114,9 +114,9 @@ arch_info:
 	@echo "Monitor: /dev/${SERIAL_PORT} 19200"
 
 attributes: build/system.elf
-	${QUIET}script/size.py ${SIZE} text,data data,bss
+	${QUIET}script/size.py ${SIZE} intvecs,text,const,cinit,pinit,data data,bss
 
 nfpvalues: build/system.elf
-	${QUIET}script/nfpvalues.py ${SIZE} text,data data,bss
+	${QUIET}script/nfpvalues.py ${SIZE} intvecs,text,const,cinit,pinit,data data,bss
 
 .PHONY: arch_clean arch_help arch_info attributes cat monitor program
