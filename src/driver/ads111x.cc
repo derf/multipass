@@ -12,8 +12,6 @@
 #include "driver/soft_i2c.h"
 #endif
 
-#include <stdint.h>
-
 void ADS111x::configure(unsigned short config)
 {
 	txbuf[0] = P_CONFIG;
@@ -43,14 +41,18 @@ void ADS111x::configure(unsigned short config)
 	}
 }
 
-float ADS111x::readVoltage()
+int16_t ADS111x::readRaw()
 {
 	txbuf[0] = P_CONVERSION;
 	i2c.xmit(address, 1, txbuf, 2, rxbuf);
 
 	int16_t intermediate = ((int8_t)rxbuf[0]) * 256 + (uint8_t) rxbuf[1];
+	return intermediate;
+}
 
-	return intermediate * 0.256 / 0x7fff * fsr_scale;
+float ADS111x::readVoltage()
+{
+	return readRaw() * 0.256 / 0x7fff * fsr_scale;
 }
 
 ADS111x ads111x(0x48);

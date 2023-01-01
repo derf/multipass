@@ -8,6 +8,8 @@
 #ifndef ADS111x_H
 #define ADS111x_H
 
+#include <stdint.h>
+
 class ADS111x {
 	private:
 		ADS111x(const ADS111x &copy);
@@ -80,6 +82,7 @@ class ADS111x {
 		};
 
 		void configure(unsigned short config);
+		int16_t readRaw();
 		float readVoltage();
 };
 
