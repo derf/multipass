@@ -46,6 +46,10 @@ ifdef CONFIG_driver_dummy
 	CXX_TARGETS += src/driver/dummy.cc
 endif
 
+ifdef CONFIG_driver_ads111x
+	CXX_TARGETS += src/driver/ads111x.cc
+endif
+
 ifdef CONFIG_driver_lm75
 	CXX_TARGETS += src/driver/lm75.cc
 endif

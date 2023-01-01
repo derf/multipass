@@ -25,6 +25,10 @@ bool
 
 menu "Drivers"
 
+config driver_ads111x
+bool "ADS111x 16-bit ADC"
+depends on meta_driver_i2c
+
 config driver_am2320
 bool "AM2320 TH Sensor"
 depends on meta_driver_i2c

@@ -13,6 +13,9 @@
 #include "driver/soft_i2c.h"
 #endif
 
+#ifdef CONFIG_driver_ads111x
+#include "driver/ads111x.h"
+#endif
 #ifdef CONFIG_driver_lm75
 #include "driver/lm75.h"
 #endif
@@ -63,6 +66,12 @@
 
 void loop(void)
 {
+#ifdef CONFIG_driver_ads111x
+	kout << "Reading: ";
+	kout.printf_float(ads111x.readVoltage());
+	kout << " V" << endl;
+#endif
+
 #ifdef CONFIG_driver_lm75
 	kout << "temperature_celsius: ";
 	kout.printf_float(lm75.getTemp());
@@ -282,6 +291,10 @@ int main(void)
 		return 1;
 	}
 	kout << "I2C setup OK" << endl;
+#endif
+
+#ifdef CONFIG_driver_ads111x
+	ads111x.configure(ADS111x::CONTINUOUS | ADS111x::FSR_4V | ADS111x::SPS_8 | ADS111x::SINGLE_3);
 #endif
 
 #ifdef CONFIG_driver_bme280
