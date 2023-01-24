@@ -1,0 +1,77 @@
+#!/usr/bin/env python3
+# vim:tabstop=4 softtabstop=4 shiftwidth=4 textwidth=160 smarttab expandtab colorcolumn=160
+#
+# Copyright (C) 2023 Daniel Friesel
+#
+# SPDX-License-Identifier: GPL-2.0-or-later
+
+from matplotlib import cm
+import matplotlib.pyplot as plt
+import numpy as np
+import sys
+
+matplotlib_theme = "fast"
+
+
+def parse_file(filename, in_channel, out_channel):
+    readings = list()
+    with open(filename, "r") as f:
+        for line in f:
+            if line.startswith("#"):
+                continue
+            timestamp, channel, voltage = line.split()
+            timestamp = float(timestamp)
+            channel = int(channel)
+            voltage = float(voltage)
+            if abs(voltage) > 1:
+                readings.append((timestamp, channel, voltage))
+    vin_t = list()
+    vout_t = list()
+    vout_vin = list()
+
+    last_vin = None
+    last_vout = None
+    for timestamp, channel, voltage in readings:
+        if channel == in_channel:
+            vin_t.append((timestamp, voltage))
+            if last_vin is not None and last_vout is not None:
+                vout_vin.append((np.mean((last_vin, voltage)), last_vout))
+            last_vin = voltage
+        elif channel == out_channel:
+            vout_t.append((timestamp, voltage))
+            if last_vin is not None and last_vout is not None:
+                vout_vin.append((last_vin, np.mean((last_vout, voltage))))
+            last_vout = voltage
+
+    return np.array(vin_t), np.array(vout_t), np.array(vout_vin)
+
+
+def main(files):
+    plt.style.use(matplotlib_theme)
+    handles = list()
+    cmap = cm.get_cmap("winter")
+    in_channel = int(files.pop(0))
+    out_channel = int(files.pop(0))
+    for i, pair in enumerate(files):
+        current, filename = pair.split("=")
+        vin_t, vout_t, vout_vin = parse_file(filename, in_channel, out_channel)
+        (handle,) = plt.plot(
+            vout_vin[:, 0],
+            vout_vin[:, 1],
+            linestyle="none",
+            marker="s",
+            color=cmap(i / len(files)),
+            markersize=2,
+            label=current,
+        )
+        handles.append(handle)
+
+    plt.legend(handles=handles, title="Output Current [mA]")
+    plt.title("MT3608 Output Voltage Stability")
+    plt.xlabel("Input Voltage [V]")
+    plt.ylabel("Output Voltage [V]")
+    plt.show()
+
+
+if __name__ == "__main__":
+    main(sys.argv[1:])
