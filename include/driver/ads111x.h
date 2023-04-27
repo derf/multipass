@@ -50,7 +50,7 @@ class ADS111x {
 		};
 		enum conf_mode : unsigned short {
 			CONTINUOUS = 0 << 8,
-			SINGLE_SHORT = 1 << 8,
+			SINGLE_SHOT = 1 << 8,
 		};
 		enum conf_data_rate : unsigned short {
 			SPS_8 = 0 << 5,
