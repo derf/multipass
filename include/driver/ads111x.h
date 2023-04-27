@@ -27,7 +27,7 @@ class ADS111x {
 	public:
 		ADS111x(unsigned char const addr) : address(addr), fsr_scale(8) {}
 
-		unsigned short const START_CONVERSION = 1 << 15;
+		static unsigned short const START_CONVERSION = 1 << 15;
 		enum conf_mux : unsigned short {
 			DIFFERENTIAL_01 = 0 << 12,
 			DIFFERENTIAL_03 = 1 << 12,
@@ -38,8 +38,8 @@ class ADS111x {
 			SINGLE_2 = 6 << 12,
 			SINGLE_3 = 7 << 12
 		};
-		unsigned short const CONF_PGA_MASK = 0b0000111000000000;
-		unsigned short const CONF_PGA_OFFSET = 9;
+		static unsigned short const CONF_PGA_MASK = 0b0000111000000000;
+		static unsigned short const CONF_PGA_OFFSET = 9;
 		enum conf_pga : unsigned short {
 			FSR_6V = 0 << 9,
 			FSR_4V = 1 << 9,
