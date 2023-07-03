@@ -1,4 +1,4 @@
-# Copyright 2020 Daniel Friesel
+# Copyright 2020 Birte Kristina Friesel
 #
 # SPDX-License-Identifier: CC0-1.0
 config arch_stm32f446re_nucleo_driver_counter

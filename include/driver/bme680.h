@@ -46,7 +46,7 @@
  * @version	3.5.9
  * @brief
  *
- * Adjustments for multipass by Daniel Friesel: C -> C++, multipass i2c integration
+ * Adjustments for multipass by Birte Kristina Friesel: C -> C++, multipass i2c integration
  *
  */
 /*! @file bme680.h

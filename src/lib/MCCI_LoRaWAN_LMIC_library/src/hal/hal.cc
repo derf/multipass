@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2015 Matthijs Kooijman
  * Copyright (c) 2018-2019 MCCI Corporation
- * Copyright (C) 2021 Daniel Friesel
+ * Copyright (C) 2021 Birte Kristina Friesel
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0

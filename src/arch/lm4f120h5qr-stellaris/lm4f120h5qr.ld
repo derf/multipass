@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Daniel Friesel
+ * Copyright 2021 Birte Kristina Friesel
  *
  * SPDX-License-Identifier: CC0-1.0
  */

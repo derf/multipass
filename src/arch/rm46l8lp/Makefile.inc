@@ -1,6 +1,6 @@
 # vim:ft=make
 #
-# Copyright 2020 Daniel Friesel
+# Copyright 2020 Birte Kristina Friesel
 #
 # SPDX-License-Identifier: BSD-2-Clause
 

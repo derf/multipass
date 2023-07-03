@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #
-# Copyright 2021 Daniel Friesel
+# Copyright 2021 Birte Kristina Friesel
 #
 # SPDX-License-Identifier: BSD-2-Clause
 

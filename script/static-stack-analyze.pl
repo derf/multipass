@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 #
-# Copyright 2018 Daniel Friesel
+# Copyright 2018 Birte Kristina Friesel
 #
 # SPDX-License-Identifier: BSD-2-Clause
 

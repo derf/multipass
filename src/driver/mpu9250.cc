@@ -9,7 +9,7 @@
 
 /*
 Copyright (c) 2016 SparkFun Electronics, Inc.
-Copyright (c) 2019 Daniel Friesel
+Copyright (c) 2019 Birte Kristina Friesel
 
 SPDX-License-Identifier: MIT
 
