@@ -4,7 +4,7 @@
 #
 # SPDX-License-Identifier: BSD-2-Clause
 
-SERIAL_PORT ?= ttyACM1
+SERIAL_PORT ?= ttyACM0
 
 cpu_freq ?= 160000000
 counter_freq ?= 80000000
