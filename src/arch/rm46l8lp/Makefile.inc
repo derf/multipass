@@ -9,7 +9,10 @@ SERIAL_PORT ?= ttyACM2
 cpu_freq ?= 160000000
 counter_freq ?= 80000000
 
-INCLUDES += --include_path=/home/derf/lib/local/ti/ccs1200/ccs/tools/compiler/ti-cgt-arm_20.2.6.LTS/include --include_path=include/arch/rm46l8lp/halcogen
+TI_CGT_PATH ?= /home/derf/lib/local/ti/ccs1200/ccs/tools/compiler/ti-cgt-arm_20.2.6.LTS
+UNIFLASH_PATH ?= /home/derf/lib/local/opt/ti/uniflash_7.2.0
+
+INCLUDES += --include_path=${TI_CGT_PATH}/include --include_path=include/arch/rm46l8lp/halcogen
 
 # this is not gcc
 COMMON_FLAGS =
@@ -22,9 +25,9 @@ COMMON_FLAGS += -mv7R4 --code_state=32 --float_support=VFPv3D16 -me --opt_for_sp
 COMMON_FLAGS += --define=_TMS570LS12x_ -g --diag_warning=225 --diag_wrap=off --display_error_number --enum_type=packed --abi=eabi
 #CXXFLAGS += --c++14
 
-CC = /home/derf/lib/local/ti/ccs1200/ccs/tools/compiler/ti-cgt-arm_20.2.6.LTS/bin/armcl
+CC = ${TI_CGT_PATH}/bin/armcl
 CXX = ${CC}
-SIZE = /home/derf/lib/local/ti/ccs1200/ccs/tools/compiler/ti-cgt-arm_20.2.6.LTS/bin/armsize
+SIZE = ${TI_CGT_PATH}/bin/armsize
 
 ARCH_SHORTNAME = rm46l8
 
@@ -90,14 +93,14 @@ build/system.elf: ${OBJECTS}
 	${QUIET}mkdir -p build
 	${QUIET}${CXX} ${COMMON_FLAGS} ${CXXFLAGS} \
 		-z --heap_size=0x1000 --stack_size=0x1000 \
-		-i"/home/derf/lib/local/ti/ccs1200/ccs/tools/compiler/ti-cgt-arm_20.2.6.LTS/lib" \
-		-i"/home/derf/lib/local/ti/ccs1200/ccs/tools/compiler/ti-cgt-arm_20.2.6.LTS/include" \
+		-i"${TI_CGT_PATH}/lib" \
+		-i"${TI_CGT_PATH}/include" \
 		--reread_libs --warn_sections --ecc=off --rom_model -o $@ \
 		${OBJECTS} src/arch/rm46l8lp/halcogen/sys_link.cmd \
 		-lrtsv7R4_T_le_v3D16_eabi.lib
 
 program: build/system.elf
-	${QUIET}/opt/ti/uniflash_7.2.0/dslite.sh -c src/arch/rm46l8lp/RM46L852.ccxml -f build/system.elf -u
+	${QUIET}${UNIFLASH_PATH}/dslite.sh -c src/arch/rm46l8lp/RM46L852.ccxml -f build/system.elf -u
 
 arch_clean:
 	${QUIET}rm -f ${OBJECTS}
