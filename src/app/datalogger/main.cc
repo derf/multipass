@@ -67,7 +67,7 @@
 void loop(void)
 {
 #ifdef CONFIG_driver_ads111x
-	kout << "Reading: ";
+	kout << "Reading: " << ads111x.readRaw() << " = ";
 	kout.printf_float(ads111x.readVoltage());
 	kout << " V" << endl;
 #endif
