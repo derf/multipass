@@ -23,7 +23,7 @@ class MAX44006 {
 
 		enum InterruptStatus {
 			AMBINTS = 0b00000001,
-			PWRON   = 0b00000010,
+			PWRON   = 0b00000100,
 			SHDN    = 0b00001000,
 			RESET   = 0b00010000,
 		};
