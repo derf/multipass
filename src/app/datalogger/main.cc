@@ -365,9 +365,11 @@ int main(void)
 #endif
 
 #ifdef CONFIG_driver_max44006
-	unsigned char ret;
-	if ((ret = max44006.init()) != 0) {
-		kout << "MAX44006 Initialization failed: " << ret << endl;
+	if (!max44006.init()) {
+		kout << "MAX44006 Initialization failed" << endl;
+	}
+	if (!max44006.setAmbientConfig(max44006.AMBPGA_11)) {
+		kout << "MAX44006 setAmbientConfig failed" << endl;
 	}
 #endif
 

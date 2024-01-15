@@ -69,10 +69,11 @@ class MAX44006 {
 
 		MAX44006(unsigned char const addr = 0x45) : address(addr), ambientConfig(TEMPEN) {}
 
-		uint8_t init();
+		bool init();
 
 		uint16_t getTemperature();
 		bool getLight(float *red, float *green, float *blue, float *clear, float *ir);
+		bool setAmbientConfig(AmbientConfig config);
 };
 
 extern MAX44006 max44006;

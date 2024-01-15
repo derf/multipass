@@ -15,41 +15,53 @@
 
 #include "arch.h"
 
-uint8_t MAX44006::init()
+bool MAX44006::init()
 {
 	txbuf[0] = interruptStatusReg;
 	if (i2c.xmit(address, 1, txbuf, 1, rxbuf) != 0) {
-		return 1;
+		return false;
 	}
 
 	if (rxbuf[0] & ~PWRON) {
 		// reset sensor
 		txbuf[1] = 0x10;
 		if (i2c.xmit(address, 2, txbuf, 0, rxbuf) != 0) {
-			return 1;
+			return false;
 		}
 		arch.delay_ms(200);
 		if (i2c.xmit(address, 1, txbuf, 1, rxbuf) != 0) {
-			return 1;
+			return false;
 		}
 		if (rxbuf[0] & ~PWRON) {
-			return 2;
+			return false;
 		}
 	}
 
 	txbuf[0] = ambientConfigReg;
 	txbuf[1] = ambientConfig;
 	if (i2c.xmit(address, 2, txbuf, 0, rxbuf) != 0) {
-		return 1;
+		return false;
 	}
 
 	txbuf[0] = mainConfigReg;
 	txbuf[1] = MODE_10; // MODE = 10 -> Clear + RGB + IR measurement
 	if (i2c.xmit(address, 2, txbuf, 0, rxbuf) != 0) {
-		return 1;
+		return false;
 	}
 
-	return 0;
+	return true;
+}
+
+bool MAX44006::setAmbientConfig(AmbientConfig config)
+{
+
+	txbuf[0] = ambientConfigReg;
+	txbuf[1] = config;
+	if (i2c.xmit(address, 2, txbuf, 0, rxbuf) != 0) {
+		return false;
+	}
+	ambientConfig = config;
+	return true;
 }
 
 uint16_t MAX44006::getTemperature()
