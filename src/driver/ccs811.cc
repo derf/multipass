@@ -63,7 +63,7 @@ void CCS811::setEnv(unsigned char humi, unsigned char humi_fraction, unsigned ch
 
 void CCS811::setEnv(float humi, float temp)
 {
-	setEnv(humi * 2, 0, (temp - 25) * 2, 0);
+	setEnv(humi * 2, 0, (temp + 25) * 2, 0);
 }
 
 unsigned char CCS811::getStatus()
