@@ -26,25 +26,25 @@ bool VEML6075::readUVCounts(float *uva, float *uvb)
 {
 	uint16_t uva_counts, uvb_counts, comp_visible, comp_ir;
 	txbuf[0] = 0x07;
-	if (i2c.xmit(address, 2, txbuf, 2, rxbuf) != 0) {
+	if (i2c.xmit(address, 1, txbuf, 2, rxbuf) != 0) {
 		return false;
 	}
 	uva_counts = ((uint16_t)rxbuf[1] << 8) + rxbuf[0];
 
 	txbuf[0] = 0x09;
-	if (i2c.xmit(address, 2, txbuf, 2, rxbuf) != 0) {
+	if (i2c.xmit(address, 1, txbuf, 2, rxbuf) != 0) {
 		return false;
 	}
 	uvb_counts = ((uint16_t)rxbuf[1] << 8) + rxbuf[0];
 
 	txbuf[0] = 0x0a;
-	if (i2c.xmit(address, 2, txbuf, 2, rxbuf) != 0) {
+	if (i2c.xmit(address, 1, txbuf, 2, rxbuf) != 0) {
 		return false;
 	}
 	comp_visible = ((uint16_t)rxbuf[1] << 8) + rxbuf[0];
 
 	txbuf[0] = 0x0b;
-	if (i2c.xmit(address, 2, txbuf, 2, rxbuf) != 0) {
+	if (i2c.xmit(address, 1, txbuf, 2, rxbuf) != 0) {
 		return false;
 	}
 	comp_ir = ((uint16_t)rxbuf[1] << 8) + rxbuf[0];
