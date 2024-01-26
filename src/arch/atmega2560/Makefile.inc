@@ -91,8 +91,32 @@ ifdef CONFIG_arch_atmega2560_driver_spi
 	CXX_TARGETS += src/arch/atmega2560/driver/spi.cc
 endif
 
+ifdef CONFIG_arch_atmega2560_driver_stdout1
+	CXX_TARGETS += src/arch/atmega2560/driver/stdout1.cc
+endif
+
+ifdef CONFIG_arch_atmega2560_driver_stdout2
+	CXX_TARGETS += src/arch/atmega2560/driver/stdout2.cc
+endif
+
+ifdef CONFIG_arch_atmega2560_driver_stdout3
+	CXX_TARGETS += src/arch/atmega2560/driver/stdout3.cc
+endif
+
 ifdef CONFIG_arch_atmega2560_driver_stdin
 	CXX_TARGETS += src/arch/atmega2560/driver/stdin.cc
+endif
+
+ifdef CONFIG_arch_atmega2560_driver_stdin1
+	CXX_TARGETS += src/arch/atmega2560/driver/stdin1.cc
+endif
+
+ifdef CONFIG_arch_atmega2560_driver_stdin2
+	CXX_TARGETS += src/arch/atmega2560/driver/stdin2.cc
+endif
+
+ifdef CONFIG_arch_atmega2560_driver_stdin3
+	CXX_TARGETS += src/arch/atmega2560/driver/stdin3.cc
 endif
 
 ifdef CONFIG_arch_atmega2560_driver_timer

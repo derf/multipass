@@ -18,6 +18,18 @@ config meta_driver_spi
 bool
 config meta_driver_stdin
 bool
+config meta_driver_stdin1
+bool
+config meta_driver_stdin2
+bool
+config meta_driver_stdin3
+bool
+config meta_driver_stdout1
+bool
+config meta_driver_stdout2
+bool
+config meta_driver_stdout3
+bool
 config meta_driver_timer
 bool
 config meta_driver_uptime

@@ -2,8 +2,22 @@
 #
 # SPDX-License-Identifier: CC0-1.0
 
-config arch_atmega2560_driver_dmx
-bool "DMX"
+config arch_atmega2560_driver_dmx1
+bool "DMX1 Output on PD3 (D18)"
+help
+  TX: PD3 (UART1) (D18)
+select meta_driver_dmx
+
+config arch_atmega2560_driver_dmx2
+bool "DMX2 Output on PH1 (D16)"
+help
+  TX: PH1 (UART2) (D16)
+select meta_driver_dmx
+
+config arch_atmega2560_driver_dmx3
+bool "DMX3 Output on PJ1 (D14)"
+help
+  TX: PJ1 (UART3) (D14)
 select meta_driver_dmx
 
 config arch_atmega2560_driver_i2c
@@ -11,9 +25,68 @@ bool "I2C"
 select meta_driver_hardware_i2c
 select meta_driver_i2c
 
+config arch_atmega2560_driver_stdout1
+bool "UART1 Output on PD3 (D18)"
+help
+  TX: PD3 (UART1) (D18)
+select meta_driver_stdout1
+
+config arch_atmega2560_uart1_baud
+int "UART1 Baud Rate"
+range 9600 249600
+default 57600
+depends on arch_atmega2560_driver_stdout1
+
+config arch_atmega2560_driver_stdout2
+bool "UART2 Output on PH1 (D16)"
+help
+  TX: PH1 (UART2) (D16)
+select meta_driver_stdout2
+
+config arch_atmega2560_uart2_baud
+int "UART2 Baud Rate"
+range 9600 249600
+default 57600
+depends on arch_atmega2560_driver_stdout2
+
+config arch_atmega2560_driver_stdout3
+bool "UART3 Output on PJ1 (D14)"
+help
+  TX: PJ1 (UART3) (D14)
+select meta_driver_stdout3
+
+config arch_atmega2560_uart3_baud
+int "UART3 Baud Rate"
+range 9600 249600
+default 57600
+depends on arch_atmega2560_driver_stdout3
+
 config arch_atmega2560_driver_stdin
-bool "UART Input"
+bool "UART0 Input on PE0 (RX)"
+help
+  RX: PE0 (UART0) (RX)
 select meta_driver_stdin
+
+config arch_atmega2560_driver_stdin1
+bool "UART1 Input on PD2 (D19)"
+help
+  RX: PD2 (UART1) (D19)
+depends on arch_atmega2560_driver_stdout1
+select meta_driver_stdin1
+
+config arch_atmega2560_driver_stdin2
+bool "UART2 Input on PH0 (D17)"
+help
+  RX: PH0 (UART2) (D17)
+depends on arch_atmega2560_driver_stdout2
+select meta_driver_stdin2
+
+config arch_atmega2560_driver_stdin3
+bool "UART3 Input on PE0 (RX)"
+help
+  RX: PE0 (UART0) (RX)
+depends on arch_atmega2560_driver_stdout3
+select meta_driver_stdin3
 
 config arch_atmega2560_driver_timer
 bool "Timer with Interrupts"
