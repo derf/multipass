@@ -8,7 +8,19 @@
 #include "driver/stdout.h"
 #include "driver/stdin.h"
 #include "driver/uptime.h"
-#include "driver/dmx.h"
+
+#if defined(CONFIG_meta_driver_dmx1)
+#include "driver/dmx1.h"
+#define dmx dmx1
+#elif defined(CONFIG_meta_driver_dmx2)
+#include "driver/dmx2.h"
+#define dmx dmx2
+#elif defined(CONFIG_meta_driver_dmx3)
+#include "driver/dmx3.h"
+#define dmx dmx3
+#else
+#error "No DMX driver found"
+#endif
 
 #include "driver/timer.h"
 volatile unsigned char timer_done = 0;
