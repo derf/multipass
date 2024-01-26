@@ -5,14 +5,14 @@
  */
 #include <avr/io.h>
 #include "arch.h"
-#include "driver/dmx.h"
+#include "driver/dmx3.h"
 #include "driver/gpio.h"
 
 #undef BAUD
 #define BAUD 250000UL
 #include <util/setbaud.h>
 
-void DMX::setup()
+void DMX3::setup()
 {
 	UBRR3H = UBRRH_VALUE;
 	UBRR3L = UBRRL_VALUE;
@@ -27,7 +27,7 @@ void DMX::setup()
 	UCSR3C = _BV(USBS3) | _BV(UCSZ31) | _BV(UCSZ30); // MSB first, 8 data bits, 2 stop bits, no parity
 }
 
-void DMX::write()
+void DMX3::write()
 {
 	// Disable UART for reset and mark signals
 	UCSR3B &= ~_BV(TXEN3);
@@ -50,4 +50,4 @@ void DMX::write()
 	}
 }
 
-DMX dmx;
+DMX3 dmx3;
