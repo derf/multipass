@@ -1,4 +1,4 @@
-# Copyright 2020 Birte Kristina Friesel
+# Copyright 2020-2024 Birte Kristina Friesel
 #
 # SPDX-License-Identifier: CC0-1.0
 
@@ -9,13 +9,26 @@ range 62500 16000000
 default 16000000
 help
   Assumes an externel 16MHz crystal to be present
+  Must be one of 62500, 125000, 250000, 500000, 1000000, 2000000, 4000000, 8000000, 16000000.
 
 config arch_arduino_nano_driver_adc
-bool "ADC (Analog-Digital-Converter)"
+bool "ADC on PC<0-5>"
+help
+  ADC0: PC0
+  ADC1: PC1
+  ADC2: PC2
+  ADC3: PC3
+  ADC4: PC4
+  ADC5: PC5
+  ADC6: ---
+  ADC7: ---
 select meta_driver_adc
 
 config arch_arduino_nano_driver_i2c
-bool "I2C"
+bool "I²C on PC[45]"
+help
+  SDA: PC4
+  SCL: PC5
 select meta_driver_hardware_i2c
 select meta_driver_i2c
 
@@ -24,11 +37,18 @@ bool "WS2812b (NeoPixel)"
 select meta_driver_neopixel
 
 config arch_arduino_nano_driver_spi
-bool "SPI"
+bool "SPI on PB[2345]"
+help
+  SS: PB2
+  MOSI: PB3
+  MISO: PB4
+  SCK: PB5
 select meta_driver_spi
 
 config arch_arduino_nano_driver_stdin
-bool "UART Input"
+bool "UART Input on PD0"
+help
+  RX: PD0 (USB)
 select meta_driver_stdin
 
 config arch_arduino_nano_driver_timer
