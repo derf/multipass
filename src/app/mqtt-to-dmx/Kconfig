@@ -1,0 +1,11 @@
+# Copyright 2024 Birte Kristina Friesel
+#
+# SPDX-License-Identifier: CC0-1.0
+
+prompt "MQTT to DMX gateway via ESP8266-01"
+depends on !loop && !wakeup && meta_driver_dmx && (meta_driver_stdin1 || meta_driver_stdin2 || meta_driver_stdin3) && meta_driver_timer
+help
+  MQTT to DMX gateway based upon an ESP8266 MQTT to UART bridge and a MAX485.
+  Connect ESP8266 TX to UART1/2/3 RX and enable the corresponding stdin and stdout drivers, configured to 115200 Baud.
+  Connect UART1/2/3 TX to MAX485 DI and enable the corresponding DMX driver.
+  Do not use the same UART for stdin and DMX.
