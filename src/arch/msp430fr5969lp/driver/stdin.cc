@@ -8,6 +8,10 @@
 
 void StandardInput::setup()
 {
+	UCA0CTLW0 |= UCSWRST;
+	P2SEL0 &= ~BIT1;
+	P2SEL1 |= BIT1;
+	UCA0CTLW0 &= ~UCSWRST;
 	UCA0IE |= UCRXIE;
 }
 

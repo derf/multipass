@@ -4,17 +4,18 @@
  * SPDX-License-Identifier: BSD-2-Clause
  */
 
-class DMX {
+class DMX1 {
 	private:
-		DMX(const DMX &copy);
+		DMX1(const DMX1 &copy);
 
 	public:
-		unsigned char frames[16];
+		static unsigned char const num_frames = 32;
+		unsigned char frames[num_frames];
 
-		DMX() {}
+		DMX1() {}
 
 		void setup();
 		void write();
 };
 
-extern DMX dmx;
+extern DMX1 dmx1;

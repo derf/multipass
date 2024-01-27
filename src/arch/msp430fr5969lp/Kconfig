@@ -9,19 +9,19 @@ config arch_msp430fr5969lp_driver_counter
 bool "Cycle Counter"
 select meta_driver_counter
 
-config arch_msp430fr5969lp_driver_dmx
-bool "DMX"
+config arch_msp430fr5969lp_driver_dmx1
+bool "DMX Output on eUSCI_A1 / P2.5"
+depends on !meta_driver_stdout1
 select meta_driver_dmx
+select meta_driver_dmx1
 
 config arch_msp430fr5969lp_driver_i2c
-bool "I2C on eUSCI_B0"
+bool "I²C on eUSCI_B0 / P1.[67]"
+help
+  SDA: P1.6
+  SCL: P1.7
 select meta_driver_hardware_i2c
 select meta_driver_i2c
-
-## broken
-#config arch_msp430fr5969lp_driver_spi_a1
-#bool "SPI on eUSCI_A1"
-#select meta_driver_spi
 
 config arch_msp430fr5969lp_driver_spi
 bool "SPI on eUSCI_B0"
