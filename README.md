@@ -5,13 +5,14 @@ architectures.  As such, it does not provide multi-threading support or similar
 conveniences.  Its objective is similar to the Arduino environment: provide a
 simple framework for embedded application/driver development and evaluation,
 and get out of the way as much as possible. It favors simplicity over
-performance and abstraction.  Re-using components outside of multipass should
-be fairly easy.
+performance and proper abstraction.  Re-using components outside of multipass
+should be fairly easy.
 
 Application, architecture, and drivers are configured using `make config` (X11,
 kconfig-qconf) or `make nconfig` (Terminal, kconfig-nconf). Each application
 must implement `int main(void)` and do everything itself from that point on.
-When the loop feature is enabled, `void loop(void)` must be implemented also.
+If the loop or wakeup features are enabled, `void loop(void)` or `void
+wakeup(void)` must be implemented as well.
 
 ## Getting Started
 
@@ -46,8 +47,20 @@ Peripheral communication:
 * I²C (master only, interrupt-driven)
 * SPI (master only, polling)
 * UART (output polling, input interrupt-driven)
-* DMX (polling, via UART, overrides regular serial output)
+* DMX on USART1 / USART2 / USART3 (polling)
 * NeoPixel/WS2812B (Adafruit driver)
+
+Hardware features:
+
+* ADC (partially)
+
+### ATMega2560
+
+Peripheral communication:
+
+* I²C (master only, interrupt-driven)
+* UART on USART0 / USART1 / USART2 / USART3 (output polling, input interrupt-driven)
+* DMX on USART1 / USART2 / USART3 (polling)
 
 Hardware features:
 

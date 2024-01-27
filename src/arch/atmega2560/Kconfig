@@ -27,7 +27,10 @@ select meta_driver_dmx
 select meta_driver_dmx3
 
 config arch_atmega2560_driver_i2c
-bool "I2C"
+bool "I²C on PD[01]"
+help
+  SDA: PD1
+  SCL: PD0
 select meta_driver_hardware_i2c
 select meta_driver_i2c
 
