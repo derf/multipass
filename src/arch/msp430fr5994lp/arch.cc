@@ -132,25 +132,6 @@ extern void loop();
 volatile char run_loop = 0;
 #endif
 
-void Arch::delay_us(unsigned int const us)
-{
-	if (us < 10) {
-		for (unsigned int i = 0; i < us; i++) {
-			__delay_cycles(F_CPU / 1000000UL);
-		}
-	} else {
-		for (unsigned int i = 0; i < us/10; i++) {
-			__delay_cycles(F_CPU / 100000UL);
-		}
-	}
-}
-void Arch::delay_ms(unsigned int const ms)
-{
-	for (unsigned int i = 0; i < ms; i++) {
-		__delay_cycles(F_CPU / 1000UL);
-	}
-}
-
 inline static unsigned int irq_enabled()
 {
 	unsigned int sr;
@@ -205,13 +186,31 @@ void Arch::sleep_ms(unsigned int const ms)
 	TA3CTL = TASSEL__SMCLK;
 }
 
+void Arch::delay_us(unsigned int const us)
+{
+	if (us < 10) {
+		for (unsigned int i = 0; i < us; i++) {
+			__delay_cycles(F_CPU / 1000000UL);
+		}
+	} else {
+		for (unsigned int i = 0; i < us/10; i++) {
+			__delay_cycles(F_CPU / 100000UL);
+		}
+	}
+}
+void Arch::delay_ms(unsigned int const ms)
+{
+	for (unsigned int i = 0; i < ms; i++) {
+		__delay_cycles(F_CPU / 1000UL);
+	}
+}
+
 void Arch::idle_loop(void)
 {
 	while (1) {
 		asm volatile("nop");
 		__bis_SR_register(GIE | LPM2_bits);
 		asm volatile("nop");
-		__dint();
 #if defined(CONFIG_loop)
 		if (run_loop) {
 			loop();
@@ -229,7 +228,6 @@ void Arch::idle(void)
 	asm volatile("nop");
 	__bis_SR_register(GIE | LPM2_bits);
 	asm volatile("nop");
-	__dint();
 #ifdef CONFIG_wakeup
 	wakeup();
 #endif
