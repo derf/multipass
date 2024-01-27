@@ -62,18 +62,27 @@ Peripheral communication:
 * UART on USART0 / USART1 / USART2 / USART3 (output polling, input interrupt-driven)
 * DMX on USART1 / USART2 / USART3 (polling)
 
+### MSP430FR5969 (MSP430FR5969 Launchpad)
+
+Peripheral communication:
+
+* I²C controller on eUSCI\_B0
+* SPI controller on eUSCI\_B0
+* UART input/output on eUSCI\_A0 / eUSCI\_A1
+* DMX output on eUSCI\_A1
+
 Hardware features:
 
 * ADC (partially)
 
-### MSP430FR5969, MSP430FR5994 (MSP430FR59xx Launchpad)
+### MSP430FR5994 (MSP430FR5994 Launchpad)
 
 Peripheral communication:
 
-* I²C on eUSCI\_B0 (FR5969) / eUSCI\_B1 (FR5994) (master only, interrupt-driven)
-* SPI on eUSCI\_B0 (FR5969) / eUSCI\_B1 (FR5994) (master only, polling)
-* UART on eUSCI\_A0 (FR5969) / eUSCI\_A1 (FR5994) (output polling, input interrupt-driven)
-* DMX on eUSCI\_A1 (FR5969) / eUSCI\_A3 (FR5994) (polling)
+* I²C controller on eUSCI\_B1
+* SPI controller on eUSCI\_B1
+* UART input/output on eUSCI\_A1 (FR5994)
+* DMX output on eUSCI\_A3
 
 Hardware features:
 
