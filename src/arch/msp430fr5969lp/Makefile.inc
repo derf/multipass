@@ -75,8 +75,12 @@ ifdef CONFIG_arch_msp430fr5969lp_driver_adc
 	CXX_TARGETS += src/arch/msp430fr5969lp/driver/adc.cc
 endif
 
-ifdef CONFIG_arch_msp430fr5969lp_driver_dmx
-	CXX_TARGETS += src/arch/msp430fr5969lp/driver/dmx.cc
+ifdef CONFIG_arch_msp430fr5969lp_driver_dmx1
+	CXX_TARGETS += src/arch/msp430fr5969lp/driver/dmx1.cc
+endif
+
+ifdef CONFIG_arch_msp430fr5969lp_driver_stdout1
+	CXX_TARGETS += src/arch/msp430fr5969lp/driver/stdout1.cc
 endif
 
 ifdef CONFIG_arch_msp430fr5969lp_driver_stdin

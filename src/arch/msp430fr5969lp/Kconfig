@@ -27,8 +27,16 @@ config arch_msp430fr5969lp_driver_spi
 bool "SPI on eUSCI_B0"
 select meta_driver_spi
 
+config arch_msp430fr5969lp_driver_stdout1
+bool "UART Output on eUSCI_A1 / P2.5"
+help
+  TX: P2.5 (eUSCI_A1 / UCA1TXD)
+select meta_driver_stdout1
+
 config arch_msp430fr5969lp_driver_stdin
-bool "UART Input"
+bool "UART Input on eUSCI_A0 / P2.1"
+help
+  RX: P2.1 (eUSCI_A0 / UCA0RXD)
 select meta_driver_stdin
 
 config arch_msp430fr5969lp_driver_timer
