@@ -87,6 +87,10 @@ ifdef CONFIG_arch_msp430fr5969lp_driver_stdin
 	CXX_TARGETS += src/arch/msp430fr5969lp/driver/stdin.cc
 endif
 
+ifdef CONFIG_arch_msp430fr5969lp_driver_stdin1
+	CXX_TARGETS += src/arch/msp430fr5969lp/driver/stdin1.cc
+endif
+
 ifdef CONFIG_arch_msp430fr5969lp_driver_i2c
 	CXX_TARGETS += src/arch/msp430fr5969lp/driver/i2c.cc
 	COMMON_FLAGS += -DDRIVER_I2C

@@ -39,6 +39,13 @@ help
   RX: P2.1 (eUSCI_A0 / UCA0RXD)
 select meta_driver_stdin
 
+config arch_msp430fr5969lp_driver_stdin1
+bool "UART Input on eUSCI_A1 / P2.6"
+help
+  RX: P2.6 (eUSCI_A1 / UCA1RXD)
+depends on arch_msp430fr5969lp_driver_stdout1
+select meta_driver_stdin1
+
 config arch_msp430fr5969lp_driver_timer
 bool "Timer with Interrupts"
 select meta_driver_timer
