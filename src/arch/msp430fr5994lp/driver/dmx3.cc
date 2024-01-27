@@ -5,7 +5,7 @@
  */
 #include <msp430.h>
 #include "arch.h"
-#include "driver/dmx.h"
+#include "driver/dmx3.h"
 #include "driver/gpio.h"
 
 /*
@@ -16,7 +16,7 @@
  * Set UCBRS0 according to table 21-4
  */
 
-void DMX::setup()
+void DMX3::setup()
 {
 	UCA3CTLW0 |= UCSWRST;
 #if F_CPU == 16000000UL
@@ -38,7 +38,7 @@ void DMX::setup()
 	UCA3CTLW0 &= ~UCSWRST;
 }
 
-void DMX::write()
+void DMX3::write()
 {
 	// Disable UART for reset and mark signals
 	UCA3CTLW0 |= UCSWRST;
@@ -49,18 +49,14 @@ void DMX::write()
 	arch.delay_us(8); // mark
 	P6SEL0 |= BIT0;
 	UCA3CTLW0 &= ~UCSWRST; // causes line to go high
-	for (unsigned char i = 0; i < 16; i++) {
+	for (unsigned short i = 0; i < num_frames; i++) {
 		while (!(UCA3IFG & UCTXIFG));
 		UCA3TXBUF = frames[i];
 	}
-	for (unsigned char i = 0; i < 241; i++) {
-		while (!(UCA3IFG & UCTXIFG));
-		UCA3TXBUF = 0;
-	}
-	for (unsigned char i = 0; i < 255; i++) {
+	for (unsigned short i = 0; i < 258 - num_frames; i++) {
 		while (!(UCA3IFG & UCTXIFG));
 		UCA3TXBUF = 0;
 	}
 }
 
-DMX dmx;
+DMX3 dmx3;
