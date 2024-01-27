@@ -6,6 +6,7 @@ config arch_atmega2560_driver_dmx1
 bool "DMX1 Output on PD3 (D18)"
 help
   TX: PD3 (UART1) (D18)
+depends on !meta_driver_stdout1
 select meta_driver_dmx
 select meta_driver_dmx1
 
@@ -13,6 +14,7 @@ config arch_atmega2560_driver_dmx2
 bool "DMX2 Output on PH1 (D16)"
 help
   TX: PH1 (UART2) (D16)
+depends on !meta_driver_stdout2
 select meta_driver_dmx
 select meta_driver_dmx2
 
@@ -20,6 +22,7 @@ config arch_atmega2560_driver_dmx3
 bool "DMX3 Output on PJ1 (D14)"
 help
   TX: PJ1 (UART3) (D14)
+depends on !meta_driver_stdout3
 select meta_driver_dmx
 select meta_driver_dmx3
 
