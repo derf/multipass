@@ -44,11 +44,10 @@ See `make config` for an up-to-date list.
 
 Peripheral communication:
 
-* I²C (master only, interrupt-driven)
-* SPI (master only, polling)
-* UART (output polling, input interrupt-driven)
-* DMX on USART1 / USART2 / USART3 (polling)
-* NeoPixel/WS2812B (Adafruit driver)
+* I²C controller
+* SPI controller
+* UART input/output
+* WS2812B output via Adafruit NeoPixel driver
 
 Hardware features:
 
@@ -58,9 +57,13 @@ Hardware features:
 
 Peripheral communication:
 
-* I²C (master only, interrupt-driven)
-* UART on USART0 / USART1 / USART2 / USART3 (output polling, input interrupt-driven)
-* DMX on USART1 / USART2 / USART3 (polling)
+* I²C controller
+* UART input/output on USART0 / USART1 / USART2 / USART3
+* DMX output on USART1 / USART2 / USART3
+
+Hardware features:
+
+* ADC (partially)
 
 ### MSP430FR5969 (MSP430FR5969 Launchpad)
 
@@ -95,7 +98,7 @@ Runs the selected application as POSIX thread, e.g. under Linux on a Raspberry P
 
 Peripheral communication:
 
-* I²C (master only, via `/dev/i2c`)
+* I²C controller via `/dev/i2c`
 * stdin/stdout
 
 ## Included Drivers
