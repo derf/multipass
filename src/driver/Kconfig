@@ -179,6 +179,10 @@ bool "Horizontal bytes, Vertical bits"
 
 endchoice
 
+config driver_tsl2591
+bool "TSL2591 Irradiance Sensor"
+depends on meta_driver_i2c
+
 config driver_softi2c
 bool "Software I2C"
 #depends on !driver_i2c
