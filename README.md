@@ -84,7 +84,7 @@ Peripheral communication:
 
 * I²C controller on eUSCI\_B1
 * SPI controller on eUSCI\_B1
-* UART input/output on eUSCI\_A1
+* UART input/output on eUSCI\_A0
 * DMX output on eUSCI\_A1 / eUSCI\_A2 / eUSCI\_A3
 
 Hardware features:
