@@ -151,7 +151,6 @@ void Arch::idle_loop(void)
 		asm volatile("nop");
 		__bis_SR_register(GIE | LPM2_bits);
 		asm volatile("nop");
-		__dint();
 #if defined(CONFIG_loop)
 		if (run_loop) {
 			loop();
@@ -169,7 +168,6 @@ void Arch::idle(void)
 	asm volatile("nop");
 	__bis_SR_register(GIE | LPM2_bits);
 	asm volatile("nop");
-	__dint();
 #ifdef CONFIG_wakeup
 	wakeup();
 #endif
