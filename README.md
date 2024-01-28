@@ -3,8 +3,9 @@
 **multipass** is a C++ Library Operating System for a few embedded
 architectures.  As such, it does not provide multi-threading support or similar
 conveniences.  Its objective is similar to the Arduino environment: provide a
-simple framework for embedded application/driver development and evaluation,
-and get out of the way as much as possible. It favors simplicity over
+simple framework for embedded application/driver development and evaluation
+with a `main()` and optional `loop()` function and a text output channel, and
+then get out of the way as much as possible. It favors simplicity over
 performance and proper abstraction.  Re-using components outside of multipass
 should be fairly easy.
 
@@ -101,23 +102,34 @@ Peripheral communication:
 * I²C controller via `/dev/i2c`
 * stdin/stdout
 
-## Included Drivers
+## Supported Peripherals
 
 See `make config` for an up-to-date list.
 
-* AM2320 I²C Temperature and Humidity Sensor
-* BME280 I²C Temperature, Humidity, and Pressure Sensor (Bosch SensorTec driver)
-* BME680 I²C Temperature, Humidity, Pressure, and Air Quality Sensor (Bosch SensorTec driver)
-* CCS811 I²C Air Quality Sensor
-* DS2482 I²C 1-Wire Bus Controller
-* HDC1080 I²C Temperature and Humidity Sensor
-* LM75 I²C Temperature Sensor
-* LS013B4DN04 96×96 transflective LCD (430BOOST-SHARP96)
-* MAX44006 I²C RGB and IR Light Sensor
-* MAX44009 I²C Light Sensor
-* MPU9250 I²C Accelerometer, Gyroscope, and Magnetometer Sensor
-* Pervasive Aurora Mb V230/V231 4.2" iTC E-Paper Display via EPD Extension Board Gen 2
-* SCD40/SCD41 I²C CO₂ Sensor
-* SEN5x I²C particulate matter (PM1.0/PM2.5/PM4.0/PM10) and VOC sensor
-* SSD1306 I²C OLED Display Controller
-* VEML6075 I²C UVA/UVB Light Sensor
+### Sensors
+
+* AM2320 Temperature+Humidity (I²C)
+* BME280 Temperature+Humidity+Pressure via Bosch SensorTec driver (I²C)
+* BME280 Temperature+Humidity+Pressure+IAQ via Bosch SensorTec driver (I²C)
+* CCS811 VOC (I²C)
+* HDC1080 Temperature+Humidity (I²C)
+* LM75 Temperature (I²C)
+* MAX44006 R+G+B+Clear+IR irradiance (I²C)
+* MAX44009 illuminance (I²C)
+* MPU9250 accelerometer+gyroscope+magnetometer (I²C)
+* SCD4x CO₂+Temperature+Humidity (I²C)
+* SEN5x PM1.0+PM2.5+PM4.0+PM10+Temperature+Humidity+VOC (I²C)
+* VEML6075 UVA+UVB irradiance (I²C)
+
+"VOC" refers to volatile organic compounds; "PM" refers to particulate matter.
+
+### Displays
+
+* LS013B4DN04 / 430BOOST-SHARP96 96×96 transflective LCD (SPI)
+* Pervasive Aurora Mb V230/V231 4.2" iTC E-Paper Display via EPD Extension Board Gen 2 (SPI)
+* SSD1306 128×64 / 128×32 OLED display controller (I²C)
+
+### Others
+
+* ADS111x ADC (I²C)
+* DS2482 1-Wire Bus Controller (I²C)
