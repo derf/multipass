@@ -28,7 +28,10 @@ select meta_driver_dmx
 select meta_driver_dmx3
 
 config arch_msp430fr5994lp_driver_i2c
-bool "I²C on eUSCI_B1"
+bool "I²C on eUSCI_B1 / P5.[01]"
+help
+  SDA: P5.0
+  SCL: P5.1
 select meta_driver_hardware_i2c
 select meta_driver_i2c
 
