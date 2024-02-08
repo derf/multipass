@@ -93,6 +93,12 @@ Hardware features:
 * 20bit mode (use up to 256kB FRAM for code and data)
 * ADC (partially)
 
+## RM46L8 (Hercules RM46L8 Launchpad)
+
+Peripheral communication:
+
+* UART output
+
 ### STM32F446RE (NUCLEO-F446RE)
 
 Peripheral communication:
