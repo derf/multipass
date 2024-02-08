@@ -7,7 +7,7 @@ touch .config
 apps="countertest deflatetest donothing ledblink
 	sysinfo"
 
-make ext/libopencm3/lib/libopencm3_stm32f4.a
+make arch=stm32f446re-nucleo ext/libopencm3/lib/libopencm3_stm32f4.a
 
 for app in $apps; do
 	find src -name '*.o' -delete
