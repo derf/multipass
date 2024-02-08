@@ -93,6 +93,20 @@ Hardware features:
 * 20bit mode (use up to 256kB FRAM for code and data)
 * ADC (partially)
 
+### STM32F446RE (NUCLEO-F446RE)
+
+Peripheral communication:
+
+* UART output on USART2
+
+### STM32F746ZG (NUCLEO-F746ZG)
+
+Preliminary support, timers may be incorrect.
+
+Peripheral communication:
+
+* UART output on USART3
+
 ### POSIX
 
 Runs the selected application as POSIX thread, e.g. under Linux on a Raspberry Pi.
