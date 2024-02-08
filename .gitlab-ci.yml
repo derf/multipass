@@ -1,5 +1,8 @@
 image: derfnull/multipass-ci:2020.08.13.2
 
+variables:
+  GIT_SUBMODULE_STRATEGY: recursive
+
 stages:
   - build
   - test
