@@ -103,7 +103,7 @@ ext/libopencm3/lib/libopencm3_stm32f4.a: ext/libopencm3/Makefile
 	${MAKE} -C ext/libopencm3
 
 program: build/system.elf
-	openocd -c 'source [find interface/stlink-v2-1.cfg]' \
+	openocd -c 'source [find interface/stlink.cfg]' \
 		-c 'transport select hla_swd' -c 'source [find target/stm32f4x.cfg]' \
 		-c 'reset_config srst_only' -c '$$_TARGETNAME configure -rtos auto' \
 		-c 'reset_config connect_assert_srst' -c init -c targets \
