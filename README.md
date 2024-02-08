@@ -46,7 +46,7 @@ The following table gives a quick overview over targets and additional
 features; the remainder of this README covers details.
 
 | Target | Clock | Non-Volatile Memory | Volatile Memory | Supported Drivers / Features |
-| :--- | :---: | :--- |
+| :--- | ---: | ---: | ---: | :--- |
 | ATMega168P | 16 MHz | 512 KiB Flash + 512 B EEPROM | 1 KiB SRAM | I²C, SPI, UART, WS2812B, ADC |
 | ATMega328P | 16 MHz | 32 KiB Flash + 1 KiB EEPROM | 2 KiB SRAM | I²C, SPI, UART, WS2812B, ADC |
 | ATMega2560 | 16 MHz | 256 KiB Flash + 4 KiB EEPROM | 8 KiB SRAM | I²C, UART, DMX, ADC |
