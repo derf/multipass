@@ -1,19 +1,19 @@
 # multipass - a multi-architecture library operating system
 
 **multipass** is a C++ Library Operating System for a few embedded
-architectures.  As such, it does not provide multi-threading support or similar
-conveniences.  Its objective is similar to the Arduino environment: provide a
-simple framework for embedded application/driver development and evaluation
-with a `main()` and optional `loop()` function and a text output channel, and
-then get out of the way as much as possible. It favors simplicity over
-performance and proper abstraction.  Re-using components outside of multipass
-should be fairly easy.
+targets / architectures.  As such, it does not provide multi-threading support
+or similar conveniences.  Its objective is similar to the Arduino environment:
+provide a simple framework for embedded application/driver development and
+evaluation with a `main()` and optional `loop()` function and a text output
+channel, and then get out of the way as much as possible. It favors simplicity
+over performance and proper abstraction.  Re-using components outside of
+multipass should be fairly easy.
 
-Application, architecture, and drivers are configured using `make config` (X11,
-kconfig-qconf) or `make nconfig` (Terminal, kconfig-nconf). Each application
-must implement `int main(void)` and do everything itself from that point on.
-If the loop or wakeup features are enabled, `void loop(void)` or `void
-wakeup(void)` must be implemented as well.
+Application, target / architecture, and drivers are configured using `make
+config` (X11, kconfig-qconf) or `make nconfig` (Terminal, kconfig-nconf). Each
+application must implement `int main(void)` and do everything itself from that
+point on.  If the loop or wakeup features are enabled, `void loop(void)` or
+`void wakeup(void)` must be implemented as well.
 
 ## Getting Started
 
@@ -33,9 +33,29 @@ For common applications, the `arch` and `app` compile switches can be used,
 e.g. `./mpm arch=posix app=ledblink`
 
 You should see some data about the compilation process, "Hello, world!", and
-some numbers. As POSIX is not a standalone architecture (it builds an ELF
-binary that is executed directly on Linux), you do not need a microcontroller
-to run it. Terminate execution using Ctrl+C.
+some numbers. As POSIX is not a standalone target (it builds an ELF binary that
+is executed directly on Linux), you do not need a microcontroller to run it.
+Terminate execution using Ctrl+C.
+
+## Supported Targets
+
+See `make config` for an up-to-date list. Unless noted otherwise, all targets
+support GPIO input/output, UART output (typically using the built-in USB-TTL
+chip of the respective development board), and an optional cycle counter.
+The following table gives a quick overview over targets and additional
+features; the remainder of this README covers details.
+
+| Target | Clock | Non-Volatile Memory | Volatile Memory | Supported Drivers / Features |
+| :--- | :---: | :--- |
+| ATMega168P | 16 MHz | 512 KiB Flash + 512 B EEPROM | 1 KiB SRAM | I²C, SPI, UART, WS2812B, ADC |
+| ATMega328P | 16 MHz | 32 KiB Flash + 1 KiB EEPROM | 2 KiB SRAM | I²C, SPI, UART, WS2812B, ADC |
+| ATMega2560 | 16 MHz | 256 KiB Flash + 4 KiB EEPROM | 8 KiB SRAM | I²C, UART, DMX, ADC |
+| MSP430FR5969 | 16 MHz | 48 (64) KiB FRAM | 2 KiB SRAM | I²C, SPI, UART, DMX, ADC |
+| MSP430FR5994 | 16 MHz | 48 (256) KiB FRAM | 4 (8) KiB SRAM | I²C, SPI, UART, DMX, ADC |
+| RM46L852 (Cortex-R4F) | 160 MHz | 1.25 MiB Flash | 192 KiB SRAM | |
+| STM32F446RE (Cortex-M4) | 168 MHz | 512 KiB Flash | 1928 KiB SRAM | |
+| STM32F746ZG (Cortex-M7) | 216 MHz | 1 MiB Flash | 320 KiB SRAM | |
+| POSIX | – | – | – | I²C |
 
 ## Supported Architectures
 
@@ -90,7 +110,7 @@ Peripheral communication:
 
 Hardware features:
 
-* 20bit mode (use up to 256kB FRAM for code and data)
+* 20bit mode (use up to 256 KiB FRAM for code and data)
 * ADC (partially)
 
 ## RM46L8 (Hercules RM46L8 Launchpad)
