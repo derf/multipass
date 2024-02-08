@@ -120,7 +120,7 @@ Hardware features:
 * 20bit mode (use up to 256 KiB FRAM for code and data)
 * ADC (partially)
 
-## RM46L8 (Hercules RM46L8 Launchpad)
+### RM46L8 (Hercules RM46L8 Launchpad)
 
 Peripheral communication:
 
