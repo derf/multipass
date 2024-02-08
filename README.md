@@ -50,6 +50,7 @@ features; the remainder of this README covers details.
 | ATMega168P | 16 MHz | 512 KiB Flash + 512 B EEPROM | 1 KiB SRAM | I²C, SPI, UART, WS2812B, ADC |
 | ATMega328P | 16 MHz | 32 KiB Flash + 1 KiB EEPROM | 2 KiB SRAM | I²C, SPI, UART, WS2812B, ADC |
 | ATMega2560 | 16 MHz | 256 KiB Flash + 4 KiB EEPROM | 8 KiB SRAM | I²C, UART, DMX, ADC |
+| LM4F120H5QR (Cortex-M4F) | 80 MHz | 48 KiB Flash | 4 KiB SRAM | |
 | MSP430FR5969 | 16 MHz | 48 (64) KiB FRAM | 2 KiB SRAM | I²C, SPI, UART, DMX, ADC |
 | MSP430FR5994 | 16 MHz | 48 (256) KiB FRAM | 4 (8) KiB SRAM | I²C, SPI, UART, DMX, ADC |
 | RM46L852 (Cortex-R4F) | 160 MHz | 1.25 MiB Flash | 192 KiB SRAM | |
@@ -85,6 +86,12 @@ Peripheral communication:
 Hardware features:
 
 * ADC (partially)
+
+### LM4F120H5QR (Stellaris Launchpad)
+
+Peripheral communication:
+
+* UART output
 
 ### MSP430FR5969 (MSP430FR5969 Launchpad)
 
