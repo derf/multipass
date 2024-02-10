@@ -163,7 +163,7 @@ class SSD1306 {
 			SSD1306_SET_COL_ADDR, 0, 127,
 
 			// reset page pointer
-			SSD1306_SET_PAGE_ADDR, 0, 7
+			SSD1306_SET_PAGE_ADDR, 0, height/8-1
 		};
 
 		void writeCommand(uint8_t command);
