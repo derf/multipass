@@ -3,4 +3,6 @@
 # SPDX-License-Identifier: CC0-1.0
 
 prompt "SSD1306 Test"
-depends on driver_ssd1306 && loop && !wakeup
+depends on driver_ssd1306 && driver_ssd1306_mode_vertical
+depends on loop
+depends on !wakeup
