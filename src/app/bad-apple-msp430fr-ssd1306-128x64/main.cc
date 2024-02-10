@@ -27,7 +27,7 @@ int main(void)
 	i2c.setup();
 	ssd1306.init();
 
-	timer.setup_hz_low(frame_rate);
+	timer.setup_hz(frame_rate);
 
 	while (1) {
 		for (i = 0; i < (sizeof(frames) / sizeof(frames[0])); i++) {
