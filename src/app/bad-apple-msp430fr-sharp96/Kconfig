@@ -4,6 +4,7 @@
 
 prompt "Bad Apple on MSP430FR5994 + Sharp 96x96 Transflective LCD"
 depends on arch_msp430fr5994lp_large_mode
+depends on meta_driver_timer
 depends on driver_sharp96
 depends on lib_inflate && lib_inflate_lut
 depends on !loop
