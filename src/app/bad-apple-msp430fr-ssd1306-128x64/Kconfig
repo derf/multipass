@@ -2,5 +2,10 @@
 #
 # SPDX-License-Identifier: CC0-1.0
 
-prompt "SSD1306 Bad Apple"
-depends on driver_ssd1306 && !wakeup
+prompt "Bad Apple on MSP430FR5994 + SSD1306 128x64 LCD"
+depends on arch_msp430fr5994lp_large_mode
+depends on meta_driver_timer
+depends on driver_ssd1306 && driver_ssd1306_mode_horizontal
+depends on lib_inflate && lib_inflate_lut
+depends on !loop
+depends on !wakeup
