@@ -3,4 +3,8 @@
 # SPDX-License-Identifier: CC0-1.0
 
 prompt "Sharp96 Bad Apple"
-depends on driver_sharp96 && !wakeup
+depends on arch_msp430fr5994lp_large_mode
+depends on driver_sharp96
+depends on lib_inflate && lib_inflate_lut
+depends on !loop
+depends on !wakeup

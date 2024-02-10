@@ -10,7 +10,8 @@ ffmpeg -i "$@" tmp/frame%4d.png
 
 parallel mogrify -resize 96x96 -threshold 50% -- tmp/*.png
 
-echo "const unsigned char frame_rate = $3;" > frames.cc
+echo "// $0 $@" > frames.cc
+echo "const unsigned char frame_rate = $3;" >> frames.cc
 ./frames-to-cc tmp/*.png >> frames.cc
 
 rm -rf tmp
