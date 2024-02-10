@@ -184,7 +184,7 @@ build/system.elf: ${OBJECTS}
 		-Wl,--library-path=/opt/msp430/ti/msp430-gcc-full-linux-5.1.2.0/include/ \
 		-Wl,--gc-sections \
 		-o $@ ${OBJECTS}
-	${QUIET}${SIZE} build/system.elf | tail -n1 | awk '{ print "  ROM: " ($$1+$$2) " (" int(($$1+$$2)*100/${fram_size}) "%)     RAM: " ($$2 + $$3) " (" int(($$2+$$3)*100/${sram_size}) "%)" }'
+	${QUIET}${SIZE} build/system.elf | tail -n1 | awk '{ print " FRAM: " ($$1+$$2) " (" int(($$1+$$2)*100/${fram_size}) "%)    SRAM: " ($$2 + $$3) " (" int(($$2+$$3)*100/${sram_size}) "%)" }'
 
 build/system.hex: build/system.elf
 	${QUIET}${OBJCOPY} -O ihex ${@:.hex=.elf} $@
