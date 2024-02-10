@@ -13,6 +13,9 @@ SERIAL_PORT ?= ttyACM1
 cpu_freq ?= 16000000
 uart_freq ?= 115200
 
+fram_size = 49152
+sram_size = 4096
+
 MSP430_FLASHER_DIR ?= /opt/msp430/MSP430Flasher_1.3.20
 
 INCLUDES += -I/opt/msp430/ti/msp430-gcc-full-linux-5.1.2.0/include
@@ -23,6 +26,7 @@ ifdef CONFIG_arch_msp430fr5994lp_large_mode
 endif
 ifneq (${msp430_large}, )
 	COMMON_FLAGS += -mcode-region=either -mlarge -DADDR_20BIT -include int20.h
+	fram_size = 262144
 endif
 
 # LTO seems to be broken.
@@ -180,7 +184,7 @@ build/system.elf: ${OBJECTS}
 		-Wl,--library-path=/opt/msp430/ti/msp430-gcc-full-linux-5.1.2.0/include/ \
 		-Wl,--gc-sections \
 		-o $@ ${OBJECTS}
-	${QUIET}${SIZE} build/system.elf | tail -n1 | awk '{ print "  ROM: " ($$1+$$2) " (" int(($$1+$$2)*100/49152) "%)     RAM: " ($$2 + $$3) " (" int(($$2+$$3)*100/4096) "%)" }'
+	${QUIET}${SIZE} build/system.elf | tail -n1 | awk '{ print "  ROM: " ($$1+$$2) " (" int(($$1+$$2)*100/${fram_size}) "%)     RAM: " ($$2 + $$3) " (" int(($$2+$$3)*100/${sram_size}) "%)" }'
 
 build/system.hex: build/system.elf
 	${QUIET}${OBJCOPY} -O ihex ${@:.hex=.elf} $@
