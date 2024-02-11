@@ -19,19 +19,16 @@ class Timer {
 
 		inline void setup_khz(uint16_t const frequency) { // 16 MHz base
 			OCR4A = frequency ? 16000 / frequency : 65535;
-			TCCR4A = 0;
-			TCCR4B = _BV(WGM42);
 			prescaler = _BV(CS40);
 		}
-		inline void setup_hz(uint16_t const frequency) { // 16 MHz / 256 == 62.5 kHz base
-			OCR4A = frequency ? 62500 / frequency : 65535;
-			TCCR4A = 0;
-			TCCR4B = _BV(WGM42);
+		inline void setup_hz(uint16_t const frequency) { // 16 MHz / 1024 == 15625 Hz base
+			OCR4A = frequency ? 15625 / frequency : 65535;
 			prescaler = _BV(CS42);
 		}
 		inline void start(unsigned char const interrupt) {
 			TCNT4 = 0;
-			TCCR4B |= prescaler;
+			TCCR4A = 0;
+			TCCR4B = _BV(WGM42) | prescaler;
 			if (interrupt) {
 				TIMSK4 = _BV(OCIE4A);
 			}
