@@ -55,6 +55,10 @@ ifdef CONFIG_arch_stm32f446re_nucleo_driver_counter
 	CXX_TARGETS += src/arch/stm32f446re-nucleo/driver/counter.cc
 endif
 
+ifdef CONFIG_arch_stm32f446re_nucleo_driver_i2c
+	CXX_TARGETS += src/arch/stm32f446re-nucleo/driver/i2c.cc
+endif
+
 #ifdef CONFIG_arch_stm32f446re_nucleo_driver_timer
 #	CXX_TARGETS += src/arch/stm32f446re-nucleo/driver/timer.cc
 #endif

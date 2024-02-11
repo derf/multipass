@@ -54,7 +54,7 @@ features; the remainder of this README covers details.
 | MSP430FR5969 | 16 MHz | 48 (64) KiB FRAM | 2 KiB SRAM | I²C, SPI, UART, DMX, ADC |
 | MSP430FR5994 | 16 MHz | 48 (256) KiB FRAM | 4 (8) KiB SRAM | I²C, SPI, UART, DMX, ADC |
 | RM46L852 (Cortex-R4F) | 160 MHz | 1.25 MiB Flash | 192 KiB SRAM | |
-| STM32F446RE (Cortex-M4) | 168 MHz | 512 KiB Flash | 128 KiB SRAM | |
+| STM32F446RE (Cortex-M4) | 168 MHz | 512 KiB Flash | 128 KiB SRAM | I²C |
 | STM32F746ZG (Cortex-M7) | 216 MHz | 1 MiB Flash | 320 KiB SRAM | |
 | POSIX | – | – | – | I²C |
 
@@ -131,6 +131,7 @@ Peripheral communication:
 Peripheral communication:
 
 * UART output on USART2
+* I²C on I2C1 muxed to PB8 / PB9
 
 ### STM32F746ZG (NUCLEO-F746ZG)
 

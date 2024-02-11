@@ -1,9 +1,21 @@
-# Copyright 2020 Birte Kristina Friesel
+# Copyright 2024 Birte Kristina Friesel
 #
 # SPDX-License-Identifier: CC0-1.0
 config arch_stm32f446re_nucleo_driver_counter
 bool "Cycle Counter"
 select meta_driver_counter
+
+config arch_stm32f446re_nucleo_driver_i2c
+bool "I²C on PB[89]"
+help
+  SDA: PB9 (CN5 D14)
+  SCL: PB8 (CN5 D15)
+select meta_driver_hardware_i2c
+select meta_driver_i2c
+
+config arch_stm32f446re_nucleo_driver_i2c_fast_mode
+bool "Fast Mode (400 kHz)"
+depends on arch_stm32f446re_nucleo_driver_i2c
 
 #config arch_stm32f446re_nucleo_driver_timer
 #bool "Timer with Interrupts"
