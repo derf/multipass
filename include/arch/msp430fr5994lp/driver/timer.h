@@ -59,11 +59,11 @@ class Timer {
 		inline void setup_hz(uint16_t const frequency) {
 			TA0CTL = TASSEL__SMCLK | _TA0_MAIN_DIV;
 			if (frequency < 32) {
-				// 2 MHz base
+				// 250 kHz base
 				TA0EX0 = 7;
 				TA0CCR0 = 250000UL / frequency;
 			} else {
-				// 250 kHz base
+				// 2 MHz base
 				TA0EX0 = 0;
 				TA0CCR0 = 2000000UL / frequency;
 			}
