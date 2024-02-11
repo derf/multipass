@@ -30,47 +30,48 @@ int main(void)
 	sharp96.clear();
 
 	timer.setup_hz(frame_rate);
+	timer_done = 0;
+	timer.start(1);
 
 	while (1) {
 		for (i = 0; i < (sizeof(frames) / sizeof(frames[0])); i++) {
-
-			timer_done = 0;
-			timer.start(1);
-
-			for (line = 0; line < 72; line++) {
-				sharp96.writeLine(line, img_buf + (12 * 72 * 2) + (12 * line));
-			}
 
 			inflate(frames[i], sizeof(img_buf), img_buf, sizeof(img_buf));
 
 			while (!timer_done) {
 				arch.idle();
 			}
-			timer.stop();
 
+			timer.stop();
 			timer_done = 0;
 			timer.start(1);
 
 			for (line = 0; line < 72; line++) {
-				sharp96.writeLine(line, img_buf + (12 * line));
+				sharp96.writeLine(line, img_buf + (12 * 72 * 0 ) + (12 * line));
+			}
+
+			while (!timer_done) {
+				arch.idle();
+			}
+
+			timer.stop();
+			timer_done = 0;
+			timer.start(1);
+
+			for (line = 0; line < 72; line++) {
+				sharp96.writeLine(line, img_buf + (12 * 72 * 1) + (12 * line));
 			}
 
 			while (!timer_done) {
 				arch.idle();
 			}
 			timer.stop();
-
 			timer_done = 0;
 			timer.start(1);
 
 			for (line = 0; line < 72; line++) {
-				sharp96.writeLine(line, img_buf + (12 * 72) + (12 * line));
+				sharp96.writeLine(line, img_buf + (12 * 72 * 2) + (12 * line));
 			}
-
-			while (!timer_done) {
-				arch.idle();
-			}
-			timer.stop();
 
 			if ((i%10)==0) {
 				sharp96.toggleVCOM();
