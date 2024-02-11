@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# [size=WxH] ./convert.sh <file> -r <frame rate> [additional ffmpeg args]
+
+set -eu
+
+mkdir -p tmp
+
+ffmpeg -i "$@" tmp/frame%4d.png
+
+parallel mogrify -resize "${size:-128x32}" -threshold 50% -- tmp/*.png
+
+echo "#include <avr/pgmspace.h>" > frames.cc
+echo "const unsigned char frame_rate = $3;" >> frames.cc
+./frames-to-cc tmp/*.png >> frames.cc
+
+rm -rf tmp

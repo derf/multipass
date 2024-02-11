@@ -1,0 +1,11 @@
+# Copyright 2020 Birte Kristina Friesel
+#
+# SPDX-License-Identifier: CC0-1.0
+
+prompt "Bad Apple on ATMega2560 + SSD1306 128x32 OLED"
+depends on arch_atmega2560
+depends on meta_driver_timer
+depends on driver_ssd1306 && driver_ssd1306_mode_horizontal
+depends on lib_inflate && lib_inflate_lut
+depends on !loop
+depends on !wakeup
