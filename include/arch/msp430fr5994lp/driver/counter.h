@@ -26,7 +26,9 @@ class Counter {
 			overflow = 0;
 			TA2CTL = TASSEL__SMCLK | ID__1 | MC__CONTINUOUS;
 			TA2EX0 = 0;
-			TA2CTL |= TACLR | TAIE;
+			TA2CTL |= TACLR;
+			asm volatile("nop");
+			TA2CTL |= TAIE;
 			asm volatile("nop");
 			__eint();
 			asm volatile("nop");
