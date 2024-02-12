@@ -51,9 +51,9 @@ ifdef CONFIG_arch_stm32f746zg_nucleo_driver_counter
 	CXX_TARGETS += src/arch/stm32f746zg-nucleo/driver/counter.cc
 endif
 
-#ifdef CONFIG_arch_stm32f746zg_nucleo_driver_i2c
-#	CXX_TARGETS += src/arch/stm32f746zg-nucleo/driver/i2c.cc
-#endif
+ifdef CONFIG_arch_stm32f746zg_nucleo_driver_i2c
+	CXX_TARGETS += src/arch/stm32f746zg-nucleo/driver/i2c.cc
+endif
 
 #ifdef CONFIG_arch_stm32f746zg_nucleo_driver_timer
 #	CXX_TARGETS += src/arch/stm32f746zg-nucleo/driver/timer.cc
