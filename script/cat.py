@@ -6,7 +6,7 @@ import serial.threaded
 import sys
 import time
 
-cpu_freq = None
+counter_freq = None
 timer_overflow = None
 
 
@@ -81,12 +81,12 @@ class SerialMonitor:
 
 
 def handle_line(line):
-    if cpu_freq is not None:
+    if counter_freq is not None:
         print_line = line
         for match in re.finditer("(\d+)/(\d+) cycles", line):
             cycles = int(match.group(1))
             overflows = int(match.group(2))
-            ms = (cycles + timer_overflow * overflows) * 1000 / cpu_freq
+            ms = (cycles + timer_overflow * overflows) * 1000 / counter_freq
             match_line = f"{cycles}/{overflows} cycles"
             new_line = f"{ms} ms ({cycles}/{overflows} cycles)"
             print_line = re.sub(match_line, new_line, print_line)
@@ -100,9 +100,9 @@ if __name__ == "__main__":
     baud = int(sys.argv[2])
 
     if len(sys.argv) > 4:
-        cpu_freq = int(sys.argv[3])
+        counter_freq = int(sys.argv[3])
         timer_overflow = int(sys.argv[4])
 
     monitor = SerialMonitor(tty, baud, handle_line)
-    time.sleep(5)
+    time.sleep(20)
     monitor.close()
