@@ -21,6 +21,7 @@ void Arch::setup(void)
 #error Unsupported F_CPU
 #endif
 
+#ifdef CONFIG_arch_stm32f746zg_nucleo_driver_counter
 	// counter
 	rcc_periph_clock_enable(RCC_TIM2);
 	nvic_enable_irq(NVIC_TIM2_IRQ);
@@ -32,6 +33,7 @@ void Arch::setup(void)
 	timer_continuous_mode(TIM2);
 	timer_set_period(TIM2, 4294967295);
 	timer_enable_irq(TIM2, TIM_DIER_UIE);
+#endif
 
 #ifdef CONFIG_loop
 	rcc_periph_clock_enable(RCC_TIM3);

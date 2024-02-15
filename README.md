@@ -135,8 +135,6 @@ Peripheral communication:
 
 ### STM32F746ZG (NUCLEO-F746ZG)
 
-Preliminary support, timers may be incorrect.
-
 Peripheral communication:
 
 * UART output on USART3
