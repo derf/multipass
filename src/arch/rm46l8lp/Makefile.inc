@@ -106,7 +106,7 @@ arch_clean:
 	${QUIET}rm -f ${OBJECTS}
 
 cat:
-	${QUIET}script/cat.py /dev/${SERIAL_PORT} 115200 ${counter_freq} 4294967295
+	${QUIET}script/cat.py /dev/${SERIAL_PORT} 115200 ${counter_freq} 4294967296
 
 monitor:
 	${QUIET}screen /dev/${SERIAL_PORT} 19200
