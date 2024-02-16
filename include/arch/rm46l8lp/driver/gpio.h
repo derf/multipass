@@ -16,26 +16,30 @@ class GPIO {
 		GPIO () {}
 
 		enum Pin : unsigned char {
-			a_0 = 0, a_1, a_2, a_3, a_4, a_5, a_6, a_7,
-			b_0, b_1, b_2, b_3, b_4, b_5, b_6, b_7,
+			a0 = 0, a1, a2, a3, a4, a5, a6, a7,
+			b0, b1, b2, b3, b4, b5, b6, b7,
 			PIN_INVALID
 		};
 
 		inline void setup() {
+			/*
+			 * Default configuration:
+			 * A0 A1 A2 b1 B2 as output, others as input.
+			 */
 			gioInit();
 		}
 		inline void led_on(unsigned char id = 0) {
 			if (id == 0) {
-				gioSetBit(gioPORTB,1, 1);
+				gioPORTB->DSET = 1U << 1;
 			} else {
-				gioSetBit(gioPORTB,2, 1);
+				gioPORTB->DSET = 1U << 2;
 			}
 		}
 		inline void led_off(unsigned char id = 0) {
 			if (id == 0) {
-				gioSetBit(gioPORTB,1, 0);
+				gioPORTB->DCLR = 1U << 1;
 			} else {
-				gioSetBit(gioPORTB,2, 0);
+				gioPORTB->DCLR = 1U << 2;
 			}
 		}
 		inline void led_toggle(unsigned char id = 0) {
@@ -46,23 +50,48 @@ class GPIO {
 			}
 		}
 		inline void input(unsigned char const pin) {
-			// TODO
+			if (pin < b0) {
+				gioPORTA->DIR &= ~(1U << pin);
+			} else if (pin < PIN_INVALID) {
+				gioPORTB->DIR &= ~(1U << (pin - b0));
+			}
 		}
 		inline void input(unsigned char const pin, unsigned char const pull) {
 			// TODO
 		}
 		inline void output(unsigned char const pin) {
-			// TODO
+			if (pin < b0) {
+				gioPORTA->DIR |= 1U << pin;
+			} else if (pin < PIN_INVALID) {
+				gioPORTB->DIR |= 1U << (pin - b0);
+			}
 		}
 		inline void output(unsigned char const pin, unsigned char const value) {
-			// TODO
+			write(pin, value);
+			output(pin);
 		}
 		inline unsigned char read(unsigned char const pin) {
-			// TODO
+			if (pin < b0) {
+				return gioPORTA->DIN & (1U << pin);
+			} else if (pin < PIN_INVALID) {
+				return gioPORTB->DIN & (1U << (pin - b0));
+			}
 			return 0;
 		}
 		inline void write(unsigned char const pin, unsigned char value) {
-			// TODO
+			if (pin < b0) {
+				if (value) {
+					gioPORTA->DSET = 1U << pin;
+				} else {
+					gioPORTA->DCLR = 1U << pin;
+				}
+			} else if (pin < PIN_INVALID) {
+				if (value) {
+					gioPORTB->DSET = 1U << (pin - b0);
+				} else {
+					gioPORTB->DCLR = 1U << (pin - b0);
+				}
+			}
 		}
 		inline void write_mask(unsigned char const pin_base, unsigned char set_mask, unsigned char clear_mask) {
 			// TODO
