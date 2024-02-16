@@ -79,8 +79,18 @@ class GPIO {
 				gpio_mode_setup(GPIOA, GPIO_MODE_INPUT, GPIO_PUPD_NONE, 1 << pin);
 			} else if (pin < pc0) {
 				gpio_mode_setup(GPIOB, GPIO_MODE_INPUT, GPIO_PUPD_NONE, 1 << (pin - pb0));
-			} else if (pin < PIN_INVALID) {
+			} else if (pin < pd0) {
 				gpio_mode_setup(GPIOC, GPIO_MODE_INPUT, GPIO_PUPD_NONE, 1 << (pin - pc0));
+			} else if (pin < pe0) {
+				gpio_mode_setup(GPIOD, GPIO_MODE_INPUT, GPIO_PUPD_NONE, 1 << (pin - pd0));
+			} else if (pin < pf0) {
+				gpio_mode_setup(GPIOE, GPIO_MODE_INPUT, GPIO_PUPD_NONE, 1 << (pin - pe0));
+			} else if (pin < pg0) {
+				gpio_mode_setup(GPIOF, GPIO_MODE_INPUT, GPIO_PUPD_NONE, 1 << (pin - pf0));
+			} else if (pin < ph0) {
+				gpio_mode_setup(GPIOG, GPIO_MODE_INPUT, GPIO_PUPD_NONE, 1 << (pin - pg0));
+			} else if (pin < PIN_INVALID) {
+				gpio_mode_setup(GPIOH, GPIO_MODE_INPUT, GPIO_PUPD_NONE, 1 << (pin - ph0));
 			}
 		}
 		inline void input(unsigned char const pin, unsigned char const pull) {
@@ -90,8 +100,18 @@ class GPIO {
 				gpio_mode_setup(GPIOA, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, 1 << pin);
 			} else if (pin < pc0) {
 				gpio_mode_setup(GPIOB, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, 1 << (pin - pb0));
-			} else if (pin < PIN_INVALID) {
+			} else if (pin < pd0) {
 				gpio_mode_setup(GPIOC, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, 1 << (pin - pc0));
+			} else if (pin < pe0) {
+				gpio_mode_setup(GPIOD, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, 1 << (pin - pd0));
+			} else if (pin < pf0) {
+				gpio_mode_setup(GPIOE, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, 1 << (pin - pe0));
+			} else if (pin < pg0) {
+				gpio_mode_setup(GPIOF, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, 1 << (pin - pf0));
+			} else if (pin < ph0) {
+				gpio_mode_setup(GPIOG, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, 1 << (pin - pg0));
+			} else if (pin < PIN_INVALID) {
+				gpio_mode_setup(GPIOH, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, 1 << (pin - ph0));
 			}
 		}
 		/*
@@ -102,9 +122,20 @@ class GPIO {
 				return gpio_get(GPIOA, 1 << pin);
 			} else if (pin < pc0) {
 				return gpio_get(GPIOB, 1 << (pin-pb0));
-			} else if (pin < PIN_INVALID) {
+			} else if (pin < pd0) {
 				return gpio_get(GPIOC, 1 << (pin-pc0));
+			} else if (pin < pe0) {
+				return gpio_get(GPIOD, 1 << (pin-pd0));
+			} else if (pin < pf0) {
+				return gpio_get(GPIOE, 1 << (pin-pe0));
+			} else if (pin < pg0) {
+				return gpio_get(GPIOF, 1 << (pin-pf0));
+			} else if (pin < ph0) {
+				return gpio_get(GPIOG, 1 << (pin-pg0));
+			} else if (pin < PIN_INVALID) {
+				return gpio_get(GPIOH, 1 << (pin-ph0));
 			}
+			return 0;
 		}
 		inline void write(unsigned char const pin, unsigned char value) {
 			if (pin < pb0) {
@@ -119,11 +150,41 @@ class GPIO {
 				} else {
 					gpio_port_write(GPIOB, gpio_port_read(GPIOB) & ~(1 << (pin-pb0)));
 				}
-			} else if (pin < PIN_INVALID) {
+			} else if (pin < pd0) {
 				if (value) {
 					gpio_port_write(GPIOC, gpio_port_read(GPIOC) | (1 << (pin-pc0)));
 				} else {
 					gpio_port_write(GPIOC, gpio_port_read(GPIOC) & ~(1 << (pin-pc0)));
+				}
+			} else if (pin < pe0) {
+				if (value) {
+					gpio_port_write(GPIOD, gpio_port_read(GPIOD) | (1 << (pin-pd0)));
+				} else {
+					gpio_port_write(GPIOD, gpio_port_read(GPIOD) & ~(1 << (pin-pd0)));
+				}
+			} else if (pin < pf0) {
+				if (value) {
+					gpio_port_write(GPIOE, gpio_port_read(GPIOE) | (1 << (pin-pe0)));
+				} else {
+					gpio_port_write(GPIOE, gpio_port_read(GPIOE) & ~(1 << (pin-pe0)));
+				}
+			} else if (pin < pg0) {
+				if (value) {
+					gpio_port_write(GPIOF, gpio_port_read(GPIOF) | (1 << (pin-pf0)));
+				} else {
+					gpio_port_write(GPIOF, gpio_port_read(GPIOF) & ~(1 << (pin-pf0)));
+				}
+			} else if (pin < ph0) {
+				if (value) {
+					gpio_port_write(GPIOG, gpio_port_read(GPIOG) | (1 << (pin-pg0)));
+				} else {
+					gpio_port_write(GPIOG, gpio_port_read(GPIOG) & ~(1 << (pin-pg0)));
+				}
+			} else if (pin < PIN_INVALID) {
+				if (value) {
+					gpio_port_write(GPIOH, gpio_port_read(GPIOH) | (1 << (pin-ph0)));
+				} else {
+					gpio_port_write(GPIOH, gpio_port_read(GPIOH) & ~(1 << (pin-ph0)));
 				}
 			}
 		}
