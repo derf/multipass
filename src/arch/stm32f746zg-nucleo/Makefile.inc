@@ -50,6 +50,9 @@ endif
 
 ifdef CONFIG_arch_stm32f746zg_nucleo_driver_counter
 	CXX_TARGETS += src/arch/stm32f746zg-nucleo/driver/counter.cc
+	ifneq (${app}, )
+		COMMON_FLAGS += -DCONFIG_arch_stm32f746zg_nucleo_driver_counter
+	endif
 endif
 
 ifdef CONFIG_arch_stm32f746zg_nucleo_driver_i2c
