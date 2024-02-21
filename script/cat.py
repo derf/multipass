@@ -90,6 +90,20 @@ def handle_line(line):
             match_line = f"{cycles}/{overflows} cycles"
             new_line = f"{ms} ms ({cycles}/{overflows} cycles)"
             print_line = re.sub(match_line, new_line, print_line)
+        for match in re.finditer("_us=(\d+)/(\d+)", line):
+            cycles = int(match.group(1))
+            overflows = int(match.group(2))
+            us = (cycles + timer_overflow * overflows) * 1000000 / counter_freq
+            match_line = f"_us={cycles}/{overflows}"
+            new_line = f"_us={us}"
+            print_line = re.sub(match_line, new_line, print_line)
+        for match in re.finditer("_ms=(\d+)/(\d+)", line):
+            cycles = int(match.group(1))
+            overflows = int(match.group(2))
+            us = (cycles + timer_overflow * overflows) * 1000 / counter_freq
+            match_line = f"_ms={cycles}/{overflows}"
+            new_line = f"_ms={ms}"
+            print_line = re.sub(match_line, new_line, print_line)
         print(print_line)
     else:
         print(line)
