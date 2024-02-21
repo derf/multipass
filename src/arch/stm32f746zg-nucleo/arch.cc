@@ -64,19 +64,21 @@ extern void loop();
 volatile char run_loop = 0;
 #endif
 
-// for 216 MHz(?)
+static volatile int delay_counter;
+// horribly broken
 void Arch::delay_us(unsigned int const us)
 {
-	volatile int x = us * 145;
-	while (x--) {
+	delay_counter = us * 37;
+	while (delay_counter--) {
 		__asm("nop");
 	}
 }
+// horribly broken
 void Arch::delay_ms(unsigned int const ms)
 {
 	for (unsigned int i = 0; i < ms; i++) {
-		volatile int x = 143990;
-		while (x--) {
+		delay_counter = 36364;
+		while (delay_counter--) {
 			__asm("nop");
 		}
 	}
