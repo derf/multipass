@@ -7,6 +7,7 @@
 /Kconfig
 /include/config.h
 /src/app/aemr/main.cc
+/src/app/stream/log
 /src/app/prototest/nanopb.pb.h
 /src/app/prototest/nanopb.pb.cc
 /src/app/prototest/nanopbbench.pb.h

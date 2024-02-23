@@ -1,0 +1,23 @@
+# Copyright 2020 Birte Kristina Friesel
+#
+# SPDX-License-Identifier: CC0-1.0
+
+prompt "STREAM Benchmark"
+depends on meta_driver_counter && !loop && !wakeup
+
+config app_stream_type
+string "Type"
+depends on app_stream
+default "unsigned int"
+
+config app_stream_n_elements
+int "# Elements"
+depends on app_stream
+default 128 if arch_arduino_nano
+default 8192 if arch_rm46l8lp
+default 8192 if arch_stm32f746zg_nucleo
+
+config app_stream_stride
+int "Stride"
+depends on app_stream
+default 1
