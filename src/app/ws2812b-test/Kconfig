@@ -1,0 +1,6 @@
+# Copyright 2020 Birte Kristina Friesel
+#
+# SPDX-License-Identifier: CC0-1.0
+
+prompt "WS2812b Test"
+depends on arch_arduino_nano && meta_driver_neopixel
