@@ -27,7 +27,7 @@ int main(void)
 
 	while (1) {
 		gpio.led_toggle();
-		np.setPixelColor(pixel, np.Color(0, 0, 0));
+		np.setPixelColor(pixel, np.Color(1, 1, 1));
 		if (pixel == 255) {
 			pixel = 0;
 		} else {
