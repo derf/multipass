@@ -122,6 +122,10 @@ ifdef CONFIG_driver_sen5x
 	CXX_TARGETS += src/driver/sen5x.cc
 endif
 
+ifdef CONFIG_driver_sen66
+	CXX_TARGETS += src/driver/sen66.cc
+endif
+
 ifdef CONFIG_driver_veml6075
 	CXX_TARGETS += src/driver/veml6075.cc
 endif

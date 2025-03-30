@@ -60,6 +60,9 @@
 #ifdef CONFIG_driver_sen5x
 #include "driver/sen5x.h"
 #endif
+#ifdef CONFIG_driver_sen66
+#include "driver/sen66.h"
+#endif
 #ifdef CONFIG_driver_veml6075
 #include "driver/veml6075.h"
 #endif
@@ -266,6 +269,61 @@ void loop(void)
 	}
 #endif
 
+#ifdef CONFIG_driver_sen66
+	if (sen66.read()) {
+		kout << dec;
+		if (sen66.co2 != sen66.CO2_INVALID) {
+			kout << "CO₂  : " << sen66.co2 << " ppm" << endl;
+		}
+		if (sen66.pm1 != sen66.PM_INVALID) {
+			kout << "PM1.0: " << (sen66.pm1 / 10) << "." << (sen66.pm1 % 10) << " µg/m³" << endl;
+		}
+		if (sen66.pm2_5 != sen66.PM_INVALID) {
+			kout << "PM2.5: " << (sen66.pm2_5 / 10) << "." << (sen66.pm2_5 % 10) << " µg/m³" << endl;
+		}
+		if (sen66.pm4 != sen66.PM_INVALID) {
+			kout << "PM4.0: " << (sen66.pm4 / 10) << "." << (sen66.pm4 % 10) << " µg/m³" << endl;
+		}
+		if (sen66.pm10 != sen66.PM_INVALID) {
+			kout << "PM10 : " << (sen66.pm10 / 10) << "." << (sen66.pm10 % 10) << " µg/m³" << endl;
+		}
+		if (sen66.humidity != sen66.HUMIDITY_INVALID) {
+			kout << "Humidity: " << (sen66.humidity / 100) << "." << ((sen66.humidity % 100) / 10) << " %" << endl;
+		}
+		if (sen66.temperature != sen66.TEMPERATURE_INVALID) {
+			kout << "Temperature: " << (sen66.temperature / 200) << "." << ((sen66.temperature % 200) / 20) << " °c" << endl;
+		}
+		if (sen66.voc != sen66.VOC_INVALID) {
+			kout << "VOC index: " << (sen66.voc / 10) << "." << (sen66.voc % 10) << endl;
+		}
+		if (sen66.nox != sen66.NOX_INVALID) {
+			kout << "NOx index: " << (sen66.nox / 10) << "." << (sen66.nox % 10) << endl;
+		}
+	} else {
+		kout << "SEN66 error" << endl;
+	}
+	if (sen66.readStatus()) {
+		if (sen66.fan_speed_warning) {
+			kout << "SEN66 warning: fan speed out of range" << endl;
+		}
+		if (sen66.co2_sensor_error) {
+			kout << "SEN66 error: CO₂ sensor" << endl;
+		}
+		if (sen66.gas_sensor_error) {
+			kout << "SEN66 error: Gas (VOC, NOx) sensor" << endl;
+		}
+		if (sen66.rht_sensor_error) {
+			kout << "SEN66 error: Temperature and Humidity sensor" << endl;
+		}
+		if (sen66.pm_sensor_error) {
+			kout << "SEN66 error: PM sensor" << endl;
+		}
+		if (sen66.fan_error) {
+			kout << "SEN66 error: Fan" << endl;
+		}
+	}
+#endif
+
 #ifdef CONFIG_driver_veml6075
 	float uva, uvb;
 	if (veml6075.readUV(&uva, &uvb)) {
@@ -390,6 +448,10 @@ int main(void)
 
 #ifdef CONFIG_driver_sen5x
 	sen5x.start();
+#endif
+
+#ifdef CONFIG_driver_sen66
+	sen66.start();
 #endif
 
 #ifdef CONFIG_driver_veml6075
