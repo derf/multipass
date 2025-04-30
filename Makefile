@@ -269,6 +269,11 @@ endif
 
 default: build/system.elf
 
+# When running ./mp arch=... app=..., a .config file is not needed.
+# Create an empty one if it does not exist yet.
+.config:
+	touch .config
+
 include/config.h: .config
 	${QUIET}test -z "${app}" && awk -f script/conf2h.awk .config > include/config.h || : > include/config.h
 
