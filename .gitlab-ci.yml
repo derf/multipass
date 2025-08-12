@@ -1,4 +1,4 @@
-image: derfnull/multipass-ci:2020.08.13.2
+image: derfnull/multipass-ci:2025.08.12
 
 stages:
   - build
