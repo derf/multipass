@@ -227,16 +227,9 @@ gdb-server:
 gdb:
 	${GDB} -ex 'target remote :55000' build/system.elf
 
-ifdef CONFIG_arch_msp430fr5994lp_large_mode
 attributes: build/system.elf
-	${QUIET}script/size.py ${SIZE} text,lower.text,upper.text,data,lower.data,upper.data data,lower.data,upper.data,bss,lower.bss,upper.bss
+	${QUIET}script/size.py ${SIZE} lower.rodata,rodata,rodata2,persistent,upper.rodata,data,upper.data,lower.text,text,upper.text leaRAM,lower.data,data,upper.data,lower.bss,bss,noinit
 nfpvalues: build/system.elf
-	${QUIET}script/nfpvalues.py ${SIZE} text,lower.text,upper.text,data,lower.data,upper.data data,lower.data,upper.data,bss,lower.bss,upper.bss
-else
-attributes: build/system.elf
-	${QUIET}script/size.py ${SIZE} text,data data,bss
-nfpvalues: build/system.elf
-	${QUIET}script/nfpvalues.py ${SIZE} text,data data,bss
-endif
+	${QUIET}script/nfpvalues.py ${SIZE} .lower.rodata,rodata,rodata2,persistent,upper.rodata,data,upper.data,lower.text,text,upper.text leaRAM,lower.data,data,upper.data,lower.bss,bss,noinit
 
 .PHONY: arch_clean arch_help arch_info attributes cat monitor program
