@@ -24,7 +24,7 @@ def main(size_executable, rom_sections, ram_sections):
     section_size = dict()
 
     for line in status.stdout.split("\n"):
-        match = re.match("[.](\S+)\s+(\d+)", line)
+        match = re.match(r"[.](\S+)\s+(\d+)", line)
         if match:
             section = match.group(1)
             size = int(match.group(2))
