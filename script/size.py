@@ -31,8 +31,8 @@ def main(size_executable, rom_sections, ram_sections):
             section_size[section] = size
 
     total = {
-        "ROM": sum(map(lambda section: section_size[section], rom_sections)),
-        "RAM": sum(map(lambda section: section_size[section], ram_sections)),
+        "ROM": sum(map(lambda section: section_size.get(section, 0), rom_sections)),
+        "RAM": sum(map(lambda section: section_size.get(section, 0), ram_sections)),
     }
 
     output = {"section": section_size, "total": total}

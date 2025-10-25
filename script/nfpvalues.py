@@ -24,15 +24,15 @@ def main(size_executable, rom_sections, ram_sections):
     section_size = dict()
 
     for line in status.stdout.split("\n"):
-        match = re.match("[.](\S+)\s+(\d+)", line)
+        match = re.match(r"[.](\S+)\s+(\d+)", line)
         if match:
             section = match.group(1)
             size = int(match.group(2))
             section_size[section] = size
 
     total = {
-        "ROM": sum(map(lambda section: section_size[section], rom_sections)),
-        "RAM": sum(map(lambda section: section_size[section], ram_sections)),
+        "ROM": sum(map(lambda section: section_size.get(section, 0), rom_sections)),
+        "RAM": sum(map(lambda section: section_size.get(section, 0), ram_sections)),
     }
 
     output = {"OS Image": total}
