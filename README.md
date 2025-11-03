@@ -56,11 +56,14 @@ features; the remainder of this README covers details.
 | RM46L852 (Cortex-R4F) | 160 MHz | 1.25 MiB Flash | 192 KiB SRAM | |
 | STM32F446RE (Cortex-M4) | 168 MHz | 512 KiB Flash | 128 KiB SRAM | I²C |
 | STM32F746ZG (Cortex-M7) | 216 MHz | 1 MiB Flash | 320 KiB SRAM | I²C |
+| STM32H747XI (Cortex-M7) | 480 MHz | 2 MiB Flash + 128 MiB QSPI NOR Flash | 1 MiB SRAM + 32 MiB SDRAM | |
 | POSIX | – | – | – | I²C |
 
-## Supported Architectures
+### ATTiny88 (Blinkenrocket)
 
-See `make config` for an up-to-date list.
+Peripheral communication:
+
+* I²C controller
 
 ### ATMega168P, ATMega328P (Arduino Nano)
 
@@ -180,3 +183,12 @@ See `make config` for an up-to-date list.
 
 * ADS111x ADC (I²C)
 * DS2482 1-Wire Bus Controller (I²C)
+
+## References
+
+Mirrors of the multipass repository are available at:
+
+* [Chaosdorf](https://chaosdorf.de/git/derf/multipass)
+* [ESS](https://ess.cs.uos.de/git/bf/multipass)
+* [finalrewind](https://git.finalrewind.org/multipass/)
+* [GitHub](https://github.com/derf/multipass)
