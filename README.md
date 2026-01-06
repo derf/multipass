@@ -65,7 +65,7 @@ Peripheral communication:
 
 * I²C controller
 
-### ATMega168P, ATMega328P (Arduino Nano)
+### ATMega168P, ATMega328P (Arduino Nano, Arduino Uno)
 
 Peripheral communication:
 
