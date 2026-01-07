@@ -41,6 +41,29 @@ class GPIO {
 			pd7 = 31
 		};
 
+		enum ArduinoPin : unsigned char {
+			rx0 = pd0,
+			tx1 = pd1,
+			d2 = pd2,
+			d3 = pd3,
+			d4 = pd4,
+			d5 = pd5,
+			d6 = pd6,
+			d7 = pd7,
+			d8 = pb0,
+			d9 = pb1,
+			d10 = pb2,
+			d11 = pb3,
+			d12 = pb4,
+			a0 = pc0,
+			a1 = pc1,
+			a2 = pc2,
+			a3 = pc3,
+			a4 = pc4,
+			a5 = pc5,
+			rst = pc6
+		};
+
 		inline void setup() {
 			DDRB = _BV(PB5);
 		}
