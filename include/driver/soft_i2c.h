@@ -37,6 +37,8 @@ class SoftI2C {
 
 #ifndef DRIVER_HARDWARE_I2C
 extern SoftI2C i2c;
+#else
+extern SoftI2C softi2c;
 #endif
 
 #endif

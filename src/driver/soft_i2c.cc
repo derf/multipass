@@ -239,4 +239,8 @@ ON_TIMER_INTERRUPT_tail
 
 SoftI2C i2c(GPIO::CONFIG_driver_softi2c_sda, GPIO::CONFIG_driver_softi2c_scl);
 
+#else
+
+SoftI2C softi2c(GPIO::CONFIG_driver_softi2c_sda, GPIO::CONFIG_driver_softi2c_scl);
+
 #endif /* !DRIVER_HARDWARE_I2C */
