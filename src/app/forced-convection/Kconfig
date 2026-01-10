@@ -1,0 +1,6 @@
+# Copyright 2026 Birte Kristina Friesel
+#
+# SPDX-License-Identifier: CC0-1.0
+
+prompt "Forced Convection"
+depends on loop && !wakeup
