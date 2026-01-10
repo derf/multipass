@@ -1,6 +1,6 @@
 #include "object/framebuffer.h"
 
-#ifdef MULTIPASS_ARCH_arduino_nano
+#ifdef HAVE_PROGMEM
 #include <avr/pgmspace.h>
 #endif
 
@@ -119,7 +119,7 @@ void Framebuffer::put(char c)
 	if ((c < 32) || (c > 126)) {
 		c = '?';
 	}
-#ifdef MULTIPASS_ARCH_arduino_nano
+#ifdef HAVE_PROGMEM
 	uint8_t *glyph_addr = (uint8_t *)pgm_read_ptr(&font[c - 32]);
 	const unsigned char glyph_w = pgm_read_byte(&glyph_addr[0]);
 #else
@@ -136,7 +136,7 @@ void Framebuffer::put(char c)
 	for (unsigned char i = 0; i < glyph_w; i++) {
 		unsigned char x = i / fontSize;
 		unsigned char y = i % fontSize;
-#ifdef MULTIPASS_ARCH_arduino_nano
+#ifdef HAVE_PROGMEM
 		data[(height/8) * (fontX + x) + fontY/8 + y] = pgm_read_byte(&glyph_addr[i+1]);
 #else
 		data[(height/8) * (fontX + x) + fontY/8 + y] = glyph[i+1];

@@ -9,7 +9,7 @@
  * SPDX-License-Identifier: CC0-1.0
  */
 
-#ifdef MULTIPASS_ARCH_arduino_nano
+#ifdef HAVE_PROGMEM
 #include <avr/pgmspace.h>
 #define GLYPH_ATTR PROGMEM
 #else

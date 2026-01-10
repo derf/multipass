@@ -22,6 +22,7 @@ cpu_freq ?= 16000000
 COMMON_FLAGS += -Werror=overflow
 COMMON_FLAGS += -mmcu=${MCU} -DMULTIPASS_ARCH_arduino_nano
 COMMON_FLAGS += -DF_CPU=${cpu_freq}UL
+COMMON_FLAGS += -DHAVE_PROGMEM
 
 ifeq (${stack_usage}, )
 	COMMON_FLAGS += -flto

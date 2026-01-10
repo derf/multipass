@@ -8,7 +8,7 @@
  * SPDX-License-Identifier: OFL-1.1
  */
 
-#ifdef MULTIPASS_ARCH_arduino_nano
+#ifdef HAVE_PROGMEM
 #include <avr/pgmspace.h>
 #define GLYPH_ATTR PROGMEM
 #else
