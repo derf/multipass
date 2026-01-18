@@ -190,5 +190,5 @@ Mirrors of the multipass repository are available at:
 
 * [Chaosdorf](https://chaosdorf.de/git/derf/multipass)
 * [ESS](https://ess.cs.uos.de/git/bf/multipass)
-* [finalrewind](https://git.finalrewind.org/multipass/)
+* [Finalrewind](https://git.finalrewind.org/derf/multipass)
 * [GitHub](https://github.com/derf/multipass)
