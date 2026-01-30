@@ -6,10 +6,12 @@
 #ifndef STANDARDINPUT3_H
 #define STANDARDINPUT3_H
 
+#include "config.h"
+
 class StandardInput3 {
 	private:
 		StandardInput3(const StandardInput3 &copy);
-		static unsigned char const bufsize = 64;
+		static unsigned char const bufsize = CONFIG_arch_atmega2560_driver_stdin3_rxbuf;
 		char buffer[bufsize];
 		unsigned char write_pos, read_pos;
 

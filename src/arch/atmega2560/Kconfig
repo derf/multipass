@@ -97,6 +97,11 @@ help
 depends on arch_atmega2560_driver_stdout3
 select meta_driver_stdin3
 
+config arch_atmega2560_driver_stdin3_rxbuf
+int "UART3 RX Buffer Size"
+default 64
+depends on arch_atmega2560_driver_stdin3
+
 config arch_atmega2560_driver_timer
 bool "Timer with Interrupts"
 select meta_driver_timer
