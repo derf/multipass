@@ -9,7 +9,7 @@
 class StandardInput3 {
 	private:
 		StandardInput3(const StandardInput3 &copy);
-		static unsigned char const bufsize = 16;
+		static unsigned char const bufsize = 64;
 		char buffer[bufsize];
 		unsigned char write_pos, read_pos;
 

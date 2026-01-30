@@ -146,7 +146,7 @@ ifdef CONFIG_arch_atmega2560_driver_uptime
 endif
 
 ifeq (${cpu_freq}, 16000000)
-	uart_baud = 57600
+	uart_baud = 115200
 else ifeq (${cpu_freq}, 8000000)
 	uart_baud = 38400
 else ifeq (${cpu_freq}, 4000000)
