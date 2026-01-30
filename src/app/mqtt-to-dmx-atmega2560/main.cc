@@ -39,7 +39,9 @@ bool input_to_dmx(void)
 	unsigned char dmx_frame = 1;
 	unsigned int offset = 0;
 
+#if DEBUG
 	kout << "parsing: " << buffer << endl;
+#endif
 
 	if (!strncmp(buffer, "RX:", 3)) {
 		offset = 3;
@@ -80,7 +82,9 @@ int main(void)
 	timer.setup_hz(4);
 	timer.start(1);
 
+#if DEBUG
 	kout << "Ready" << endl;
+#endif
 
 	while (1) {
 		while (!timer_done) {
@@ -90,7 +94,9 @@ int main(void)
 				if ((key >= ' ') && (key <= '~')) {
 					buffer[buf_pos++] = key;
 				}
+#if DEBUG
 				kout << key << flush;
+#endif
 				gpio.led_toggle(1);
 
 				if (buf_pos >= sizeof(buffer)) {
@@ -100,11 +106,13 @@ int main(void)
 				if (buf_pos && ((key == '\n') || (key == '\r'))) {
 					buffer[buf_pos] = 0;
 					if (input_to_dmx()) {
+#if DEBUG
 						kout << endl << "DMX: ";
 						for (unsigned char i = 1; i < dmx.num_frames; i++) {
 							kout << dmx.frames[i] << " ";
 						}
 						kout << endl << "> " << flush;
+#endif
 					}
 					buf_pos = 0;
 				}
