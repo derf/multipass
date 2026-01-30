@@ -25,20 +25,31 @@
 #endif
 
 #include "driver/timer.h"
+
+#include <string.h>
+
 volatile unsigned char timer_done = 0;
 char buffer[64];
 unsigned char buf_pos = 0;
+unsigned char do_wdr = 0;
 
-void input_to_dmx(void)
+bool input_to_dmx(void)
 {
 	unsigned char num = 0;
 	unsigned char dmx_frame = 1;
+	unsigned int offset = 0;
 
-	if ((buffer[0] == 'W') || buffer[0] == 'M') {
-		return;
+	kout << "parsing: " << buffer << endl;
+
+	if (!strncmp(buffer, "RX:", 3)) {
+		offset = 3;
+	} else if (!strncmp(buffer, "> RX:", 5)) {
+		offset = 5;
+	} else {
+		return false;
 	}
 
-	for (unsigned int i = 3; i < buf_pos; i++) {
+	for (unsigned int i = offset; (i < buf_pos) && buffer[i] ; i++) {
 		if ((buffer[i] >= '0') && (buffer[i] <= '9')) {
 			num *= 10;
 			num += buffer[i] - '0';
@@ -48,6 +59,8 @@ void input_to_dmx(void)
 			num = 0;
 		}
 	}
+	dmx.frames[dmx_frame++] = num;
+	return true;
 }
 
 int main(void)
@@ -74,7 +87,9 @@ int main(void)
 			arch.idle();
 			while (kin3.hasKey()) {
 				char key = kin3.getKey();
-				buffer[buf_pos++] = key;
+				if ((key >= ' ') && (key <= '~')) {
+					buffer[buf_pos++] = key;
+				}
 				kout << key << flush;
 				gpio.led_toggle(1);
 
@@ -82,13 +97,15 @@ int main(void)
 					buf_pos = 0;
 				}
 
-				if ((key == '\n') || (key == '\r')) {
-					input_to_dmx();
-					kout << endl << "DMX: ";
-					for (unsigned char i = 1; i < dmx.num_frames; i++) {
-						kout << dmx.frames[i] << " ";
+				if (buf_pos && ((key == '\n') || (key == '\r'))) {
+					buffer[buf_pos] = 0;
+					if (input_to_dmx()) {
+						kout << endl << "DMX: ";
+						for (unsigned char i = 1; i < dmx.num_frames; i++) {
+							kout << dmx.frames[i] << " ";
+						}
+						kout << endl << "> " << flush;
 					}
-					kout << endl << "> " << flush;
 					buf_pos = 0;
 				}
 			}
@@ -99,6 +116,10 @@ int main(void)
 
 		//gpio.led_toggle(0);
 		dmx.write();
+
+		if (do_wdr++ == 200) {
+			kout3 << "wdr()" << endl;
+		}
 	}
 
 	return 0;
