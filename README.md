@@ -189,6 +189,6 @@ See `make config` for an up-to-date list.
 Mirrors of the multipass repository are available at:
 
 * [Chaosdorf](https://chaosdorf.de/git/derf/multipass)
-* [ESS](https://ess.cs.uos.de/git/bf/multipass)
+* [ESS](https://ess.cs.uos.de/git/bkf/multipass)
 * [Finalrewind](https://git.finalrewind.org/derf/multipass)
 * [GitHub](https://github.com/derf/multipass)
