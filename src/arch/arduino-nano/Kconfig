@@ -57,12 +57,11 @@ select meta_driver_timer
 
 config arch_arduino_nano_driver_dmx
 bool "DMX"
+help
+  DMX output on TX1 (PD1).
+  Note that this conflicts with stdout and stdin.
+  Both can be combined with TDMA.
 select meta_driver_dmx
-
-config arch_arduino_nano_driver_dmx_pin
-string "DMX Pin"
-default "pb5"
-depends on arch_arduino_nano_driver_dmx
 
 choice arch_arduino_nano_cpu
 bool "CPU Type"

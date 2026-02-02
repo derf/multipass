@@ -9,7 +9,8 @@ class DMX {
 		DMX(const DMX &copy);
 
 	public:
-		unsigned char frames[16];
+		static unsigned char const num_frames = 16;
+		unsigned char frames[num_frames];
 
 		DMX() {}
 
