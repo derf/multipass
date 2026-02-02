@@ -9,18 +9,19 @@
 class StandardInput {
 	private:
 		StandardInput(const StandardInput &copy);
-		char buffer[8];
+		char buffer[32];
 		unsigned char write_pos, read_pos;
 
 	public:
 		StandardInput() : write_pos(0), read_pos(0) {}
 		void setup();
+		void disable();
 		bool hasKey();
 		char getKey();
 
 		inline void addKey(char key) {
 			buffer[write_pos] = key;
-			write_pos = (write_pos + 1) % 8;
+			write_pos = (write_pos + 1) % (sizeof(buffer) / sizeof(buffer[0]));
 		}
 };
 

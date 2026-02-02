@@ -12,6 +12,11 @@ void StandardInput::setup()
 	UCSR0B |= _BV(RXCIE0);
 }
 
+void StandardInput::disable()
+{
+	UCSR0B &= ~_BV(RXCIE0);
+}
+
 bool StandardInput::hasKey()
 {
 	if (write_pos != read_pos) {
@@ -23,7 +28,7 @@ bool StandardInput::hasKey()
 char StandardInput::getKey()
 {
 	char ret = buffer[read_pos++];
-	read_pos %= 8;
+	read_pos %= sizeof(buffer) / sizeof(buffer[0]);
 	return ret;
 }
 
