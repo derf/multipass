@@ -1,0 +1,6 @@
+# Copyright 2020 Birte Kristina Friesel
+#
+# SPDX-License-Identifier: CC0-1.0
+
+prompt "UART to DMX gateway on Arduino Nano, with TDMA between UART in and DMX out"
+depends on !loop && !wakeup && meta_driver_dmx && meta_driver_stdin && meta_driver_timer
