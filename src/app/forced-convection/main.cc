@@ -7,6 +7,7 @@
 #include "driver/adc.h"
 #include "driver/gpio.h"
 #include "driver/stdout.h"
+#include "driver/stdin.h"
 #include "driver/i2c.h"
 #include "driver/soft_i2c.h"
 #include "driver/lm75.h"
@@ -14,6 +15,7 @@
 #include "lib/pixelfont/pixeloperator_mirrored.h"
 #include "object/framebuffer.h"
 
+#include <string.h>
 
 #define shift_ser GPIO::d8
 #define shift_clk GPIO::d4
@@ -32,13 +34,25 @@
 
 unsigned char graph[88];
 unsigned char graph_offset = 0;
+char buffer[64];
+unsigned char buf_pos = 0;
+unsigned char pwm_max;
 
 void loop(void)
 {
+	unsigned char buf_offset = 0;
 	static int seconds = 0;
 	static int fan_speed = 0;
+	static int publish = 0;
 	gpio.led_on(0);
 	float temp = lm75.getTemp();
+
+	if (PWM1 && (fan_speed != pwm_max)) {
+		PWM1 = pwm_max;
+		PWM2 = pwm_max;
+		PWM3 = pwm_max;
+		PWM4 = pwm_max;
+	}
 
 	if (temp < 25) {
 		PWM1 = 0;
@@ -52,15 +66,51 @@ void loop(void)
 		fan_speed = 0;
 	}
 	else if (temp >= 30) {
-		PWM1 = 255;
-		PWM2 = 255;
-		PWM3 = 255;
-		PWM4 = 255;
+		PWM1 = pwm_max;
+		PWM2 = pwm_max;
+		PWM3 = pwm_max;
+		PWM4 = pwm_max;
 		TCCR0A = _BV(COM0A1) | _BV(COM0B1) | _BV(WGM01) | _BV(WGM00);
 		TCCR2A = _BV(COM2A1) | _BV(COM2B1) | _BV(WGM21) | _BV(WGM20);
 		TCCR0B = _BV(CS00);
 		TCCR2B = _BV(CS20);
-		fan_speed = 100;
+		fan_speed = pwm_max;
+	}
+
+	while (kin.hasKey()) {
+		char key = kin.getKey();
+		if ((key >= ' ') && (key <= '~')) {
+			buffer[buf_pos++] = key;
+		}
+#if DEBUG
+		kout << key << flush;
+#endif
+		gpio.led_toggle(1);
+
+		if (buf_pos >= sizeof(buffer)) {
+			buf_pos = 0;
+		}
+
+		if (buf_pos && ((key == '\n') || (key == '\r'))) {
+			buffer[buf_pos] = 0;
+			if (!strncmp(buffer, "RX:", 3)) {
+				buf_offset = 3;
+			} else if (!strncmp(buffer, "> RX:", 5)) {
+				buf_offset = 5;
+			} else {
+				buf_offset = 0;
+			}
+			if (buf_offset) {
+				pwm_max = 0;
+				for (unsigned char i = buf_offset; (i < buf_pos) && buffer[i] ; i++) {
+					if ((buffer[i] >= '0') && (buffer[i] <= '9')) {
+						pwm_max *= 10;
+						pwm_max += buffer[i] - '0';
+					}
+				}
+			}
+			buf_pos = 0;
+		}
 	}
 
 	if (seconds++ == 60) {
@@ -77,7 +127,7 @@ void loop(void)
 		graph_offset = (graph_offset + 1) % (sizeof(graph) / sizeof(graph[0]));
 	}
 
-	uint16_t vcc = adc.getVCC_mV() - 200;
+	uint16_t vcc = adc.getVCC_mV();
 
 	fb.clear();
 	fb.setFont(pixeloperator_mirrored);
@@ -86,7 +136,22 @@ void loop(void)
 	fb.setPos(88, 16);
 	fb << vcc/1000 << "." << (vcc%1000)/100 << (vcc%100)/10 << "V";
 	fb.setPos(88, 24);
-	fb << fan_speed << "%";
+	fb << fan_speed;
+
+	publish += 1;
+	if (publish == 5) {
+		kout << "publish_mqtt('sensor/hm17/schlafzimmer/heizung',";
+		kout << "'{\"temperature_degc\":";
+		kout.printf_float(temp);
+		kout << ",\"fan_pwm\":" << fan_speed;
+		kout << ",\"mcu_mV\":" << vcc << "}', 0);" << endl;
+	}
+	else if (publish == 10) {
+		kout << "publish_influx('radiator,area=hm17,location=schlafzimmer temperature_degc=";
+		kout.printf_float(temp);
+		kout << ",fan_pwm=" << fan_speed << ",mcu_mV=" << vcc << "');" << endl;
+		publish = 0;
+	}
 
 	for (unsigned char i = 0; i < (sizeof(graph) / sizeof(graph[0])); i++) {
 		unsigned char column_value = graph[(graph_offset + i) % (sizeof(graph) / sizeof(graph[0]))];
@@ -94,9 +159,6 @@ void loop(void)
 	}
 	ssd1306.showImage(fb.data, fb.width * fb.height / 8);
 
-	kout << "temperature_celsius: ";
-	kout.printf_float(temp);
-	kout << endl;
 	gpio.led_off(0);
 }
 
@@ -105,8 +167,11 @@ int main(void)
 	arch.setup();
 	gpio.setup();
 	kout.setup();
+	kin.setup();
 
 	gpio.led_on(0);
+
+	pwm_max = 255;
 
 	/*
 	 * Ensure that the SSD1306 OLED display gets a clean reset / power cycle
@@ -123,16 +188,16 @@ int main(void)
 	arch.delay_ms(50);
 
 	if (i2c.setup() != 0) {
-		kout << "I2C setup FAILED" << endl;
+		kout << "-- I2C setup FAILED" << endl;
 		return 1;
 	}
-	kout << "I2C setup OK" << endl;
+	kout << "-- I2C setup OK" << endl;
 
 	if (softi2c.setup() != 0) {
-		kout << "SoftI2C setup FAILED" << endl;
+		kout << "-- SoftI2C setup FAILED" << endl;
 		return 1;
 	}
-	kout << "SoftI2C setup OK" << endl;
+	kout << "-- SoftI2C setup OK" << endl;
 
 	lm75.setOS(30);
 	lm75.setHyst(25);
