@@ -17,9 +17,10 @@ class OutputStream {
 
 	char digit_buffer[sizeof(long long) * 8];
 	uint8_t base;
+	uint8_t ndigits;
 
  public:
-	OutputStream();
+	OutputStream() : base(10), ndigits(2) {};
 
 	virtual void put(char c) = 0;
 
@@ -52,6 +53,7 @@ class OutputStream {
 #endif
 
 	void setBase(uint8_t b);
+	void setDigits(uint8_t ndig);
 	void printf_uint8(uint8_t num);
 	void printf_float(float num);
 };

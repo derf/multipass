@@ -162,6 +162,11 @@ void OutputStream::setBase(uint8_t b)
 	}
 }
 
+void OutputStream::setDigits(uint8_t ndig)
+{
+	ndigits = ndig;
+}
+
 static inline char format_hex_nibble(uint8_t num)
 {
 	if (num > 9) {
@@ -199,8 +204,11 @@ void OutputStream::printf_float(float num)
 	}
 	put('0' + ((unsigned int)num % 10));
 	put('.');
-	put('0' + ((unsigned int)(num * 10) % 10));
-	put('0' + ((unsigned int)(num * 100) % 10));
+	float mul = 10;
+	for (int i = 0; i < ndigits; i++) {
+		put('0' + ((unsigned int)(num * mul) % 10));
+		mul *= 10;
+	}
 }
 
 OutputStream & flush(OutputStream & os)
@@ -245,9 +253,4 @@ OutputStream & term(OutputStream & os)
 	os.put('\0');
 	os.flush();
 	return os;
-}
-
-OutputStream::OutputStream()
-{
-    base = 10;
 }
