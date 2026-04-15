@@ -11,6 +11,10 @@ import sys
 
 
 def main(size_executable, rom_sections, ram_sections, file="build/system.elf"):
+    glob = False
+    if "*" in rom_sections or "*" in ram_sections:
+        glob = True
+
     rom_sections = rom_sections.split(",")
     ram_sections = ram_sections.split(",")
 
@@ -30,12 +34,31 @@ def main(size_executable, rom_sections, ram_sections, file="build/system.elf"):
             size = int(match.group(2))
             section_size[section] = size
 
-    total = {
-        "ROM": sum(map(lambda section: section_size.get(section, 0), rom_sections)),
-        "RAM": sum(map(lambda section: section_size.get(section, 0), ram_sections)),
-    }
+    if glob:
+        total = {"ROM": 0, "RAM": 0}
+        for rom_section in rom_sections:
+            for section, sec_size in section_size.items():
+                if (
+                    rom_section == section
+                    or rom_section.endswith("*")
+                    and section.startswith(rom_section.removesuffix("*"))
+                ):
+                    total["ROM"] += sec_size
+        for ram_section in ram_sections:
+            for section, sec_size in section_size.items():
+                if (
+                    ram_section == section
+                    or ram_section.endswith("*")
+                    and section.startswith(ram_section.removesuffix("*"))
+                ):
+                    total["RAM"] += sec_size
+    else:
+        total = {
+            "ROM": sum(map(lambda section: section_size.get(section, 0), rom_sections)),
+            "RAM": sum(map(lambda section: section_size.get(section, 0), ram_sections)),
+        }
 
-    output = {"OS Image": total}
+    output = {file: total}
 
     print(json.dumps(output))
 
