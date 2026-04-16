@@ -8,6 +8,10 @@ config arch_posix_driver_counter
 bool "Cycle counter"
 select meta_driver_counter
 
+config arch_posix_driver_counter_tsc
+bool "Use TSC (x86 only)"
+depends on arch_posix_driver_counter
+
 config arch_posix_driver_i2c
 bool "I2C via /dev/i2c"
 select meta_driver_hardware_i2c
