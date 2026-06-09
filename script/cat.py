@@ -9,6 +9,8 @@ import time
 counter_freq = None
 timer_overflow = None
 
+serial_done = False
+
 
 class SerialReader(serial.threaded.Protocol):
     """
@@ -81,23 +83,24 @@ class SerialMonitor:
 
 
 def handle_line(line):
+    global serial_done
     if counter_freq is not None:
         print_line = line
-        for match in re.finditer("(\d+)/(\d+) cycles", line):
+        for match in re.finditer(r"(\d+)/(\d+) cycles", line):
             cycles = int(match.group(1))
             overflows = int(match.group(2))
             ms = (cycles + timer_overflow * overflows) * 1000 / counter_freq
             match_line = f"{cycles}/{overflows} cycles"
             new_line = f"{ms} ms ({cycles}/{overflows} cycles)"
             print_line = re.sub(match_line, new_line, print_line)
-        for match in re.finditer("_us=(\d+)/(\d+)", line):
+        for match in re.finditer(r"_us=(\d+)/(\d+)", line):
             cycles = int(match.group(1))
             overflows = int(match.group(2))
             us = (cycles + timer_overflow * overflows) * 1000000 / counter_freq
             match_line = f"_us={cycles}/{overflows}"
             new_line = f"_us={us}"
             print_line = re.sub(match_line, new_line, print_line)
-        for match in re.finditer("_ms=(\d+)/(\d+)", line):
+        for match in re.finditer(r"_ms=(\d+)/(\d+)", line):
             cycles = int(match.group(1))
             overflows = int(match.group(2))
             us = (cycles + timer_overflow * overflows) * 1000 / counter_freq
@@ -108,15 +111,24 @@ def handle_line(line):
     else:
         print(line)
 
+    if line == "done":
+        serial_done = True
+
 
 if __name__ == "__main__":
     tty = sys.argv[1]
     baud = int(sys.argv[2])
+    timeout = 3600
 
     if len(sys.argv) > 4:
         counter_freq = int(sys.argv[3])
         timer_overflow = int(sys.argv[4])
 
+    if len(sys.argv) > 5:
+        timeout = int(sys.argv[5])
+
     monitor = SerialMonitor(tty, baud, handle_line)
-    time.sleep(20)
+    while not serial_done and timeout > 0:
+        time.sleep(1)
+        timeout -= 1
     monitor.close()
