@@ -4,3 +4,7 @@
 
 prompt "Data Logger for Arbitrary Devices"
 depends on loop && !wakeup
+
+config app_datalogger_compact
+bool "Compact output, e.g. for datalog-to-influxdb.py"
+depends on app_datalogger

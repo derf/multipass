@@ -102,10 +102,17 @@ void loop(void)
 #ifdef CONFIG_driver_bme280
 	struct bme280_data comp_data;
 	int8_t rslt = bme280.getSensorData(BME280_ALL, &comp_data);
+#ifdef CONFIG_app_datalogger_compact
+	kout << "BME280 / " << rslt;
+	kout << " / " << (float)comp_data.temperature / 100;
+	kout << " / " << (float)comp_data.humidity / 1024;
+	kout << " / " << (float)comp_data.pressure / 100 << endl;
+#else
 	kout << "BME280 read " << rslt << endl;
 	kout << "BME280 temperature " << (float)comp_data.temperature / 100 << " degC" << endl;
 	kout << "BME280 humidity " << (float)comp_data.humidity / 1024 << " %" << endl;
 	kout << "BME280 pressure " << (float)comp_data.pressure / 100 << " Pa" << endl;
+#endif
 #endif
 
 #ifdef CONFIG_driver_bme680
@@ -113,10 +120,18 @@ void loop(void)
 	bme680.setSensorMode();
 	arch.delay_ms(250);
 	bme680.getSensorData(&data);
+#ifdef CONFIG_app_datalogger_compact
+	kout << "BME680";
+	kout << " / " << (float)data.temperature / 100;
+	kout << " / " << (float)data.humidity / 1024;
+	kout << " / " << (float)data.pressure / 100;
+	kout << " / " << data.gas_resistance << endl;
+#else
 	kout << "BME680 temperature " << (float)data.temperature / 100 << " degC" << endl;
 	kout << "BME680 humidity " << (float)data.humidity / 1000  << " %" << endl;
 	kout << "BME680 pressure " << (float)data.pressure / 100 << " hPa" << endl;
 	kout << "BME680 gas resistance " << data.gas_resistance << endl;
+#endif
 #endif
 
 #ifdef CONFIG_driver_ccs811
