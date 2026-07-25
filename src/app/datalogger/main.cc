@@ -207,9 +207,11 @@ void loop(void)
 #endif
 
 #ifdef CONFIG_driver_max44009
-	kout << "MAX44009 Brightness: ";
-	kout.printf_float(max44009.getLux());
-	kout << " lx" << endl;
+#ifdef CONFIG_app_datalogger_compact
+	kout << "MAX44009 / " << max44009.getLux() << endl;
+#else
+	kout << "MAX44009 Brightness: " << max44009.getLux() << " lx" << endl;
+#endif
 #endif
 
 #ifdef CONFIG_driver_tsl2591
