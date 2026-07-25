@@ -183,6 +183,11 @@ void OutputStream::printf_uint8(uint8_t num)
 
 void OutputStream::printf_float(float num)
 {
+	printf_float(num, ndigits);
+}
+
+void OutputStream::printf_float(float num, uint8_t ndigits)
+{
 	if (num < 0) {
 		put('-');
 		num *= -1;

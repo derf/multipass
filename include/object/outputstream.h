@@ -56,6 +56,7 @@ class OutputStream {
 	void setDigits(uint8_t ndig);
 	void printf_uint8(uint8_t num);
 	void printf_float(float num);
+	void printf_float(float num, uint8_t ndigits);
 };
 
 
