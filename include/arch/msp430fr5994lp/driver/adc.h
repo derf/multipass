@@ -6,6 +6,8 @@
 #ifndef ADC_H
 #define ADC_H
 
+#include <stdint.h>
+
 class ADC {
 	private:
 		ADC(ADC const &copy);
@@ -15,6 +17,7 @@ class ADC {
 
 		float getTemp();
 		float getVCC();
+		uint16_t getReading();
 };
 
 extern ADC adc;
