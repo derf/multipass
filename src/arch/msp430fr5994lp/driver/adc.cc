@@ -152,16 +152,16 @@ void ADC::startSampling(uint16_t *buf, uint16_t bufsize)
 	P3SEL0 |= BIT0;
 	P3SEL1 |= BIT0;
 
-	// raise an interrupt after each sample
-	ADC12IER0 = ADC12IE1;
-	ADC12IFGR0 = ADC12IFG1;
+	// Use DMA Channel 0 to automatically copy readings to buf
+	DMACTL0 = DMA0TSEL__DMA0TRIG26;
+	DMACTL4 = DMARMWDIS;
+	DMA0CTL = DMADSTINCR_3;
+	DMA0SA = ADC12_B_BASE + OFS_ADC12MEM1;
+	DMA0DA = (uintptr_t)buf;
+	DMA0SZ = bufsize;
+	DMA0CTL |= DMAEN | DMAIE;
 
-	// clear pending interrupts
-	ADC12IV = 0;
-
-	buf16 = buf;
-	this->bufsize = bufsize;
-
+	// start sampling
 	ADC12CTL0 |= ADC12ENC | ADC12SC;
 }
 
@@ -174,11 +174,11 @@ void ADC::stopSampling()
 ADC adc;
 
 #ifndef __acweaving
-__attribute__((interrupt(ADC12_VECTOR))) void handle_adc_irq()
+__attribute__((interrupt(DMA_VECTOR))) void handle_dma_irq()
 {
-	if (ADC12IV == 0x00e) {
-		// ADC12MEM1
-		adc.storeReading(ADC12MEM1);
+	if (DMAIV == 0x02) {
+		adc.setBufferFull();
+		DMA0CTL |= DMAEN;
 	}
 }
 #endif
