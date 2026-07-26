@@ -3,4 +3,4 @@
 # SPDX-License-Identifier: CC0-1.0
 
 prompt "ADC Test"
-depends on meta_driver_adc && arch_arduino_nano && loop && !wakeup
+depends on meta_driver_adc && (arch_arduino_nano || arch_msp430fr5994lp) && loop && !wakeup
