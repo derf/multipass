@@ -8,6 +8,9 @@ SERIAL_PORT ?= ttyACM0
 
 cpu_freq ?= 168000000
 
+# counter runs at cpu_freq/2
+counter_freq ?= 84000000
+
 INCLUDES += -Iext/libopencm3/include
 
 COMMON_FLAGS += --static -nostartfiles -g3 -Os -fno-common
@@ -118,7 +121,7 @@ arch_clean:
 	${QUIET}rm -f ${OBJECTS}
 
 cat:
-	${QUIET}script/cat.py /dev/${SERIAL_PORT} 115200 ${cpu_freq} 65536
+	${QUIET}script/cat.py /dev/${SERIAL_PORT} 115200 ${counter_freq} 65536 ${MAKE_CAT_TIMEOUT}
 
 monitor:
 	${QUIET}screen /dev/${SERIAL_PORT} 115200
@@ -130,9 +133,8 @@ arch_help:
 
 arch_info:
 	@echo "CPU   Freq: ${cpu_freq} Hz"
-	@echo "Timer Freq: ${timer_freq} Hz -> $(shell src/arch/stm32f446re-nucleo/model.py f_timer "${cpu_freq}" "${timer_freq}")"
-	@echo "I2C   Freq: ${i2c_freq} Hz"
-	@echo "Counter Overflow: 4294967296/255"
+	@echo "Count Freq: ${counter_freq} Hz"
+	@echo "Counter Overflow: 4294967296/4294967295"
 	@echo "Monitor: /dev/${SERIAL_PORT} 115200"
 
 attributes: build/system.elf
