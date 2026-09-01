@@ -22,7 +22,6 @@ void Arch::setup(void)
 #endif
 
 #ifdef CONFIG_arch_stm32f746zg_nucleo_driver_counter
-	// counter
 	rcc_periph_clock_enable(RCC_TIM2);
 	nvic_enable_irq(NVIC_TIM2_IRQ);
 	rcc_periph_reset_pulse(RST_TIM2);

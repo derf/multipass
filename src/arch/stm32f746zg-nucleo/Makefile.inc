@@ -7,6 +7,8 @@
 SERIAL_PORT ?= ttyACM0
 
 cpu_freq ?= 216000000
+
+# counter runs at cpu_freq/2
 counter_freq ?= 108000000
 
 INCLUDES += -Iext/libopencm3/include
@@ -14,6 +16,8 @@ INCLUDES += -Iext/libopencm3/include
 COMMON_FLAGS += --static -nostartfiles -g3 -Os -fno-common
 COMMON_FLAGS += -ffunction-sections -fdata-sections
 COMMON_FLAGS += -mcpu=cortex-m7 -mthumb -mfloat-abi=hard -mfpu=fpv5-sp-d16 -DSTM32F7
+
+MAKE_CAT_TIMEOUT ?= 3600
 
 CC = arm-none-eabi-gcc
 CXX = arm-none-eabi-g++
@@ -109,7 +113,7 @@ ext/libopencm3/lib/libopencm3_stm32f7.a: ext/libopencm3/Makefile
 program: build/system.elf
 	openocd -c 'source [find interface/stlink.cfg]' \
 		-c 'transport select hla_swd' -c 'source [find target/stm32f7x.cfg]' \
-		-c 'reset_config srst_only' -c '$$_TARGETNAME configure -rtos auto' \
+		-c 'reset_config srst_only' -c '$$_TARGETNAME configure -rtos none' \
 		-c 'reset_config connect_assert_srst' -c init -c targets \
 		-c 'reset halt' -c 'flash write_image erase "build/system.elf" 0' \
 		-c 'verify_image "build/system.elf" 0' -c 'reset run' -c 'shutdown'
@@ -118,7 +122,7 @@ arch_clean:
 	${QUIET}rm -f ${OBJECTS}
 
 cat:
-	${QUIET}script/cat.py /dev/${SERIAL_PORT} 115200 ${counter_freq} 4294967296
+	${QUIET}script/cat.py /dev/${SERIAL_PORT} 115200 ${counter_freq} 4294967296 ${MAKE_CAT_TIMEOUT}
 
 monitor:
 	${QUIET}screen /dev/${SERIAL_PORT} 115200

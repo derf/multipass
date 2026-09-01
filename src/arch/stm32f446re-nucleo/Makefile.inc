@@ -17,6 +17,8 @@ COMMON_FLAGS += --static -nostartfiles -g3 -Os -fno-common
 COMMON_FLAGS += -ffunction-sections -fdata-sections
 COMMON_FLAGS += -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -DSTM32F4
 
+MAKE_CAT_TIMEOUT ?= 3600
+
 CC = arm-none-eabi-gcc
 CXX = arm-none-eabi-g++
 OBJCOPY = arm-none-eabi-objcopy
@@ -112,7 +114,7 @@ ext/libopencm3/lib/libopencm3_stm32f4.a: ext/libopencm3/Makefile
 program: build/system.elf
 	openocd -c 'source [find interface/stlink.cfg]' \
 		-c 'transport select hla_swd' -c 'source [find target/stm32f4x.cfg]' \
-		-c 'reset_config srst_only' -c '$$_TARGETNAME configure -rtos auto' \
+		-c 'reset_config srst_only' -c '$$_TARGETNAME configure -rtos none' \
 		-c 'reset_config connect_assert_srst' -c init -c targets \
 		-c 'reset halt' -c 'flash write_image erase "build/system.elf" 0' \
 		-c 'verify_image "build/system.elf" 0' -c 'reset run' -c 'shutdown'
