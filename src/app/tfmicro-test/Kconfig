@@ -1,0 +1,11 @@
+# Copyright 2020 Birte Kristina Friesel
+#
+# SPDX-License-Identifier: CC0-1.0
+
+prompt "TFLite micro test"
+depends on lib_tfmicro_stm32 && meta_driver_counter && !loop && !wakeup
+
+config app_tfmicro_test_arena_size
+int "Tensor Arena Size [KiB]"
+default 4
+depends on app_tfmicro_test
