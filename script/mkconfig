@@ -78,6 +78,10 @@ help
 default n
 depends on lib_inflate
 
+config lib_tfmicro_stm32
+bool "TFLite Micro for ARM / STM32"
+depends on arch_stm32f446re_nucleo || arch_stm32f746zg_nucleo || arch_stm32h747i_disco
+
 endmenu
 
 choice Architecture
