@@ -99,6 +99,7 @@ build/system.elf: ${OBJECTS} ext/libopencm3/lib/libopencm3_stm32f7.a
 	${QUIET}${CXX} ${INCLUDES} ${COMMON_FLAGS} ${CXXFLAGS} \
 		-Lext/libopencm3/lib -Wl,--gc-sections \
 		-Wl,--start-group -lc -lgcc -lnosys -Wl,--end-group \
+		-Wl,-Map=build/system.map \
 		-T src/arch/stm32f746zg-nucleo/stm32f746zg.ld \
 		${OBJECTS} -lopencm3_stm32f7 \
 		-o $@
