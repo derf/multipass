@@ -240,7 +240,8 @@ ifdef CONFIG_lib_tfmicro_stm32
 	COMMON_FLAGS += -Iinclude/lib/tfmicro-stm32 -DARDUINO -Wno-all -Wno-extra -DTF_LITE_STRIP_ERROR_STRINGS
 
 	ifeq (${with_newlib}, 1)
-		COMMON_FLAGS += -O1
+		# tfmicro + newlib do not work reliably with -Os. -O1 and -O2 are fine.
+		COMMON_FLAGS += -O2
 	endif
 
 	# for debugging without -DTF_LITE_STRIP_ERROR_STRINGS (not yet functional) 
