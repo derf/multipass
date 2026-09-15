@@ -34,6 +34,10 @@ ifdef verbose
 	QUIET =
 endif
 
+ifeq (${with_newlib}, 1)
+	COMMON_FLAGS += -specs=nano.specs -specs=nosys.specs
+endif
+
 ifneq (${app_dir}, )
 	include src/app/${app_dir}/Makefile.inc
 endif
@@ -234,6 +238,14 @@ endif
 
 ifdef CONFIG_lib_tfmicro_stm32
 	COMMON_FLAGS += -Iinclude/lib/tfmicro-stm32 -DARDUINO -Wno-all -Wno-extra -DTF_LITE_STRIP_ERROR_STRINGS
+
+	ifeq (${with_newlib}, 1)
+		COMMON_FLAGS += -O1
+	endif
+
+	# for debugging without -DTF_LITE_STRIP_ERROR_STRINGS (not yet functional) 
+	# CXX_TARGETS += src/lib/tfmicro-stm32/tensorflow/lite/micro/micro_string.cc
+	# CXX_TARGETS += src/lib/tfmicro-stm32/tensorflow/lite/core/api/error_reporter.cc
 
 	CXX_TARGETS += src/lib/tfmicro-stm32/tensorflow/lite/micro/micro_allocator.cc
 	CXX_TARGETS += src/lib/tfmicro-stm32/tensorflow/lite/micro/micro_resource_variable.cc
